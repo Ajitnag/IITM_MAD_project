@@ -1,0 +1,31 @@
+{% extends base.html %} {% block title %}Store Admin{% endblock %} {% block
+content %}
+<h2>
+  <span style="float: left">{{ name }}'s Dashboard</span>
+  <span style="float: right"><a href="">Summary</a></span>
+  <span style="float: right"> | </span>
+  <span style="float: right"><a href="">Logout</a></span>
+</h2>
+<br />
+<br />
+<hr />
+<div><a href="/category_create">Add Category</a></div>
+<div></div>
+<div>
+  {% if categories|length == 0 %}
+  <h1>No categories Defined. Press 'Add Category' to add a new category</h1>
+  {% else %}
+  <table style>
+    <tr>
+      Category Name
+    </tr>
+    {% for variety in categories %}
+    <tr>
+      <td>{{ variety.category_Name }}</td>
+      <td><a href="">Add Product</a></td>
+    </tr>
+    {% endfor %}
+  </table>
+  {% endif %}
+</div>
+{% endblock %}

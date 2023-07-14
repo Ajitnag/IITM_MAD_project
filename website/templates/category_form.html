@@ -1,0 +1,17 @@
+{% extends base.html %} {% block title %}Create Category{% endblock %} {% block
+content %}
+<h2>
+  <span style="float: left">{{ name }}'s Dashboard</span>
+  <span style="float: right"><a href="">Summary</a></span>
+  <span style="float: right"> | </span>
+  <span style="float: right"><a href="">Logout</a></span>
+</h2>
+<br />
+<br />
+<hr />
+<form action="/store_admin" method="POST">
+  <label for="cname">Category name:</label>
+  <input type="text" id="cname" name="cname" /><br />
+  <input type="submit" value="Submit" />
+</form>
+{% endblock %}

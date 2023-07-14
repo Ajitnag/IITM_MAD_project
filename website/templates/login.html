@@ -1,0 +1,66 @@
+{% extends "base.html" %} {% block title %}Sign Up{% endblock %} {% block
+  content %}
+<!-- will send post request with payload to current page url we are on -->
+<form method="POST" accept-charset="utf-8">
+  <h2 align="center" style ="color:rgb(240, 60, 16); background-color:violet;">Login</h2>
+  <div class="form-group">
+    <label for="email1">Email Address</label>
+    <!-- name field here is the key to access data posted here in the form -->
+    <input
+      type="text"
+      id="email1"
+      name="email"
+      class="form-control"
+      placeholder="Enter Email"
+    />
+    <small id="emailHelp" class="form-text text-muted"
+      >e.g alibaba@hotmail.com</small
+    >
+  </div>
+  <div class="form-group">
+    <label for="password0">Password</label>
+    <input
+      type="password"
+      id="password0"
+      name="password"
+      class="form-control"
+      placeholder="Enter Password"
+    />
+    <br />
+    <div class="input-group mb-3">
+      <div class="input-group-prepend">
+        <label class="input-group-text" for="inputGroupSelect01">Identify self as</label>
+      </div>
+      <select class="custom-select" id="inputGroupSelect01" name="identity">
+        <option selected>Choose</option>
+        <option value="Manager">Store Manager</option>
+        <option value="Customer">Customer</option>
+        
+      </select>
+    </div>
+    <!-- <div class="dropdown">
+      <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenu2" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        Identify as
+      </button>
+      <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
+        <button class="dropdown-item" type="button">Customer</button>
+        <button class="dropdown-item" type="button">Store Manager</button>
+      </div>
+    </div> -->
+    <div align="center">
+      <button class="btn btn-primary btn-lg" type="submit">Login</button>
+    </div>
+    <hr>
+    <div class="dropdown-divider"></div>
+      <a class="dropdown-item" href="/sign-up"
+        ><span>New around here? Then</span><span
+          ><button type="button" class="btn btn-link btn-xs">Sign up</button></span
+        ></a
+      >
+    </div>
+    <!-- <div class="dropdown-divider"></div>
+    <a href="/signup">New around here? Sign up</a>
+    </div> -->
+  </div>
+</form>
+{% endblock %}

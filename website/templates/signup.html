@@ -1,0 +1,65 @@
+{% extends "base.html" %} {% block title %}Sign Up{% endblock %} {% block
+content %}
+<form method="POST" accept-charset="utf-8">
+  <h2 align="center" style ="color:rgb(206, 241, 103); background-color:Tomato;" >Sign Up</h2>
+  <div class="form-group">
+    <label for="email">Email Address</label>
+    <input
+      type="text"
+      id="email"
+      name="email"
+      class="form-control"
+      placeholder="name@example.com"
+    />
+    <label for="username">Username</label>
+    <input
+      type="text"
+      id="username"
+      name="username"
+      class="form-control"
+      placeholder="Enter Username"
+    />
+    <label for="password1">Password</label>
+    <input
+      type="password"
+      id="password1"
+      name="password1"
+      class="form-control"
+      placeholder="Enter Password"
+    />
+    <label for="password2">Password Again</label>
+    <input
+      type="password"
+      id="password2"
+      name="password2"
+      class="form-control"
+      placeholder="Enter Password Again"
+    />
+    <br />
+    <div class="input-group mb-3">
+      <div class="input-group-prepend">
+        <label class="input-group-text" for="inputGroupSelect01">Identify self as</label>
+      </div>
+      <select class="custom-select" id="inputGroupSelect01" name="identity">
+        <option selected>Choose</option>
+        <option value="Manager">Store Manager</option>
+        <option value="Customer">Customer</option>
+        
+      </select>
+    </div>
+    <div align="center">
+      <button class="btn btn-primary btn-lg " type="submit">
+          Sign Up
+      </button>
+    </div>
+      <hr>
+      <div class="dropdown-divider"></div>
+      <a class="dropdown-item" href="/login"
+        ><span>Have you already been with us? Then</span><span
+          ><button type="button" class="btn btn-link btn-xs">Login</button></span
+        ></a
+      >
+    </div>
+  </div>
+</form>
+{% endblock %}
