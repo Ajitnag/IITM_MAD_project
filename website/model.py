@@ -1,6 +1,10 @@
 # from flask_sqlalchemy import SQLAlchemy
-from . import db
+
 from flask_login import UserMixin
+from datetime import datetime
+from website import db
+
+# db = SQLAlchemy()
 # from sql_alchemy.sql import func
 # . stands for current package that we are in ie from __init__.py file import db variable
 
@@ -19,9 +23,8 @@ from flask_login import UserMixin
 # a table has rows and cols....each row will be a new user/record
 # usermixin helps to use flask_login plug and helps to log in / out users easily
 
-44
 
-# Flask-login requires a User model with the following properties:
+# UserMixin is a helper provided by the Flask-Login library to provide boilerplate methods necessary for managing users. Models which inherit UserMixin immediately gain access to 4 useful methods:
 # has an is_authenticated() method that returns True if the user has provided valid credentials
 # has an is_active() method that returns True if the user’s account is active
 # has an is_anonymous() method that returns True if the current user is an anonymous user
@@ -34,12 +37,23 @@ class Store(db.Model, UserMixin):
     # manager_Firstname = db.Column(db.String(), nullable=False)
     id = db.Column(db.Integer(), primary_key=True)
     # manager_Lastname = db.Column(db.String())
-    email = db.Column(db.String(), nullable=False, unique=True)
-    username = db.Column(db.String(), nullable=False, unique=True)
-    password = db.Column(db.String(), nullable=False, unique=True)
+    email = db.Column(db.String(50), nullable=False, unique=True)
+    username = db.Column(db.String(20), nullable=False, unique=False)
+    password = db.Column(db.String(200), nullable=False)
+    date_added = db.Column(db.DateTime, default=datetime.utcnow)
     creates = db.relationship('Category', backref='managedBy')
     # one wali side pe relationship wali statement aur many wali side pe foreign key
     # creates = db.relationship('Category', secondary = 'enrollments', backref= 'managed_By')
+
+
+class Customer(db.Model, UserMixin):
+    id = db.Column(db.Integer(), primary_key=True)
+    # customer_name = db.Column(db.String(), nullable=False)
+    email = db.Column(db.String(50), nullable=False, unique=True)
+    username = db.Column(db.String(20), nullable=False, unique=False)
+    password = db.Column(db.String(200), nullable=False)
+    date_added = db.Column(db.DateTime, default=datetime.utcnow)
+    buy = db.relationship('Product', backref='buyer', secondary='ecom')
 
 
 class Category(db.Model):
@@ -49,15 +63,6 @@ class Category(db.Model):
 #  nullable = False)
 # managedBy = db.relationship('Store', backref= 'creates')
     catalog = db.relationship('Product', backref='parent')
-
-
-class Customer(db.Model, UserMixin):
-    id = db.Column(db.Integer(), primary_key=True)
-    # customer_name = db.Column(db.String(), nullable=False)
-    email = db.Column(db.String(), nullable=False, unique=True)
-    username = db.Column(db.String(), nullable=False, unique=True)
-    password = db.Column(db.String(), nullable=False, unique=True)
-    buy = db.relationship('Product', backref='buyer', secondary='ecom')
 
 
 class Product(db.Model):

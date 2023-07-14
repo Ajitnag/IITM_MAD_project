@@ -2,12 +2,12 @@
 # will create blueprint for this auth too cuz these are also views.
 # request module will help to get form data an a variable then will store all of the context related to a specific request
 
-from flask import Blueprint, render_template, redirect, url_for, request, flash
-from .model import *
+from flask import Blueprint, render_template, redirect, url_for, request, flash, session, current_app as App
+from website.model import *
+from . import login_manager
 from .views import *
 from flask_login import login_user, logout_user, login_required, current_user
 from werkzeug.security import generate_password_hash, check_password_hash
-from flask import session, current_app as app
 
 
 # hash is a one way function...u can t find inverse of the fn...ie if u have o/p y u cant determine x..it is not possible thus safe
@@ -16,6 +16,8 @@ from flask import session, current_app as app
 # current_user will help flask to get all information about the currently logged in user and get username, psswd, email of this logged in user
 
 Auth = Blueprint("auth", __name__)
+
+#  In our app, we don't register routes directly to the Flask app — we've registered them to blueprints instead.
 
 
 @Auth.route('/login', methods=['GET', 'POST'])
@@ -69,8 +71,8 @@ def signup():
                 flash("Email already exists.Please use another email.",
                       category='error')
             elif username_exists:
-                flash("Username already exists.Please use another Username.",
-                      category='error')
+                flash(
+                    "Username already exists.Please use another Username.", category='error')
             elif password1 != password_again:
                 flash("Passwords donot match!!", category='error')
             elif len(email) < 10:
@@ -111,15 +113,32 @@ def signup():
 
 # only if login_user fn has been already called in the current session then only can u use logout fn for this current session. This task is done via login_reqd decorator on top of logout fn...it decorates or adds to logout fn
 
+# Check if user is logged in on every page load.load_user is critical for making our app work: before every page load, our app must verify whether or not the user is logged in
+# user_loader loads users by their unique ID. If a user is returned, this signifies a logged-out user. Otherwise, when None is returned, the user is logged out.
 
-@app.login_manager.user_loader
+
+@App.login_manager.user_loader
 def load_manager(id):
-    return Store.query.get(int(id))
+    if id is not None:
+        return Store.query.get(int(id))
+    return None
+#
 
 
-@app.login_manager.user_loader
+@App.login_manager.user_loader
 def load_customer(id):
-    return Customer.query.get(int(id))
+    if id is not None:
+        return Customer.query.get(int(id))
+    return None
+
+# Any time a user attempts to hit our app and is unauthorized, this route will fire.
+
+
+@App.login_manager.unauthorized_handler
+def unauthorized():
+    """Redirect unauthorized users to Login page."""
+    flash('You must be logged in to view that page.')
+    return redirect(url_for('auth.login'))
 
 
 @login_required

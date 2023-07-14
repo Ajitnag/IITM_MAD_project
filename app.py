@@ -1,5 +1,5 @@
-import website
-from website import create_app
+from website import *
+# from website import create_app
 # from flask import Flask, render_template, request
 #
 
@@ -32,40 +32,3 @@ if __name__ == "__main__":
 
 
 # one2many database for scenario : dB for library then components of lib are categories and books...Multiple books can belong to one category but multiple categories cannot belong to one book...One2Many..Parent-Child relation
-
-
-# ---------------Controller-----------------
-
-# login module
-# @app.route('/' , methods = ["GET","POST"])
-# will need a serializer or validator that validates the login input is ASCII
-
-# Manager's DashBoard module - Pg 2 after login
-
-# Routes/Views
-# @app.route('/store_admin', methods=["GET", "POST"])
-# def dash():
-#     name = Store.manager_Firstname
-#     categories = Category.query.all()
-#     if request.method == 'POST':
-#         c1 = request.form.get("cname")
-#         c = Category(category_Name=c1, managedBy_Id=1)
-#         db.session.add(c)
-#         db.session.commit()
-#         categories = Category.query.all()
-#         return render_template('dash_m.html', categories=categories, name=name)
-#     return render_template('dash_m.html', categories=categories, name=name)
-
-
-# @app.route('/category_create')
-# def create_category():
-#     return render_template('category_form.html')
-
-
-# def home():
-#     # if request.method == "POST":
-#     #     role = request.form.get('ID')
-#     #     text = request.form.get('id_value')
-
-# @app.route('/manager' , methods = ["GET","POST"])
-# def dash():
