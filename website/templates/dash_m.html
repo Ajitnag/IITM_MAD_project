@@ -1,5 +1,16 @@
-{% extends "base.html" %} {% block title %}Store Admin{% endblock %} {% block
-content %}
+{% extends "base.html" %} {% block title %}Store Admin{% endblock %}{% block
+logout %}
+<a
+  class="nav-item nav-link"
+  style="float: left; color: rgb(255, 215, 0)"
+  href="/logout"
+  >Logout</a
+><a
+  class="nav-item nav-link"
+  style="float: left; color: rgb(160, 82, 45)"
+  href="/delete"
+  >Delete MyAccount</a
+>{% endblock %} {% block content %}
 <h4>
   <span style="float: left">{{ name }}'s Dashboard</span>
   <span style="float: right"><a href="">Summary</a></span>

@@ -27,6 +27,8 @@ def login():
         email = request.form.get("email")
         password1 = request.form.get("password")
         identity = request.form.get("identity")
+        session['role'] = identity
+
         if identity == 'Manager':
             manager_exists = Store.query.filter_by(email=email).first()
             if manager_exists:
@@ -35,6 +37,7 @@ def login():
                     # login_user will tell login_manager who is logged into session currently
                     # , remember=True,duration='datetime.timedelta(minutes=30)'
                     login_user(manager_exists)
+                    session['id'] = manager_exists.get_id()
                     return redirect(url_for('views.Dash_manager'))
                 else:
                     flash("Password is incorrect!", category='error')
@@ -47,6 +50,7 @@ def login():
                     flash("Logged in!!")
                     # , remember=True, duration='Any'
                     login_user(customer_exists)
+                    session['id'] = customer_exists.get_id()
                     return redirect(url_for('views.Dash_customer'))
                 else:
                     flash("Password is incorrect!", category='error')
@@ -80,7 +84,7 @@ def signup():
                 flash("Email is invalid!!", category='error')
             else:
                 manager_cred = Store(
-                    username=username, email=email, password=generate_password_hash(password1, method='sha256'))
+                    username=username, role=identity, email=email, password=generate_password_hash(password1, method='sha256'))
                 # we want to first hash the psswd before storing in dB for security..method sha256 is encryption fn to be used
                 db.session.add(manager_cred)
                 db.session.commit()
@@ -103,7 +107,7 @@ def signup():
                 flash("Email is invalid!!", category='error')
             else:
                 customer_cred = Customer(
-                    username=username, email=email, password=generate_password_hash(password1, method='sha256'))
+                    username=username, role=identity, email=email, password=generate_password_hash(password1, method='sha256'))
                 db.session.add(customer_cred)
                 db.session.commit()
                 flash("New Customer added.")
@@ -149,3 +153,19 @@ def logout():
     logout_user()
     return redirect(url_for("views.Home"))
 # this is the home fn in views blueprint.also tells why every function name in views must be unique...this secures from any future changes to url itself...no need to change url everywhere it is used..this is dynamic embed url
+
+
+@login_required
+@Auth.route('/delete')
+def delete_account():
+    user_id = session['id']
+    user_role = session['role']
+    if user_role == 'Manager':
+        user = Store.query.get(user_id)
+        db.session.delete(user)
+        db.session.commit()
+    if user_role == 'Customer':
+        user = Customer.query.get(user_id)
+        db.session.delete(user)
+        db.session.commit()
+    return redirect(url_for("views.Home"))

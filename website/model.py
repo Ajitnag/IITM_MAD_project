@@ -36,6 +36,7 @@ from website import db
 class Store(db.Model, UserMixin):
     # manager_Firstname = db.Column(db.String(), nullable=False)
     id = db.Column(db.Integer(), primary_key=True)
+    role = db.Column(db.String(), nullable=False)
     # manager_Lastname = db.Column(db.String())
     email = db.Column(db.String(50), nullable=False, unique=True)
     username = db.Column(db.String(20), nullable=False, unique=False)
@@ -48,6 +49,7 @@ class Store(db.Model, UserMixin):
 
 class Customer(db.Model, UserMixin):
     id = db.Column(db.Integer(), primary_key=True)
+    role = db.Column(db.String(), nullable=False)
     # customer_name = db.Column(db.String(), nullable=False)
     email = db.Column(db.String(50), nullable=False, unique=True)
     username = db.Column(db.String(20), nullable=False, unique=False)
@@ -86,3 +88,9 @@ class Ecom(db.Model):
         'product.product_id'), primary_key=True)
     customer_id = db.Column(db.Integer(), db.ForeignKey(
         'customer.id'), primary_key=True)
+
+
+def get_id(self):
+    return self.id
+# pass around users information across different views/pages we use sessions..sessions are temporary and stored on web server for quick access of inform by diff pages..session is there when user logs in
+#  while user is on ur website .sessions are stored on web server and not on client side

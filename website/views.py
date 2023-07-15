@@ -3,6 +3,7 @@
 # and register our blueprint here with that flask application
 from flask import Blueprint, render_template, request, flash, session, url_for
 from flask_login import login_required, current_user
+from .model import *
 
 
 Views = Blueprint("views", __name__)
@@ -18,17 +19,17 @@ def Home():
 @login_required
 @Views.route('/manager_dash')
 def Dash_manager():
-    if current_user.is_authenticated:
-        user = current_user.username
-    return render_template('dash_m.html', name=user)
+    manager_id = session['id']
+    manager = Store.query.get(manager_id)
+    return render_template('dash_m.html', name=manager.username)
 
 
 @login_required
 @Views.route('/customer_dash')
 def Dash_customer():
-    if current_user.is_authenticated:
-        user = current_user.username
-    return render_template('dash_c.html', name=user)
+    customer_id = session['id']
+    customer = Customer.query.get(customer_id)
+    return render_template('dash_c.html', name=customer.username)
 
 # ---------------Controller-----------------
 
