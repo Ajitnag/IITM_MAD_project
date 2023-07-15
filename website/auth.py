@@ -22,7 +22,7 @@ Auth = Blueprint("auth", __name__)
 
 @Auth.route('/login', methods=['GET', 'POST'])
 def login():
-    session.permanent = True
+    # session.permanent = True
     if request.method == 'POST':
         email = request.form.get("email")
         password1 = request.form.get("password")
@@ -33,8 +33,8 @@ def login():
                 if check_password_hash(manager_exists.password, password1):
                     flash("Logged in!!")
                     # login_user will tell login_manager who is logged into session currently
-                    login_user(manager_exists, remember=True,
-                               duration='datetime.timedelta(minutes=30)')
+                    # , remember=True,duration='datetime.timedelta(minutes=30)'
+                    login_user(manager_exists)
                     return redirect(url_for('views.Dash_manager'))
                 else:
                     flash("Password is incorrect!", category='error')
@@ -45,7 +45,8 @@ def login():
             if customer_exists:
                 if check_password_hash(customer_exists.password, password1):
                     flash("Logged in!!")
-                    login_user(customer_exists, remember=True, duration='Any')
+                    # , remember=True, duration='Any'
+                    login_user(customer_exists)
                     return redirect(url_for('views.Dash_customer'))
                 else:
                     flash("Password is incorrect!", category='error')
@@ -116,13 +117,14 @@ def signup():
 # Check if user is logged in on every page load.load_user is critical for making our app work: before every page load, our app must verify whether or not the user is logged in
 # user_loader loads users by their unique ID. If a user is returned, this signifies a logged-out user. Otherwise, when None is returned, the user is logged out.
 
+#  user loader callback when using Flask-Login. This keeps the current user object loaded in that current session based on the stored id.
+
 
 @App.login_manager.user_loader
 def load_manager(id):
     if id is not None:
         return Store.query.get(int(id))
     return None
-#
 
 
 @App.login_manager.user_loader
@@ -145,5 +147,5 @@ def unauthorized():
 @Auth.route('/logout')
 def logout():
     logout_user()
-    return redirect(url_for("views.home"))
+    return redirect(url_for("views.Home"))
 # this is the home fn in views blueprint.also tells why every function name in views must be unique...this secures from any future changes to url itself...no need to change url everywhere it is used..this is dynamic embed url

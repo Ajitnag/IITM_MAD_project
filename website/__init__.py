@@ -27,7 +27,7 @@ def create_app():
 # Flask's SECRET_KEY variable is a string used to encrypt all of our user's passwords (or other sensitive information)
     app.config['SECRET_KEY'] = '12345'
     app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///stored.sqlite3"
-    app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(minutes=30)
+    # app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(minutes=30)
 
 
 # # Socket/connector ie intialize plugins with the flask application

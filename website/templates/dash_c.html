@@ -1,12 +1,14 @@
-{% extends base.html %} {% block title %}Store Admin{% endblock %} {% block
-content %}
-<h2>
-  <span style="float: left">{{ name }}'s Dashboard</span>
-  <span style="float: right"><a href="">Summary</a></span>
+{% extends "base.html" %} {% block title %}Store Admin{% endblock %} {% block
+logout %}<a class="nav-item nav-link" style="float: right" href="/logout"
+  >Logout</a
+>
+{% endblock %} {% block content %}
+<h5>
+  <span style="float: left">{{ name }}'s Storefront</span>
+  <span style="float: right"><a href="">Cart</a></span>
   <span style="float: right"> | </span>
-  <span style="float: right"><a href="">Logout</a></span>
-</h2>
-<br />
+  <!-- <span style="float: right"><a href="/logout">Logout</a></span> -->
+</h5>
 <br />
 <hr />
 <div><a href="/category_create">Add Category</a></div>

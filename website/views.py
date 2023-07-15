@@ -18,7 +18,7 @@ def Home():
 @login_required
 @Views.route('/manager_dash')
 def Dash_manager():
-    if current_user.is_authenticated():
+    if current_user.is_authenticated:
         user = current_user.username
     return render_template('dash_m.html', name=user)
 
@@ -26,7 +26,7 @@ def Dash_manager():
 @login_required
 @Views.route('/customer_dash')
 def Dash_customer():
-    if current_user.is_authenticated():
+    if current_user.is_authenticated:
         user = current_user.username
     return render_template('dash_c.html', name=user)
 
