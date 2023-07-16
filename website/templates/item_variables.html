@@ -1,0 +1,62 @@
+{% extends "base.html" %} {% block title %}Update item values{% endblock %}{%
+block logout %}
+<a
+  class="nav-item nav-link"
+  style="float: left; color: rgb(255, 215, 0)"
+  href="/logout"
+  >Logout</a
+><a
+  class="nav-item nav-link"
+  style="float: left; color: rgb(160, 82, 45)"
+  href="/delete"
+  >Delete MyAccount</a
+>{% endblock %} {% block content %}
+<h5>
+  <span style="float: left">Item {{ name }} </span>
+</h5>
+<h6>
+  <span style="float: right"
+    ><a href="/manager_dash">Go Back to Dashboard</a></span
+  >
+  <span style="float: right"> |</span>
+</h6>
+
+<!-- <span style="float: right"><a href="/logout">Logout</a></span> -->
+
+<br />
+<hr />
+<form
+  action="/manager_dash/update_itemvariables/{{ variable }}"
+  method="POST"
+  align = "center"
+  style="text-align: center"
+>
+
+<table>
+
+  <tr>
+    <tr><div class="input-group mb-3"  style="width:40%;margin: auto;padding: 20px 40px" align = "center">
+        <div class="input-group-prepend">
+          <label for="r1name" >New Price:</label>
+          <input type="number" id="r1name" name="r1name1"    />  
+        </div>
+        <select class="custom-select" id="p1name" name="pr1name1">
+          <option selected >per unit</option>
+          <option value="Rs/Kg">Rs/Kg</option>
+          <option value="Rs/Litre">Rs/Litre</option>
+          <option value="Rs/Metre">Rs/Metre</option>
+          <option value="Rs/gram">Rs/gram</option>
+          <option value="Rs/Dozen">Rs/Dozen</option>  
+        </select>
+      </div></tr>
+      <tr>
+      <div>
+        <label for="s1name"  style="margin: auto;padding: 20px 40px">New Stock:</label>
+        <input type="number" id="s1name" name="s1name1" accept="utf-8" /><br />
+      </div>
+      <div style="margin-top: 20px">
+        <input class="btn btn-success" type="submit" value="Save" />
+      </div></tr>
+    </form>
+    </table>
+    {% endblock %}

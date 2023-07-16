@@ -1,0 +1,145 @@
+{% extends "base.html" %} {% block title %}Add New Product{% endblock %}{% block
+logout %}
+<a
+  class="nav-item nav-link"
+  style="float: left; color: rgb(255, 215, 0)"
+  href="/logout"
+  >Logout</a
+><a
+  class="nav-item nav-link"
+  style="float: left; color: rgb(160, 82, 45)"
+  href="/delete"
+  >Delete MyAccount</a
+>{% endblock %} {% block content %}
+<h5>
+  <span style="float: left">{{ name }}'s Catalogue </span>
+</h5>
+<h6>
+  <span style="float: right"
+    ><a href="/manager_dash">Go Back to Dashboard</a></span
+  >
+  <span style="float: right"> |</span>
+</h6>
+
+<!-- <span style="float: right"><a href="/logout">Logout</a></span> -->
+
+<br />
+<hr />
+
+{% if products|length == 0 %}
+  <div class="alert alert-warning" role="alert">
+    <p>No Product found.</p>
+    Press
+    <a
+      href="/manager_dash/category_create/{{ category_id }}"
+      class="alert-link"
+      style="
+        background-color: green;
+        color: rgb(183, 226, 43);
+        padding: 10px 10px;
+      "
+      >'Add Product'</a
+    >
+    to add a new product in this catefory
+  </div>
+  <!-- <h5>No categories Defined. Press 'Add Category' to add a new category</h5> -->
+  {% else %}
+  <table
+    style="
+      border: 5px solid rgb(255, 225, 0);
+
+      background-color: #fa74d4;
+      width: 90%;
+    "
+  >
+    <tr align="center" style="border-bottom: 2px solid black">
+      <th
+        style="
+          padding: 10px 10px;
+          width: 5%;
+          border-right: 3px solid rgb(3, 33, 31);
+        "
+      >
+        Id
+      </th>
+      <th
+        style="
+          border-right: 3px solid rgb(3, 33, 31);
+
+          padding: 10px 10px;
+          width: 40%;
+        "
+      >
+        Product Name
+      </th>
+      <th
+        style="
+          border-right: 3px solid rgb(3, 33, 31);
+
+          padding: 10px 10px;
+          width: 15%;
+        "
+      >
+        Price
+      </th>
+      <th
+        style="
+          border-right: 3px solid rgb(3, 33, 31);
+
+          padding: 10px 10px;
+          width: 15%;
+        "
+      >
+        Inventory
+      </th>
+
+      <th style="float: right; padding: 10px 10px; width: 50%" colspan="2">
+        Actions
+      </th>
+    </tr>
+
+    {% for variety in products %}
+    <tr align="center" style="width: 100%">
+      <td style="padding: 10px; border-right: 3px solid rgb(3, 33, 31)">
+        {{ variety.product_id }}
+      </td>
+      <td
+        style=" padding: 5px; border-right: 3px solid rgb(3, 33, 31)"
+      >
+        <strong
+          >{{ variety.product_Name }}
+          </strong
+        >
+      </td>
+      <td
+        style=" padding: 5px; border-right: 3px solid rgb(3, 33, 31)"
+      >
+        <strong
+          >{{ variety.rate}} {{ variety.rate_perUnit}}
+          </strong
+        >
+      </td>
+      <td
+        style=" padding: 5px; border-right: 3px solid rgb(3, 33, 31)"
+      >
+        <strong
+          >{{ variety.stock }}
+          </strong
+        >
+      </td>
+      <td style="font-size: 0.9em">
+        <a style="color:antiquewhite" href="/manager_dash/update_itemvariables/{{ variety.product_id }}"
+          >Change item variables</a
+        >
+      </td>
+      <td style="font-size: 0.9em">
+        <a style="color: red" href="">Delete Product</a>
+      </td>
+    </tr>
+    {% endfor %}
+  </table>
+  {% endif %}
+</div>
+{% endblock %}
+
+

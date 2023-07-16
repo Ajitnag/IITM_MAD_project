@@ -162,6 +162,15 @@ def delete_account():
     user_role = session['role']
     if user_role == 'Manager':
         user = Store.query.get(user_id)
+        categories = Category.query.filter_by(managedBy_Id=user_id).all()
+        for cat in categories:
+            products = Product.query.filter_by(
+                category_Id=cat.category_Id).all()
+            for pro in products:
+                db.session.delete(pro)
+                db.session.commit()
+            db.session.delete(cat)
+            db.session.commit()
         db.session.delete(user)
         db.session.commit()
     if user_role == 'Customer':

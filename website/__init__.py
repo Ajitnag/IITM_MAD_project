@@ -20,6 +20,8 @@ login_manager = LoginManager()
 # Testing. You can have instances of the application with different settings to test every case.
 # Multiple instances. Imagine you want to run different versions of the same application. Of course you could have multiple instances with different configs set up in your webserver, but if you use factories, you can have multiple instances of the same application running in the same application process which can be handy.
 
+# , instance_path="/website/instance"
+
 
 def create_app():
     # create flask instance
@@ -34,6 +36,7 @@ def create_app():
     db.init_app(app)
     app.app_context().push()
     # db.create_all()
+    # print("Database created!!")
 
     login_manager.init_app(app)
 
@@ -72,6 +75,7 @@ def create_app():
         # register blueprints with flask application...  In our app, we don't register routes directly to the Flask app — we've registered them to blueprints instead.
         app.register_blueprint(Views, url_prefix='/')
         app.register_blueprint(Auth, url_prefix='/')
+        # create_database(app)
 
     # from .model import Store, Category, Customer, Product, Ecom
     # # imported the tables to make part of the flask application
@@ -80,3 +84,6 @@ def create_app():
 
 
 # def create_database(app):
+#     if not path.exists("/website/instance/stored.sqlite3"):
+#         db.create_all()
+#         print("Database created!!")

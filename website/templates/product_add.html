@@ -1,0 +1,81 @@
+{% extends "base.html" %} {% block title %}Add New Product{% endblock %}{% block
+logout %}
+<a
+  class="nav-item nav-link"
+  style="float: left; color: rgb(255, 215, 0)"
+  href="/logout"
+  >Logout</a
+><a
+  class="nav-item nav-link"
+  style="float: left; color: rgb(160, 82, 45)"
+  href="/delete"
+  >Delete MyAccount</a
+>{% endblock %} {% block content %}
+<h5>
+  <span style="float: left">{{ name }}'s Product </span>
+</h5>
+<h6>
+  <span style="float: right"
+    ><a href="/manager_dash">Go Back to Dashboard</a></span
+  >
+  <span style="float: right"> |</span>
+</h6>
+
+<!-- <span style="float: right"><a href="/logout">Logout</a></span> -->
+
+<br />
+<hr />
+<div><h4>Add Product</h4></div>
+<form
+  action="/manager_dash/category_create/{{ variable }}"
+  method="POST"
+  align = "center"
+  style="text-align: center"
+>
+
+<table>
+  <tr>
+  <div>
+    <label for="pname" style="margin: auto; padding: 30px 40px">Product name:</label>
+    <input type="text" id="pname" name="pname1" accept="utf-8" /><br />
+  </div></tr>
+  <tr>
+  <tr><div class="input-group mb-3"  style="width:30%;margin: auto;padding: 20px 40px" align = "center">
+    <div class="input-group-prepend" style="text-align: center">
+      <label for="mname"style="padding: 10px"  >Metric:</label>
+      <!-- <input type="text" id="mname" accept="utf-8" size="5" />   -->
+    </div>
+    <select class="custom-select" id="mname" name="mname1">
+      <option selected>unit</option>
+      <option value="Kg">Kg</option>
+      <option value="Litre">Litre</option>
+      <option value="Metre">Metre</option>
+      <option value="gram">gram</option>
+      <option value="Dozen">Dozen</option>  
+    </select>
+  </div></tr>
+  <tr><div class="input-group mb-3"  style="width:40%;margin: auto;padding: 20px 40px" align = "center">
+    <div class="input-group-prepend">
+      <label for="rname" >Rate:</label>
+      <input type="number" id="rname" name="rname1"    />  
+    </div>
+    <select class="custom-select" id="pname" name="prname1">
+      <option selected >per unit</option>
+      <option value="Rs/Kg">Rs/Kg</option>
+      <option value="Rs/Litre">Rs/Litre</option>
+      <option value="Rs/Metre">Rs/Metre</option>
+      <option value="Rs/gram">Rs/gram</option>
+      <option value="Rs/Dozen">Rs/Dozen</option>  
+    </select>
+  </div></tr>
+  <tr>
+  <div>
+    <label for="sname"  style="margin: auto;padding: 20px 40px">Total Stock</label>
+    <input type="number" id="sname" name="sname1" accept="utf-8" /><br />
+  </div>
+  <div style="margin-top: 20px">
+    <input class="btn btn-success" type="submit" value="Save" />
+  </div></tr>
+</form>
+</table>
+{% endblock %}

@@ -70,8 +70,9 @@ class Category(db.Model):
 class Product(db.Model):
     product_id = db.Column(db.Integer(), primary_key=True)
     product_Name = db.Column(db.String(), nullable=False)
-    metre_Unit = db.Column(db.String(), nullable=False)
-    rate_perUnit = db.Column(db.Integer(), nullable=False)
+    metric_Unit = db.Column(db.String(), nullable=False)
+    rate = db.Column(db.Integer(), nullable=False)
+    rate_perUnit = db.Column(db.String(), nullable=False)
     stock = db.Column(db.Integer(), nullable=False)
     category_Id = db.Column(db.String(), db.ForeignKey('category.category_Id'))
     # parent =  db.relationship('Category', backref= 'catalog')

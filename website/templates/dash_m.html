@@ -11,29 +11,99 @@ logout %}
   href="/delete"
   >Delete MyAccount</a
 >{% endblock %} {% block content %}
-<h4>
+<h5>
   <span style="float: left">{{ name }}'s Dashboard</span>
-  <span style="float: right"><a href="">Summary</a></span>
+</h5>
+<h6>
+  <span style="float: right"
+    ><a href="/manager_dash/category_create">Add Category</a></span
+  >
   <span style="float: right"> | </span>
-  <span style="float: right"><a href="/logout">Logout</a></span>
-</h4>
-<br />
+</h6>
+<!-- <span ><a href="">Summary</a></span> -->
+<!-- <span style="float: right"><a href="/logout">Logout</a></span> -->
+
 <br />
 <hr />
-<div><a href="/category_create">Add Category</a></div>
-<div></div>
+<!-- <div><a href="/category_create">Add Category</a></div>
+<div></div> -->
 <div>
   {% if categories|length == 0 %}
-  <h1>No categories Defined. Press 'Add Category' to add a new category</h1>
+  <div class="alert alert-warning" role="alert">
+    <p>None Categories, Added yet.</p>
+    Press
+    <a
+      href="/manager_dash/category_create"
+      class="alert-link"
+      style="
+        background-color: green;
+        color: rgb(183, 226, 43);
+        padding: 10px 10px;
+      "
+      >'Add Category'</a
+    >
+    to add a new category
+  </div>
+  <!-- <h5>No categories Defined. Press 'Add Category' to add a new category</h5> -->
   {% else %}
-  <table style>
-    <tr>
-      Category Name
+  <table
+    style="
+      border: 5px solid rgb(0, 255, 242);
+
+      background-color: #96d4d4;
+      width: 80%;
+    "
+  >
+    <tr align="center" style="border-bottom: 2px solid black">
+      <th
+        style="
+          padding: 10px 10px;
+          width: 10%;
+          border-right: 3px solid rgb(3, 33, 31);
+        "
+      >
+        Id
+      </th>
+      <th
+        style="
+          border-right: 3px solid rgb(3, 33, 31);
+
+          padding: 10px 10px;
+          width: 40%;
+        "
+      >
+        Category Name
+      </th>
+
+      <th style="float: right; padding: 10px 10px; width: 50%" colspan="2">
+        Actions
+      </th>
     </tr>
+
     {% for variety in categories %}
-    <tr>
-      <td>{{ variety.category_Name }}</td>
-      <td><a href="">Add Product</a></td>
+    <tr align="center" style="width: 100%">
+      <td style="padding: 10px; border-right: 3px solid rgb(3, 33, 31)">
+        {{ variety.category_Id }}
+      </td>
+      <td
+        style="width: 50%; padding: 5px; border-right: 3px solid rgb(3, 33, 31)"
+      >
+        <strong
+          ><a
+            style="color: rgb(130, 70, 174)"
+            href="/manager_dash/category_catalog/{{ variety.category_Id }}"
+            >{{ variety.category_Name }}</a
+          ></strong
+        >
+      </td>
+      <td style="font-size: 0.9em">
+        <a href="/manager_dash/category_create/{{ variety.category_Id }}"
+          >Add Product</a
+        >
+      </td>
+      <td style="font-size: 0.9em">
+        <a style="color: red" href="">Delete category</a>
+      </td>
     </tr>
     {% endfor %}
   </table>
