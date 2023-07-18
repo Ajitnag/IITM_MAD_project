@@ -1,6 +1,3 @@
-# Will contain all the routes/views related to authentication/login/logout/signup/signout etc...so we will register it same as the blueprint in views file
-# will create blueprint for this auth too cuz these are also views.
-# request module will help to get form data an a variable then will store all of the context related to a specific request
 
 from flask import Blueprint, render_template, redirect, url_for, request, flash, session, current_app as App
 from website.model import *
@@ -10,11 +7,6 @@ from flask_login import login_user, logout_user, login_required, current_user
 from werkzeug.security import generate_password_hash, check_password_hash
 
 
-# hash is a one way function...u can t find inverse of the fn...ie if u have o/p y u cant determine x..it is not possible thus safe
-# x -> hash function -> hash value ie y
-
-# current_user will help flask to get all information about the currently logged in user and get username, psswd, email of this logged in user
-
 Auth = Blueprint("auth", __name__)
 
 #  In our app, we don't register routes directly to the Flask app — we've registered them to blueprints instead.
@@ -22,7 +14,7 @@ Auth = Blueprint("auth", __name__)
 
 @Auth.route('/login', methods=['GET', 'POST'])
 def login():
-    # session.permanent = True
+
     if request.method == 'POST':
         email = request.form.get("email")
         password1 = request.form.get("password")
@@ -35,7 +27,6 @@ def login():
                 if check_password_hash(manager_exists.password, password1):
                     flash("Logged in!!")
                     # login_user will tell login_manager who is logged into session currently
-                    # , remember=True,duration='datetime.timedelta(minutes=30)'
                     login_user(manager_exists)
                     session['id'] = manager_exists.get_id()
                     return redirect(url_for('views.Dash_manager'))
@@ -68,7 +59,7 @@ def signup():
         password1 = request.form.get("password1")
         password_again = request.form.get("password2")
         identity = request.form.get("identity")
-        # we want to check if data entered matches database
+        # we want to check if data entered matches in our database
         if identity == 'Manager':
             email_exists = Store.query.filter_by(email=email).first()
             username_exists = Store.query.filter_by(username=username).first()
@@ -116,13 +107,8 @@ def signup():
 
     return render_template('signup.html')
 
-# only if login_user fn has been already called in the current session then only can u use logout fn for this current session. This task is done via login_reqd decorator on top of logout fn...it decorates or adds to logout fn
 
-# Check if user is logged in on every page load.load_user is critical for making our app work: before every page load, our app must verify whether or not the user is logged in
 # user_loader loads users by their unique ID. If a user is returned, this signifies a logged-out user. Otherwise, when None is returned, the user is logged out.
-
-#  user loader callback when using Flask-Login. This keeps the current user object loaded in that current session based on the stored id.
-
 
 @App.login_manager.user_loader
 def load_manager(id):
@@ -155,26 +141,26 @@ def logout():
 # this is the home fn in views blueprint.also tells why every function name in views must be unique...this secures from any future changes to url itself...no need to change url everywhere it is used..this is dynamic embed url
 
 
-@login_required
-@Auth.route('/delete')
-def delete_account():
-    user_id = session['id']
-    user_role = session['role']
-    if user_role == 'Manager':
-        user = Store.query.get(user_id)
-        categories = Category.query.filter_by(managedBy_Id=user_id).all()
-        for cat in categories:
-            products = Product.query.filter_by(
-                category_Id=cat.category_Id).all()
-            for pro in products:
-                db.session.delete(pro)
-                db.session.commit()
-            db.session.delete(cat)
-            db.session.commit()
-        db.session.delete(user)
-        db.session.commit()
-    if user_role == 'Customer':
-        user = Customer.query.get(user_id)
-        db.session.delete(user)
-        db.session.commit()
-    return redirect(url_for("views.Home"))
+# @login_required
+# @Auth.route('/delete')
+# def delete_account():
+#     user_id = session['id']
+#     user_role = session['role']
+#     if user_role == 'Manager':
+#         user = Store.query.get(user_id)
+#         categories = Category.query.filter_by(managedBy_Id=user_id).all()
+#         for cat in categories:
+#             products = Product.query.filter_by(
+#                 category_Id=cat.category_Id).all()
+#             for pro in products:
+#                 db.session.delete(pro)
+#                 db.session.commit()
+#             db.session.delete(cat)
+#             db.session.commit()
+#         db.session.delete(user)
+#         db.session.commit()
+#     if user_role == 'Customer':
+#         user = Customer.query.get(user_id)
+#         db.session.delete(user)
+#         db.session.commit()
+#     return redirect(url_for("views.Home"))

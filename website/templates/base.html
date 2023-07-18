@@ -17,6 +17,16 @@
 
     <!-- Template inheritance - change content in child pages via blocks . These blocks can be overwritten or overide in another template and the change made there will go inside this block only...title is the name or identifier for this block just like selectors in CSS-->
     <title>{% block title %}{% endblock %}</title>
+    <style>
+      input[type="number"] {
+        width: 100px;
+      }
+      .center {
+        margin-left: auto;
+        margin-right: auto;
+        width: 40%;
+      }
+    </style>
   </head>
   <!-- div will be place where contents of different pages will go and they can inherit rest of html from base.html but div is made as block via jinja to change as we wish for diff pages -->
   <body>

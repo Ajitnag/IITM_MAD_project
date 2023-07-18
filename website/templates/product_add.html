@@ -12,40 +12,41 @@ logout %}
   >Delete MyAccount</a
 >{% endblock %} {% block content %}
 <h5>
-  <span style="float: left">{{ name }}'s Product </span>
+  <span style="float: left" style="font-size:2vw;">{{ name }}'s Product </span>
 </h5>
 <h6>
   <span style="float: right"
-    ><a href="/manager_dash">Go Back to Dashboard</a></span
+    ><a href="/manager_dash" style="font-size:3vw;">Go Back to Dashboard</a></span
   >
-  <span style="float: right"> |</span>
+  <!-- <span style="float: right" style="font-size: 10px">I</span> -->
 </h6>
 
 <!-- <span style="float: right"><a href="/logout">Logout</a></span> -->
 
 <br />
 <hr />
-<div><h4>Add Product</h4></div>
+<div><h4 style="font-size:3vw;">Add Product</h4></div>
 <form
   action="/manager_dash/category_create/{{ variable }}"
   method="POST"
-  align = "center"
+  
   style="text-align: center"
 >
-
-<table>
-  <tr>
-  <div>
-    <label for="pname" style="margin: auto; padding: 30px 40px">Product name:</label>
-    <input type="text" id="pname" name="pname1" accept="utf-8" /><br />
+<!-- style="margin: auto; padding: 30px 30px" -->
+<table class="center">
+  <tr colspan="2">
+  <div align="center"style="padding: 5px;">
+    <td><strong><label for="pname" align="center" style="font-size:1.9vw;">Product name:</label></strong></td>
+    <td><input type="text" id="pname" name="pname1" accept="utf-8" /></td><br />
   </div></tr>
-  <tr>
-  <tr><div class="input-group mb-3"  style="width:30%;margin: auto;padding: 20px 40px" align = "center">
-    <div class="input-group-prepend" style="text-align: center">
-      <label for="mname"style="padding: 10px"  >Metric:</label>
+  <!-- style="width:30%;margin: auto;padding: 20px 40px" -->
+  <tr colspan="2"><div class="input-group mb-3"  align="center"  align = "center">
+  <td><div class="input-group-prepend" style="text-align: center;padding:1px 10px;">
+    <!-- style="padding: 1px 27px " -->
+      <strong><label for="mname" style="font-size:2vw;" >Metric:</label></strong>
       <!-- <input type="text" id="mname" accept="utf-8" size="5" />   -->
-    </div>
-    <select class="custom-select" id="mname" name="mname1">
+    </div></td><td>
+    <select class="custom-select" style="font-size:1.7vw" id="mname" name="mname1">
       <option selected>unit</option>
       <option value="Kg">Kg</option>
       <option value="Litre">Litre</option>
@@ -53,29 +54,36 @@ logout %}
       <option value="gram">gram</option>
       <option value="Dozen">Dozen</option>  
     </select>
-  </div></tr>
-  <tr><div class="input-group mb-3"  style="width:40%;margin: auto;padding: 20px 40px" align = "center">
-    <div class="input-group-prepend">
-      <label for="rname" >Rate:</label>
-      <input type="number" id="rname" name="rname1"    />  
+  </div></td></tr>
+  <!-- style="width:30%;margin: auto;padding: 20px 40px" -->
+  <tr colspan="2"><div class="input-group mb-3" align="center"  style="padding:1px 10px;">
+    <td><div class="input-group-prepend">
+      <!-- style="width:50%;padding: 10px 33px" -->
+    <strong><label for="rname" style="font-size:2vw" >Rate:</label></strong></td>
+      <!-- style="margin: auto;padding: 2px 3px" -->
+    <td><input type="number" id="rname" name="rname1"    />  
     </div>
-    <select class="custom-select" id="pname" name="prname1">
+    <select class="custom-select" style="font-size:1.7vw" id="pname" name="prname1">
       <option selected >per unit</option>
       <option value="Rs/Kg">Rs/Kg</option>
       <option value="Rs/Litre">Rs/Litre</option>
       <option value="Rs/Metre">Rs/Metre</option>
       <option value="Rs/gram">Rs/gram</option>
       <option value="Rs/Dozen">Rs/Dozen</option>  
-    </select>
+    </select></td>
   </div></tr>
-  <tr>
-  <div>
-    <label for="sname"  style="margin: auto;padding: 20px 40px">Total Stock</label>
-    <input type="number" id="sname" name="sname1" accept="utf-8" /><br />
+  <tr colspan="2">
+    <!-- style="width:100%;margin: auto;padding: 20px 40px" -->
+  <div align="center" style="padding:1px 10px;">
+    <!-- style="width:10%;" -->
+  <td><strong><label for="sname"  style="font-size:2vw">Total Stock:</label></strong></td> 
+  <!-- style="width:10%;" -->
+  <td><input type="number"   id="sname" name="sname1" accept="utf-8" /></td><br />
   </div>
+  <tr>
   <div style="margin-top: 20px">
-    <input class="btn btn-success" type="submit" value="Save" />
-  </div></tr>
+  <td><input class="btn btn-success" style="margin-left: 100%;"type="submit" value="Save" />
+  </div></td></tr>
 </form>
 </table>
 {% endblock %}

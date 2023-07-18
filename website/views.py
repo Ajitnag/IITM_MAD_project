@@ -1,9 +1,7 @@
-# will contain all the routes/views related to application pages like homepage , user profile page etc.
-# so we create a Blueprint inside views...Blueprint will store diff views/routes. To connect this blueprint file with the flask application we go to init.py file and make connection there via importing this variable Views
-# and register our blueprint here with that flask application
+
 from flask import Blueprint, render_template, request, flash, session, url_for, redirect
 from flask_login import login_required, current_user
-from .model import *
+from .model import Store, Customer, Category, Product, Ecom, db
 
 
 Views = Blueprint("views", __name__)
@@ -15,11 +13,8 @@ Views = Blueprint("views", __name__)
 def Home():
     return render_template('landing_page.html')
 
-# if if didnot import flask_login module here on this page...then it wont work even though i am importing .auth....so to run functions and method on a page it is reqd to import module particualr on that page too.
 
 # login and Logout
-
-
 @login_required
 @Views.route('/manager_dash', methods=["GET", "POST"])
 def Dash_manager():
@@ -32,8 +27,8 @@ def Dash_manager():
         db.session.add(c)
         db.session.commit()
         categories = Category.query.all()
-        return render_template('dash_m.html', categories=categories, name=manager.username)
-    return render_template('dash_m.html', categories=categories, name=manager.username)
+        return render_template('dash_m.html', categories=categories, name=manager.username, id=manager_id)
+    return render_template('dash_m.html', categories=categories, name=manager.username, id=manager_id)
 
 
 @login_required
@@ -113,3 +108,27 @@ def Category_catalog(id):
 
 # #         if rate_unit:
 # #         if inventory:
+# @login_required
+# @Views.route('/delete/<int:id>', methods=['DELETE'])
+# def delete_account(id):
+#     if request.method == "DELETE":
+#         user_id = session['id']
+#         user_role = session['role']
+#         if user_role == 'Manager':
+#             user = Store.query.get(id)
+#             categories = Category.query.filter_by(managedBy_Id=id).all()
+#             for cat in categories:
+#                 products = Product.query.filter_by(
+#                     category_Id=cat.category_Id).all()
+#                 for pro in products:
+#                     db.session.delete(pro)
+#                     db.session.commit()
+#                 db.session.delete(cat)
+#                 db.session.commit()
+#             db.session.delete(user)
+#             db.session.commit()
+#         if user_role == 'Customer':
+#             user = Customer.query.get(user_id)
+#             db.session.delete(user)
+#             db.session.commit()
+#         return render_template('landing_page.html')
