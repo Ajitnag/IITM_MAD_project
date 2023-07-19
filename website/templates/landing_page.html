@@ -40,7 +40,7 @@
           <div class="navbar-nav">
             <a href="/">
               <i
-                class="bi bi-cart4"
+                class="bi bi-bag-heart-fill"
                 style="
                   font-size: 2rem;
                   -webkit-text-stroke-width: 1px;
@@ -48,8 +48,48 @@
                 "
               ></i>
             </a>
-            <a class="nav-item nav-link" href="/login">Login</a>
-            <a class="nav-item nav-link" href="/sign-up">Sign Up</a>
+            <a
+              class="nav-item nav-link"
+              style="font-size: 1.2em; color: yellowgreen"
+              href="/login"
+              ><svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="16"
+                height="16"
+                fill="currentColor"
+                class="bi bi-house-lock-fill"
+                viewBox="0 0 16 16"
+              >
+                <path
+                  d="M8.707 1.5a1 1 0 0 0-1.414 0L.646 8.146a.5.5 0 0 0 .708.708L8 2.207l6.646 6.647a.5.5 0 0 0 .708-.708L13 5.793V2.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5v1.293L8.707 1.5Z"
+                />
+                <path
+                  d="m8 3.293 4.72 4.72a3 3 0 0 0-2.709 3.248A2 2 0 0 0 9 13v2H3.5A1.5 1.5 0 0 1 2 13.5V9.293l6-6Z"
+                />
+                <path
+                  d="M13 9a2 2 0 0 0-2 2v1a1 1 0 0 0-1 1v2a1 1 0 0 0 1 1h4a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1v-1a2 2 0 0 0-2-2Zm0 1a1 1 0 0 1 1 1v1h-2v-1a1 1 0 0 1 1-1Z"
+                /></svg
+              >Login</a
+            >
+            <a
+              class="nav-item nav-link"
+              style="font-size: 1.2em; color: orangered"
+              href="/sign-up"
+              >Sign Up</a
+            >
+            <a
+              class="nav-item nav-link"
+              style="
+                color: rgb(241, 103, 241);
+                font-size: 1.35em;
+                text-decoration: none;
+                display: block;
+                width: 300px;
+                margin-left: 300px;
+                text-align: center;
+              "
+              >Parvarish Grocery Store</a
+            >
             <!-- <li class="nav-item dropdown"> -->
             <!-- <a
                 class="nav-link dropdown-toggle"
@@ -85,6 +125,29 @@
         </div>
       </div>
     </nav>
+    {% with messages = get_flashed_messages(with_categories = True) %} {% if
+    messages %} {% for category,message in messages%} {% if category == 'error'
+    %}
+    <div class="alert alert-danger" role="alert">
+      {{ message }}
+      <button
+        type="button"
+        class="btn-close"
+        data-bs-dismiss="alert"
+        aria-label="Close"
+      ></button>
+    </div>
+    {% else %}
+    <div class="alert alert-success" role="alert">
+      {{ message }}
+      <button
+        type="button"
+        class="btn-close"
+        data-bs-dismiss="alert"
+        aria-label="Close"
+      ></button>
+    </div>
+    {% endif %} {% endfor %} {% endif %} {% endwith %}
     <div class="container">{% block content %}{% endblock %}</div>
     <!-- Bootstrap JS -->
     <script

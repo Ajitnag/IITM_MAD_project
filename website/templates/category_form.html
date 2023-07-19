@@ -1,24 +1,62 @@
 {% extends "base.html" %} {% block title %}Add new Category{% endblock %}{%
 block logout %}
-<a
-  class="nav-item nav-link"
-  style="float: left; color: rgb(255, 215, 0)"
-  href="/logout"
-  >Logout</a
-><a
-  class="nav-item nav-link"
-  style="float: left; color: rgb(160, 82, 45)"
-  href="/delete"
-  >Delete MyAccount</a
->{% endblock %} {% block content %}
+<span id="logout" style="display: block inline-block; width: 600px">
+  <span style="margin: auto"
+    ><i
+      ><a
+        class="nav-item nav-link"
+        style="float: left; color: rgb(255, 215, 0)"
+        href="/logout"
+        style="display: block; width: 10%; margin-left: 0px"
+        ><svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="16"
+          height="16"
+          fill="currentColor"
+          class="bi bi-box-arrow-right"
+          viewBox="0 0 16 16"
+        >
+          <path
+            fill-rule="evenodd"
+            d="M10 12.5a.5.5 0 0 1-.5.5h-8a.5.5 0 0 1-.5-.5v-9a.5.5 0 0 1 .5-.5h8a.5.5 0 0 1 .5.5v2a.5.5 0 0 0 1 0v-2A1.5 1.5 0 0 0 9.5 2h-8A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h8a1.5 1.5 0 0 0 1.5-1.5v-2a.5.5 0 0 0-1 0v2z"
+          />
+          <path
+            fill-rule="evenodd"
+            d="M15.854 8.354a.5.5 0 0 0 0-.708l-3-3a.5.5 0 0 0-.708.708L14.293 7.5H5.5a.5.5 0 0 0 0 1h8.793l-2.147 2.146a.5.5 0 0 0 .708.708l3-3z"
+          /></svg
+        >Logout</a
+      ></i
+    ></span
+  ><span style="margin: auto"
+    ><a
+      class="nav-item nav-link"
+      style="
+        float: left;
+        color: rgb(160, 82, 45);
+        width: 60%;
+        margin-left: 20px;
+      "
+      href="/delete_account/{{id}}"
+      onclick="return confirm('Are you sure you want to delete the account?');"
+      >Delete MyAccount</a
+    ></span
+  ></span
+>
+{% endblock %} {% block content %}
 <h5>
-  <span style="float: left">{{ name }}'s Create Category</span>
+  <span style="float: left; font-size: 2vw">{{ name }}'s </span>
 </h5>
 <h6>
   <span style="float: right"
-    ><a href="/manager_dash">Go Back to Dashboard</a></span
+    ><button type="button" class="btn btn-dark">
+      <a
+        href="/manager_dash"
+        style="color: rgb(216, 249, 1); text-decoration: none; font-size: 1.5vw"
+        >Go Back</a
+      >
+    </button></span
   >
-  <span style="float: right"> |</span>
+  <!-- <span style="float: right"> |</span> -->
 </h6>
 
 <!-- <span style="float: right"><a href="/logout">Logout</a></span> -->
@@ -26,15 +64,24 @@ block logout %}
 <br />
 <hr />
 <div><h3>Add Category</h3></div>
+<br /><br />
 <form
-  action="/manager_dash/category_create"
+  action="{{ url_for('views.Add_category') }}"
   method="POST"
   style="text-align: center"
 >
-  <label for="cname">Category name:</label>
-  <input type="text" id="cname" name="cname1" accept="text/plain" /><br />
+  <strong
+    ><label for="cname" style="font-size: 1.5em">Category name:</label></strong
+  >
+  <input
+    type="text"
+    id="cname"
+    name="cname1"
+    accept="text/plain"
+    required
+  /><br />
   <div style="margin-top: 20px">
-    <input class="btn btn-success" type="submit" value="Save" />
+    <input class="btn btn-success btn-lg" type="submit" value="Save" />
   </div>
 </form>
 {% endblock %}

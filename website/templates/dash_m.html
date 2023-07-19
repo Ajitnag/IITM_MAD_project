@@ -1,25 +1,55 @@
 {% extends "base.html" %} {% block title %}Store Admin{% endblock %}{% block
 logout %}
-<a
-  class="nav-item nav-link"
-  style="float: left; color: rgb(255, 215, 0)"
-  href="/logout"
-  >Logout</a
-><a
-  class="nav-item nav-link"
-  style="float: left; color: rgb(160, 82, 45)"
-  href="/api/delete_admin/{{ id }}"
-  >Delete MyAccount</a
->{% endblock %} {% block content %}
+<span
+              id="logout"
+              style="display: block inline-block; width: 600px"
+            >
+              <span style="margin: auto"
+                ><i
+                  ><a
+                    class="nav-item nav-link"
+                    style="float: left; color: rgb(255, 215, 0)"
+                    href="/logout"
+                    style="display: block; width: 10%; margin-left: 0px"
+                    ><svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="16"
+                      height="16"
+                      fill="currentColor"
+                      class="bi bi-box-arrow-right"
+                      viewBox="0 0 16 16"
+                    >
+                      <path
+                        fill-rule="evenodd"
+                        d="M10 12.5a.5.5 0 0 1-.5.5h-8a.5.5 0 0 1-.5-.5v-9a.5.5 0 0 1 .5-.5h8a.5.5 0 0 1 .5.5v2a.5.5 0 0 0 1 0v-2A1.5 1.5 0 0 0 9.5 2h-8A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h8a1.5 1.5 0 0 0 1.5-1.5v-2a.5.5 0 0 0-1 0v2z"
+                      />
+                      <path
+                        fill-rule="evenodd"
+                        d="M15.854 8.354a.5.5 0 0 0 0-.708l-3-3a.5.5 0 0 0-.708.708L14.293 7.5H5.5a.5.5 0 0 0 0 1h8.793l-2.147 2.146a.5.5 0 0 0 .708.708l3-3z"
+                      /></svg
+                    >Logout</a
+                  ></i
+                ></span
+              ><span style="margin: auto"
+                ><a
+                  class="nav-item nav-link"
+                  style="
+                    float: left;
+                    color: rgb(160, 82, 45);
+                    width: 60%;
+                    margin-left: 20px;
+                  "
+                  href="/delete_account/{{id}}"
+                  onclick="return confirm('Are you sure you want to delete the account?');"
+                  >Delete MyAccount</a
+                ></span
+              ></span
+            >
+{% endblock %} {% block content %}
 <h5>
-  <span style="float: left">{{ name }}'s Dashboard</span>
+  <span style="float: left; font-size: 2vw">{{ name }}'s Dashboard</span>
 </h5>
-<h6>
-  <span style="float: right"
-    ><a href="/manager_dash/category_create">Add Category</a></span
-  >
-  <span style="float: right"> | </span>
-</h6>
+
 <!-- <span ><a href="">Summary</a></span> -->
 <!-- <span style="float: right"><a href="/logout">Logout</a></span> -->
 
@@ -32,28 +62,41 @@ logout %}
   <div class="alert alert-warning" role="alert">
     <p>None Categories, Added yet.</p>
     Press
-    <a
-      href="/manager_dash/category_create"
-      class="alert-link"
-      style="
-        background-color: green;
-        color: rgb(183, 226, 43);
-        padding: 10px 10px;
-      "
-      >'Add Category'</a
-    >
+    <button type="button" class="btn btn-dark btn-sm">
+      <a
+        href="{{url_for('views.Add_category')}}"
+        class="alert-link;text-decoration: none;"
+        style="
+          /* background-color: green; */
+          color: rgb(153, 43, 226);
+          padding: 10px 10px; text-decoration: none;
+        "
+        >'Add Category'</a
+      >
+    </button>
     to add a new category
   </div>
   <!-- <h5>No categories Defined. Press 'Add Category' to add a new category</h5> -->
   {% else %}
-  <table
+  <span style="float: left"
+  >
+    <a class="btn btn-dark"
+      style="color: rgb(216, 249, 1); font-size: 1.5vw;text-decoration: none;"
+      href="{{url_for('views.Add_category')}}"
+      >Add Category</a
+    >
+  </span
+>
+<br>
+<br>
+  <table class="table table-hover"
     style="
       border: 5px solid rgb(0, 255, 242);
 
-      background-color: #96d4d4;
+      /* background-color: #96d4d4; */
       width: 80%;
     "
-  >
+  ><thead class="thead-dark">
     <tr align="center" style="border-bottom: 2px solid black">
       <th
         style="
@@ -69,16 +112,17 @@ logout %}
           border-right: 3px solid rgb(3, 33, 31);
 
           padding: 10px 10px;
-          width: 40%;
+          width: 56%;
         "
       >
         Category Name
       </th>
 
-      <th style="float: right; padding: 10px 10px; width: 50%" colspan="2">
+      <th style=" padding: 10px 10px; width: 100%" colspan="2">
         Actions
       </th>
-    </tr>
+    </tr></thead>
+    <tbody>
 
     {% for variety in categories %}
     <tr align="center" style="width: 100%">
@@ -87,24 +131,25 @@ logout %}
       </td>
       <td
         style="width: 50%; padding: 5px; border-right: 3px solid rgb(3, 33, 31)"
+        
       >
-        <strong
-          ><a
-            style="color: rgb(130, 70, 174)"
+        <a class="btn btn-success"
+            style="color: rgb(16, 246, 227);text-decoration: none;font-size: 1.3em"
             href="/manager_dash/category_catalog/{{ variety.category_Id }}"
             >{{ variety.category_Name }}</a
-          ></strong
-        >
+          ></button>
       </td>
-      <td style="font-size: 0.9em">
-        <a href="/manager_dash/category_create/{{ variety.category_Id }}"
+      <td  >
+        
+        <strong><a class="btn btn-info btn-sm" style="width:41%;color:rgb(246, 5, 218);font-size: 1em" href="/manager_dash/category_create/{{ variety.category_Id }}" style="text-decoration: none;"
           >Add Product</a
-        >
+        ></strong>
       </td>
-      <td style="font-size: 0.9em">
-        <a style="color: red" href="">Delete category</a>
-      </td>
-    </tr>
+      <td >
+        <!-- <button type="button" class="btn btn-warning btn-sm"><strong> -->
+      <strong><a class="btn btn-warning btn-sm"  onclick="return confirm('Are you sure to delete?')" style="width:100%; color: red;text-decoration: none;font-size: 1em" href="/manager_dash/delete_category/{{ variety.category_Id }}">Delete</a></strong></button>
+      </td></tr>
+    </tr></tbody>
     {% endfor %}
   </table>
   {% endif %}

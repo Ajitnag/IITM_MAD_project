@@ -14,6 +14,21 @@
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css"
     />
+    <script
+      src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+      integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+      integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+      integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+      crossorigin="anonymous"
+    ></script>
 
     <!-- Template inheritance - change content in child pages via blocks . These blocks can be overwritten or overide in another template and the change made there will go inside this block only...title is the name or identifier for this block just like selectors in CSS-->
     <title>{% block title %}{% endblock %}</title>
@@ -21,10 +36,44 @@
       input[type="number"] {
         width: 100px;
       }
+      .navbar {
+        margin-bottom: 0;
+        border-radius: 0;
+      }
       .center {
         margin-left: auto;
         margin-right: auto;
         width: 40%;
+      }
+
+      .carousel-inner img {
+        /* Set width to 100% */
+        margin: auto;
+        min-height: 200px;
+        width: 100%;
+        height: 360px;
+      }
+      html {
+        scroll-behavior: smooth;
+      }
+      body {
+        height: 1000px; /* Used to enable scrolling */
+        background: linear-gradient(
+          35deg,
+          #e2ecec 0%,
+          #d789d7 51%,
+          #eef07d 85%
+        );
+      }
+      /* #e2ecec 0%,
+          #59f9c9 51%,
+          #2cb5e8 85% */
+
+      /* Hide the carousel text when the screen is less than 600 pixels wide */
+      @media (max-width: 600px) {
+        .carousel-caption {
+          display: none;
+        }
       }
     </style>
   </head>
@@ -44,14 +93,38 @@
           <div class="navbar-nav">
             <a href="/">
               <i
-                class="bi bi-cart4"
+                class="bi bi-bag-heart-fill"
                 style="
                   font-size: 2rem;
                   -webkit-text-stroke-width: 1px;
                   color: rgb(241, 103, 241);
+                  width: 10%;
                 "
-              ></i> </a
-            ><span id="logout"> {% block logout %}{% endblock %}</span>
+              ></i>
+            </a>
+            <a
+              href="/"
+              class="nav-item nav-link"
+              style="
+                color: rgb(241, 103, 241);
+                font-size: 1.35em;
+                text-decoration: none;
+                display: block;
+                width: 25%;
+                margin-left: 0px;
+              "
+              >Parvarish Grocery Store</a
+            ><span
+              id="logout"
+              style="display: block inline-block; width: 600px"
+            >
+              {% block logout %}{% endblock %}</span
+            ><span
+              id="logout"
+              style="display: block inline-block; width: 600px"
+            >
+              {% block cart %}{% endblock %}</span
+            >
             <!-- <a class="nav-item nav-link" href="/login">Login</a>
             <a class="nav-item nav-link" href="/sign-up">Sign Up</a> -->
           </div>

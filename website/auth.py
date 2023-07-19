@@ -1,8 +1,8 @@
 
 from flask import Blueprint, render_template, redirect, url_for, request, flash, session, current_app as App
-from website.model import *
+from website.model import Store, Customer, Category, Product, Ecom, db
 from . import login_manager
-from .views import *
+from .views import Views
 from flask_login import login_user, logout_user, login_required, current_user
 from werkzeug.security import generate_password_hash, check_password_hash
 

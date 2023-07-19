@@ -2,16 +2,20 @@
 content %}
 
 <form method="POST" accept-charset="utf-8">
-  <h2 align="center" style ="color:rgb(206, 241, 103); background-color:Tomato;" >Sign Up</h2>
+  <h2 align="center" style ="color:rgb(206, 241, 103); " >Sign Up</h2>
   <div class="form-group">
     <label for="email">Email Address</label>
     <input
-      type="text"
+      type="email"
       id="email"
       name="email"
-      class="form-control"
+      class="form-control is valid"
       placeholder="name@example.com"
-    />
+    /></form>
+    <!-- <form class="form-floating">
+      <input type="email" class="form-control is-invalid" id="email" placeholder="name@example.com" >
+      <label for="email">Invalid input</label>
+    </form> -->
     <label for="username">Username</label>
     <input
       type="text"

@@ -1,13 +1,13 @@
 {% extends "base.html" %} {% block title %}Sign Up{% endblock %} {% block
   content %}
 <!-- will send post request with payload to current page url we are on -->
-<form method="POST" accept-charset="utf-8">
-  <h2 align="center" style ="color:rgb(240, 60, 16); background-color:violet;">Login</h2>
+<form method="POST" accept-charset="utf-8"><em>
+  <h2 align="center" style ="color:rgb(13, 13, 13); ">Login</h2></em>
   <div class="form-group">
     <label for="email1">Email Address</label>
     <!-- name field here is the key to access data posted here in the form -->
     <input
-      type="text"
+      type="email"
       id="email1"
       name="email"
       class="form-control"

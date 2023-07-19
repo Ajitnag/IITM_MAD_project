@@ -1,0 +1,90 @@
+{% extends "base.html" %} {% block title %}Add New Product{% endblock %}{% block
+  logout %}
+  <a
+    class="nav-item nav-link"
+    style="float: left; color: rgb(255, 215, 0)"
+    href="/logout"
+    >Logout</a
+  ><a
+    class="nav-item nav-link"
+    style="float: left; color: rgb(160, 82, 45)"
+    href="/delete"
+    >Delete MyAccount</a
+  >{% endblock %} {% block content %}
+  <h5>
+    <span style="float: left" style="font-size:2vw;">{{ name }}'s Product </span>
+  </h5>
+  <h6>
+    <span style="float: right"
+      ><button type="button" class="btn btn-info"><a href="{{ url_for('views.Dash_manager') }}" style="color: rgb(216, 249, 1);text-decoration: none;font-size:1.5vw;">Go Back</a></button></span
+    >
+    <!-- <span style="float: right" style="font-size: 10px">I</span> -->
+  </h6>
+  
+  <!-- <span style="float: right"><a href="/logout">Logout</a></span> -->
+  
+  <br />
+  <hr />
+  
+  <form
+    action="/manager_dash/update_item/{{ product_id}}"
+    method="POST"
+    
+    style="text-align: center"
+  >
+  <!-- style="margin: auto; padding: 30px 30px" -->
+  <table class="center">
+    <tr colspan="2">
+    <div align="center"style="padding: 5px;">
+      <td><strong><label for="pname" align="center" style="font-size:1.9vw;">Update name:</label></strong></td>
+      <td><input type="text" id="pname" name="pname1"   value="none" accept="utf-8"/></td><br />
+    </div></tr>
+    <!-- style="width:30%;margin: auto;padding: 20px 40px" -->
+    <tr colspan="2"><div class="input-group mb-3"  align = "center">
+    <td><div class="input-group-prepend" style="text-align: center;padding:1px 10px;">
+      <!-- style="padding: 1px 27px " -->
+        <strong><label for="mname" style="font-size:2vw;" >Update Metric:</label></strong>
+        <!-- <input type="text" id="mname" accept="utf-8" size="5" />   -->
+      </div></td><td>
+      <select class="custom-select" style="font-size:1.7vw" id="mname" name="mname1"  required>
+        <option selected value='' >unit</option>
+        <option value="Kg">Kg</option>
+        <option value="Litre">Litre</option>
+        <option value="Metre">Metre</option>
+        <option value="gram">gram</option>
+        <option value="Dozen">Dozen</option>  
+      </select>
+    </div></td></tr>
+    <!-- style="width:30%;margin: auto;padding: 20px 40px" -->
+    <tr colspan="2"><div class="input-group mb-3" align="center"  style="padding:1px 10px;">
+      <td><div class="input-group-prepend">
+        <!-- style="width:50%;padding: 10px 33px" -->
+      <strong><label for="rname" style="font-size:2vw" >Update Rate:</label></strong></td>
+        <!-- style="margin: auto;padding: 2px 3px" -->
+      <td><input type="number" id="rname" name="rname1"  value="none"  />  
+      </div>
+      <select class="custom-select" style="font-size:1.7vw;" id="pname" name="prname1" required >
+        <option selected value='' >per unit</option>
+        <option value="Rs/Kg">Rs/Kg</option>
+        <option value="Rs/Litre">Rs/Litre</option>
+        <option value="Rs/Metre">Rs/Metre</option>
+        <option value="Rs/gram">Rs/gram</option>
+        <option value="Rs/Dozen">Rs/Dozen</option>  
+      </select></td>
+    </div></tr>
+    <tr colspan="2">
+      <!-- style="width:100%;margin: auto;padding: 20px 40px" -->
+    <div align="center" style="padding:1px 10px;">
+      <!-- style="width:10%;" -->
+    <td><strong><label for="sname"  style="font-size:2vw">Update Total Stock:</label></strong></td> 
+    <!-- style="width:10%;" -->
+    <td><input type="number"   id="sname" name="sname1"  value="none" accept="utf-8" /></td><br />
+    </div>
+    <tr>
+    <div style="margin-top: 20px">
+    <td><input class="btn btn-success btn-lg" style="margin-left: 100%;"type="submit" value="Save" />
+    </div></td></tr>
+  </form>
+  </table>
+  {% endblock %}
+  

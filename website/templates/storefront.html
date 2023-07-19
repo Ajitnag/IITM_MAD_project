@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- Bootstrap -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM"
+      crossorigin="anonymous"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css"
+    />
+    <script
+      src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+      integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+      integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+      integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+      crossorigin="anonymous"
+    ></script>
+
+    <!-- Template inheritance - change content in child pages via blocks . These blocks can be overwritten or overide in another template and the change made there will go inside this block only...title is the name or identifier for this block just like selectors in CSS-->
+    <title>Store Front</title>
+    <style>
+      input[type="number"] {
+        width: 100px;
+      }
+      .navbar {
+        margin-bottom: 0;
+        border-radius: 0;
+      }
+      .center {
+        margin-left: auto;
+        margin-right: auto;
+        width: 40%;
+      }
+
+      .carousel-inner img {
+        /* Set width to 100% */
+        margin: auto;
+        min-height: 200px;
+        width: 100%;
+        height: 360px;
+      }
+      html {
+        scroll-behavior: smooth;
+      }
+      body {
+        height: 2000px; /* Used to enable scrolling */
+        background: linear-gradient(
+          65deg,
+          #e2ecec 0%,
+          #59f9c9 51%,
+          #2cb5e8 85% 
+        );
+      }
+
+      /* Hide the carousel text when the screen is less than 600 pixels wide */
+      @media (max-width: 600px) {
+        .carousel-caption {
+          display: none;
+        }
+      }
+    </style>
+  </head>
+  <!-- div will be place where contents of different pages will go and they can inherit rest of html from base.html but div is made as block via jinja to change as we wish for diff pages -->
+  <body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+      <div class="container-fluid">
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbar"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbar">
+          <div class="navbar-nav">
+            <a href="/">
+              <i
+                class="bi bi-bag-heart-fill"
+                style="
+                  font-size: 2rem;
+                  -webkit-text-stroke-width: 1px;
+                  color: rgb(241, 103, 241);
+                  width: 10%;
+                "
+              ></i>
+            </a>
+            <a
+              href="/"
+              class="nav-item nav-link"
+              style="
+                color: rgb(241, 103, 241);
+                font-size: 1.35em;
+                text-decoration: none;
+                display: block;
+                width: 25%;
+                margin-left: 0px;
+              "
+              >Parvarish Grocery Store</a
+            ><span
+              id="logout"
+              style="display: block inline-block; width: 600px"
+            >
+              <span
+                id="logout"
+                style="display: block inline-block; width: 600px"
+              >
+                <span style="margin: auto"
+                  ><i
+                    ><a
+                      class="nav-item nav-link"
+                      style="
+                        float: left;
+                        color: rgb(255, 215, 0);
+                        font-size: 1.2rem;
+                        display: block;
+                        width: 20%;
+                        margin-left: 0px;
+                      "
+                      href="/logout"
+                      ><svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="16"
+                        height="16"
+                        fill="currentColor"
+                        class="bi bi-box-arrow-right"
+                        viewBox="0 0 16 16"
+                      >
+                        <path
+                          fill-rule="evenodd"
+                          d="M10 12.5a.5.5 0 0 1-.5.5h-8a.5.5 0 0 1-.5-.5v-9a.5.5 0 0 1 .5-.5h8a.5.5 0 0 1 .5.5v2a.5.5 0 0 0 1 0v-2A1.5 1.5 0 0 0 9.5 2h-8A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h8a1.5 1.5 0 0 0 1.5-1.5v-2a.5.5 0 0 0-1 0v2z"
+                        />
+                        <path
+                          fill-rule="evenodd"
+                          d="M15.854 8.354a.5.5 0 0 0 0-.708l-3-3a.5.5 0 0 0-.708.708L14.293 7.5H5.5a.5.5 0 0 0 0 1h8.793l-2.147 2.146a.5.5 0 0 0 .708.708l3-3z"
+                        /></svg
+                      >Logout</a
+                    ></i
+                  ></span
+                ><span style="margin: auto"
+                  ><a
+                    class="nav-item nav-link"
+                    style="
+                      float: left;
+                      color: rgb(160, 82, 45);
+                      width: 50%;
+                      margin-left: 20px;
+                      font-size: 1.2rem;
+                    "
+                    href="/delete_account/{{id}}"
+                    onclick="return confirm('Are you sure you want to delete the account?');"
+                    >Delete MyAccount</a
+                  ></span
+                ></span
+              ></span
+            ><span
+              id="logout"
+              style="display: block inline-block; width: 600px"
+            >
+            <
+            span style="margin: auto"
+             ><a
+               class="nav-item nav-link"
+               style="
+                 float: right;
+                 color: rgb(34, 2, 247);
+                 width: 40%;
+                 font-size: 1.5rem;
+                 margin-right: 20px;
+               "
+               href="/store_cart/{{id}}"
+               >Cart<i
+                 class="bi bi-cart4"
+                 style="
+                   font-size: 1.5rem;
+                   -webkit-text-stroke-width: 1px;
+                   color: rgb(103, 241, 133);
+                   width: 10%;
+                 "
+               ></i
+               ><span
+                 STYLE="font-family:'Verdana';margin-left :5px;"
+                 class="badge badge-light"
+               ></span></a
+           ></span></span
+            >
+            <!-- <a class="nav-item nav-link" href="/login">Login</a>
+            <a class="nav-item nav-link" href="/sign-up">Sign Up</a> -->
+          </div>
+        </div>
+      </div>
+    </nav>
+    <!-- to display messages from the flash module...will display error mssg in browser screen...with categories will tell categories of these messages -->
+    {% with messages = get_flashed_messages(with_categories = True) %} {% if
+    messages %} {% for category,message in messages%} {% if category == 'error'
+    %}
+    <div class="alert alert-danger" role="alert">
+      {{ message }}
+      <button
+        type="button"
+        class="btn-close"
+        data-bs-dismiss="alert"
+        aria-label="Close"
+      ></button>
+    </div>
+    {% else %}
+    <div class="alert alert-success" role="alert">
+      {{ message }}
+      <button
+        type="button"
+        class="btn-close"
+        data-bs-dismiss="alert"
+        aria-label="Close"
+      ></button>
+    </div>
+
+    {% endif %} {% endfor %} {% endif %} {% endwith %}
+    <!-- container class gives padding to div block -->
+    <div class="container" id="content"><br />
+        <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
+          <div class="carousel-inner">
+            <div class="carousel-item active">
+              <img class="d-block w-100" src="{{ url_for('static', filename='carousel_111.png') }}" alt="First slide" width="50" height="150" >
+            </div>
+            <div class="carousel-item">
+              <img class="d-block w-100" src="{{ url_for('static', filename='carousel_2.png') }}" alt="Second slide">
+            </div>
+            <div class="carousel-item">
+              <img class="d-block w-100" src="{{ url_for('static', filename='carousel_1.png') }}" alt="Third slide">
+            </div>
+            <div class="carousel-item">
+              <img class="d-block w-100" src="{{ url_for('static', filename='carousel_11.png') }}" alt="Fourth slide">
+            </div>
+          </div>
+          <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span><strong>
+            <span class="sr-only visually-hidden" style="color:rgb(97, 97, 247);font-size:large">Previous</span></strong>
+          </a>
+          <a class="carousel-control-next" href="#carouselExampleIndicators" role="button"  data-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span><strong>
+            <span class="sr-only visually-hidden" style="color:rgb(97, 97, 247);font-size:large">Next</span></strong>
+          </a>
+        </div>
+        <!-- <div>
+          <!-- {% if categories|length == 0 %}
+          <h1>No Offerings! Business is Shut Down for today.</h1>
+          {% else %} {% endif %}-->
+          <div class="container">
+            <div class="row align-items-start">
+              <div class="col">
+                One of three columns
+              </div>
+              <div class="col">
+                One of three columns
+              </div>
+              <div class="col">
+                One of three columns
+              </div>
+            </div>
+            <div class="row align-items-center">
+              <div class="col">
+                One of three columns
+              </div>
+              <div class="col">
+                One of three columns
+              </div>
+              <div class="col">
+                One of three columns
+              </div>
+            </div>
+            <div class="row align-items-end">
+              <div class="col">
+                One of three columns
+              </div>
+              <div class="col">
+                One of three columns
+              </div>
+              <div class="col">
+                One of three columns
+              </div>
+            </div>
+          </div></div>
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz"
+      crossorigin="anonymous"
+    ></script>
+  </body>
+</html>

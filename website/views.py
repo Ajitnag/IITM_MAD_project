@@ -1,5 +1,5 @@
 
-from flask import Blueprint, render_template, request, flash, session, url_for, redirect
+from flask import Flask, Blueprint, render_template, request, flash, session, url_for, redirect
 from flask_login import login_required, current_user
 from .model import Store, Customer, Category, Product, Ecom, db
 
@@ -12,6 +12,13 @@ Views = Blueprint("views", __name__)
 @Views.route('/')
 def Home():
     return render_template('landing_page.html')
+
+
+# @login_required
+# @Views.route('/customer_dash')
+# @Views.route('/store')
+# def Store_front():
+#     return render_template('storefront.html')
 
 
 # login and Logout
@@ -36,7 +43,7 @@ def Dash_manager():
 def Dash_customer():
     customer_id = session['id']
     customer = Customer.query.get(customer_id)
-    return render_template('dash_c.html', name=customer.username)
+    return render_template('storefront.html', name=customer.username)
 
 
 # Manager's DashBoard module
@@ -91,7 +98,12 @@ def Category_catalog(id):
     manager = Store.query.get(manager_id)
     category = Category.query.get(id)
     products = category.catalog
-    return render_template('category_catalog.html', name=category.category_Name, category_id=category.category_Id, products=products)
+    produce = Product.query.filter(Product.category_Id == id).all()
+    m = 0
+    for pro in produce:
+        if pro.stock > 0:
+            m += 1
+    return render_template('category_catalog.html', name=category.category_Name, category_id=category.category_Id, products=products, product_instock=m)
 
 
 # @login_required
@@ -108,27 +120,115 @@ def Category_catalog(id):
 
 # #         if rate_unit:
 # #         if inventory:
-# @login_required
-# @Views.route('/delete/<int:id>', methods=['DELETE'])
-# def delete_account(id):
-#     if request.method == "DELETE":
-#         user_id = session['id']
-#         user_role = session['role']
-#         if user_role == 'Manager':
-#             user = Store.query.get(id)
-#             categories = Category.query.filter_by(managedBy_Id=id).all()
-#             for cat in categories:
-#                 products = Product.query.filter_by(
-#                     category_Id=cat.category_Id).all()
-#                 for pro in products:
-#                     db.session.delete(pro)
-#                     db.session.commit()
-#                 db.session.delete(cat)
-#                 db.session.commit()
-#             db.session.delete(user)
-#             db.session.commit()
-#         if user_role == 'Customer':
-#             user = Customer.query.get(user_id)
-#             db.session.delete(user)
-#             db.session.commit()
-#         return render_template('landing_page.html')
+
+@login_required
+@Views.route('/delete_account/<int:id>')
+def delete_account(id):
+    user_id = session['id']
+    user_role = session['role']
+    if user_role == 'Manager':
+        user = Store.query.get(id)
+        categories = Category.query.filter_by(managedBy_Id=id).all()
+        for cat in categories:
+            products = Product.query.filter_by(
+                category_Id=cat.category_Id).all()
+            for pro in products:
+                db.session.delete(pro)
+                db.session.commit()
+            db.session.delete(cat)
+            db.session.commit()
+        db.session.delete(user)
+        db.session.commit()
+    if user_role == 'Customer':
+        user = Customer.query.get(user_id)
+        db.session.delete(user)
+        db.session.commit()
+    flash("Account Deleted.", category='error')
+    return redirect(url_for('views.Home'))
+
+
+@login_required
+@Views.route('/manager_dash/delete_category/<int:id>')
+def delete_category(id):
+    user_id = session['id']
+    user_role = session['role']
+    if user_role == 'Manager':
+        category = Category.query.get(id)
+        products = Product.query.filter_by(category_Id=id).all()
+        for pro in products:
+            db.session.delete(pro)
+            db.session.commit()
+        db.session.delete(category)
+        db.session.commit()
+        flash("Category Deleted.")
+    return redirect(url_for('views.Dash_manager'))
+
+
+@login_required
+@Views.route('/manager_dash/delete_product/<int:id>')
+def delete_product(id):
+    user_id = session['id']
+    user_role = session['role']
+
+    if user_role == 'Manager':
+        product = Product.query.get(id)
+
+        # products = Product.query.filter_by(category_Id=id).all()
+        # for pro in products:
+        #     db.session.delete(pro)
+        #     db.session.commit()
+        db.session.delete(product)
+        db.session.commit()
+        flash("Product Removed.")
+    return redirect(url_for('views.Dash_manager'))
+
+
+@login_required
+@Views.route('/manager_dash/update_item/<int:id>', methods=["GET", "PUT"])
+def update_item(id):
+    user_role = session['role']
+    product_1 = Product.query.get(id)
+    category_id = product_1.category_Id
+    category = Category.query.get(category_id)
+    products = category.catalog
+
+    if user_role == 'Manager':
+        if request.method == 'POST':
+            name = request.form.get('pname1')
+            metric = request.form.get('mname1')
+            rate = request.form.get('rname1')
+            rate_unit = request.form.get('prname1')
+            inventory = request.form.get('sname1')
+
+            product_1.product_Name = name
+            product_1.metric_Unit = metric
+            product_1.rate_perUnit = rate
+            product_1.rate = rate_unit
+            product_1.stock = inventory
+            db.session.commit()
+            return render_template('category_catalog.html', name=category.category_Name, category_id=category.category_Id, products=products)
+    return render_template('product_add.html', name=category.category_Name, variable=category_id)
+    # p = Product(product_Name=name, metric_Unit=metric, rate=rate,
+    #             rate_perUnit=rate_unit, stock=inventory, category_Id=category_id)
+    # db.session.update(p)
+    # db.session.commit()
+    # if name is not None:
+    #     product = Product.query.get(id)
+    #     product.product_Name = name
+    #     db.session.commit()
+    # if metric is not None:
+    #     product = Product.query.get(id)
+    #     product.metric_Unit = metric
+    #     db.session.commit()
+    # if rate_unit is not None:
+    #     product = Product.query.get(id)
+    #     product.rate_perUnit = rate
+    #     db.session.commit()
+    # if rate is not None:
+    #     product = Product.query.get(id)
+    #     product.rate = rate_unit
+    #     db.session.commit()
+    # if stock is not None:
+    #     product = Product.query.get(id)
+    #     product.stock = stock
+    #     db.session.commit()
