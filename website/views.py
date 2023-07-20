@@ -14,11 +14,18 @@ def Home():
     return render_template('landing_page.html')
 
 
-# @login_required
-# @Views.route('/customer_dash')
-# @Views.route('/store')
-# def Store_front():
-#     return render_template('storefront.html')
+@login_required
+@Views.route('/customer_dash')
+@Views.route('/store')
+def Store_front():
+    user_id = session['id']
+    user_role = session['role']
+    if user_role == 'Customer':
+        customer = Customer.query.get(user_id)
+        categories = Category.query.all()
+        return render_template('storefront.html', categories=categories, name=customer.username, id=customer.id)
+
+    # return render_template('storefront.html')
 
 
 # login and Logout
@@ -184,7 +191,7 @@ def delete_product(id):
 
 
 @login_required
-@Views.route('/manager_dash/update_item/<int:id>', methods=["GET", "PUT"])
+@Views.route('/manager_dash/update_item/<int:id>', methods=["GET", "POST"])
 def update_item(id):
     user_role = session['role']
     product_1 = Product.query.get(id)
@@ -194,20 +201,43 @@ def update_item(id):
 
     if user_role == 'Manager':
         if request.method == 'POST':
-            name = request.form.get('pname1')
-            metric = request.form.get('mname1')
-            rate = request.form.get('rname1')
-            rate_unit = request.form.get('prname1')
-            inventory = request.form.get('sname1')
+            m = 0
+            name = request.form.get('p1name1')
+            metric = request.form.get('m1name1')
+            rate = request.form.get('r1name1')
+            rate_unit = request.form.get('pr1name1')
+            inventory = request.form.get('s1name1')
+            # product_2 = Product.query.get(id)
+            # print(product_1)
+            produce = Product.query.filter(
+                Product.category_Id == category_id).all()
 
-            product_1.product_Name = name
-            product_1.metric_Unit = metric
-            product_1.rate_perUnit = rate
-            product_1.rate = rate_unit
-            product_1.stock = inventory
-            db.session.commit()
-            return render_template('category_catalog.html', name=category.category_Name, category_id=category.category_Id, products=products)
-    return render_template('product_add.html', name=category.category_Name, variable=category_id)
+            if not name == "":
+                product = Product.query.get(id)
+                product.product_Name = name
+                db.session.commit()
+            if metric:
+                product = Product.query.get(id)
+                product.metric_Unit = metric
+                db.session.commit()
+            if rate_unit:
+                product = Product.query.get(id)
+                product.rate_perUnit = rate_unit
+                db.session.commit()
+            if not rate == "":
+                product = Product.query.get(id)
+                product.rate = rate
+                db.session.commit()
+            if not inventory == "":
+                product = Product.query.get(id)
+                product.stock = inventory
+                db.session.commit()
+
+            for pro in produce:
+                if pro.stock > 0:
+                    m += 1
+            return render_template('category_catalog.html', name=category.category_Name, category_id=category_id, products=products, product_instock=m)
+    return render_template('update_item.html', name=category.category_Name, variable=category_id, product_id=id)
     # p = Product(product_Name=name, metric_Unit=metric, rate=rate,
     #             rate_perUnit=rate_unit, stock=inventory, category_Id=category_id)
     # db.session.update(p)

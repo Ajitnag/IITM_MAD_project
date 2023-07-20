@@ -72,7 +72,7 @@ logout %}
   <tr colspan="2">
   <div align="center"style="padding: 5px;">
     <td><strong><label for="pname" align="center" style="font-size:1.9vw;">Product name:</label></strong></td>
-    <td><input type="text" id="pname" name="pname1" accept="utf-8" required/></td><br />
+    <td><input type="text" id="pname" name="pname1" value="" accept="utf-8" required/></td><br />
   </div></tr>
   <!-- style="width:30%;margin: auto;padding: 20px 40px" -->
   <tr colspan="2"><div class="input-group mb-3"  align="center"  align = "center">
@@ -82,7 +82,7 @@ logout %}
       <!-- <input type="text" id="mname" accept="utf-8" size="5" />   -->
     </div></td><td>
     <select class="custom-select" style="font-size:1.7vw" id="mname" name="mname1" required>
-      <option selected value="">unit</option>
+      <option selected value="none">unit</option>
       <option value="Kg">Kg</option>
       <option value="Litre">Litre</option>
       <option value="Metre">Metre</option>
@@ -96,10 +96,10 @@ logout %}
       <!-- style="width:50%;padding: 10px 33px" -->
     <strong><label for="rname" style="font-size:2vw" >Rate:</label></strong></td>
       <!-- style="margin: auto;padding: 2px 3px" -->
-    <td><input type="number" id="rname" name="rname1" required   />  
+    <td><input type="number" id="rname" name="rname1" value="" required   />  
     </div>
     <select class="custom-select" style="font-size:1.7vw;" id="pname" name="prname1" required>
-      <option selected value="">per unit</option>
+      <option selected value="none">per unit</option>
       <option value="Rs/Kg">Rs/Kg</option>
       <option value="Rs/Litre">Rs/Litre</option>
       <option value="Rs/Metre">Rs/Metre</option>
@@ -113,7 +113,7 @@ logout %}
     <!-- style="width:10%;" -->
   <td><strong><label for="sname"  style="font-size:2vw">Total Stock:</label></strong></td> 
   <!-- style="width:10%;" -->
-  <td><input type="number"   id="sname" name="sname1" accept="utf-8" required/></td><br />
+  <td><input type="number"  id="sname" name="sname1" value="" accept="utf-8" required/></td><br />
   </div>
   <tr>
   <div style="margin-top: 20px">

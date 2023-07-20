@@ -16,7 +16,7 @@
   </h5>
   <h6>
     <span style="float: right"
-      ><button type="button" class="btn btn-info"><a href="{{ url_for('views.Dash_manager') }}" style="color: rgb(216, 249, 1);text-decoration: none;font-size:1.5vw;">Go Back</a></button></span
+      ><button type="button" class="btn btn-dark"><a href="{{ url_for('views.Dash_manager') }}" style="color: rgb(216, 249, 1);text-decoration: none;font-size:1.5vw;">Dashboard</a></button></span
     >
     <!-- <span style="float: right" style="font-size: 10px">I</span> -->
   </h6>
@@ -25,7 +25,7 @@
   
   <br />
   <hr />
-  
+  <div><h4 style="font-size:2.5vw;">Update Item</h4></div>
   <form
     action="/manager_dash/update_item/{{ product_id}}"
     method="POST"
@@ -36,8 +36,8 @@
   <table class="center">
     <tr colspan="2">
     <div align="center"style="padding: 5px;">
-      <td><strong><label for="pname" align="center" style="font-size:1.9vw;">Update name:</label></strong></td>
-      <td><input type="text" id="pname" name="pname1"   value="none" accept="utf-8"/></td><br />
+      <td><strong><label for="pname" align="center" style="font-size:2.1vw;">Update Name:</label></strong></td>
+      <td><input type="text" id="pname" name="p1name1" value='' accept="utf-8"/></td><br />
     </div></tr>
     <!-- style="width:30%;margin: auto;padding: 20px 40px" -->
     <tr colspan="2"><div class="input-group mb-3"  align = "center">
@@ -46,8 +46,8 @@
         <strong><label for="mname" style="font-size:2vw;" >Update Metric:</label></strong>
         <!-- <input type="text" id="mname" accept="utf-8" size="5" />   -->
       </div></td><td>
-      <select class="custom-select" style="font-size:1.7vw" id="mname" name="mname1"  required>
-        <option selected value='' >unit</option>
+      <select class="custom-select" style="font-size:1.7vw" id="mname" name="m1name1"  >
+        <option selected value="">unit</option>
         <option value="Kg">Kg</option>
         <option value="Litre">Litre</option>
         <option value="Metre">Metre</option>
@@ -56,15 +56,15 @@
       </select>
     </div></td></tr>
     <!-- style="width:30%;margin: auto;padding: 20px 40px" -->
-    <tr colspan="2"><div class="input-group mb-3" align="center"  style="padding:1px 10px;">
+    <tr colspan="3"><div class="input-group mb-3" align="center"  style="padding:10px 10px;">
       <td><div class="input-group-prepend">
         <!-- style="width:50%;padding: 10px 33px" -->
       <strong><label for="rname" style="font-size:2vw" >Update Rate:</label></strong></td>
         <!-- style="margin: auto;padding: 2px 3px" -->
-      <td><input type="number" id="rname" name="rname1"  value="none"  />  
+      <td><input type="number" id="rname" name="r1name1"  value=''/>  
       </div>
-      <select class="custom-select" style="font-size:1.7vw;" id="pname" name="prname1" required >
-        <option selected value='' >per unit</option>
+      <select class="custom-select" style="font-size:1.7vw;" id="pname" name="pr1name1"  >
+        <option selected value="">per unit</option>
         <option value="Rs/Kg">Rs/Kg</option>
         <option value="Rs/Litre">Rs/Litre</option>
         <option value="Rs/Metre">Rs/Metre</option>
@@ -78,7 +78,7 @@
       <!-- style="width:10%;" -->
     <td><strong><label for="sname"  style="font-size:2vw">Update Total Stock:</label></strong></td> 
     <!-- style="width:10%;" -->
-    <td><input type="number"   id="sname" name="sname1"  value="none" accept="utf-8" /></td><br />
+    <td><input type="number"   id="sname" name="s1name1" value = '' accept="utf-8" /></td><br />
     </div>
     <tr>
     <div style="margin-top: 20px">
