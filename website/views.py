@@ -23,9 +23,117 @@ def Store_front():
     if user_role == 'Customer':
         customer = Customer.query.get(user_id)
         categories = Category.query.all()
-        return render_template('storefront.html', categories=categories, name=customer.username, id=customer.id)
 
+        return render_template('storefront.html', categories=categories, name=customer.username, id=customer.id)
+    if user_role == 'Manager':
+        manager = Store.query.get(user_id)
+        categories = Category.query.all()
+        return render_template('storefront.html', categories=categories, name=manager.username, id=manager.id)
     # return render_template('storefront.html')
+
+
+# @login_required
+# @Views.route('/store/add_to_cart', methods=['POST'])
+# def Add_to_cart():
+#     # instantiate to store cart items in browser/client cookie
+
+#     if request.method == 'POST':
+#         if 'cart' not in session:
+#             session['cart'] = []
+#         product_id = request.form.get('product_id')
+#         qty = request.form.get('qty')
+#         # kyunki fixed value hai toh string type mai store hogi issi liye '' but variable is not string toh not ''
+#         session['cart'].append({'id': product_id, 'quantity': qty})
+#         # cuz flask cant detect changes to session when u are using mutable object like list
+#         session.modified = True
+#         product = Product.query.filter_by(product_id=product_id)
+#         category = product.category_Id
+#         print(session['cart'])
+#         flash("Add3d to Cart.Press Cart icon to view Cart.")
+
+        # return redirect(url_for('views.Store_product', category=category))
+
+
+@login_required
+@Views.route('/store/cart')
+def Cart():
+    products_cart = []
+
+# mai baap block hai yeh.....issne jaan nikal di...
+    for i, item in enumerate(session['cart']):
+        product = Product.query.filter(
+            Product.product_id == int(item['id'])).first()
+        category = Category.query.filter(
+            Category.category_Id == product.category_Id).first()
+        category_name = category.category_Name
+        quantity = int(item['quantity'])
+        total = product.rate * quantity
+
+        products_cart.append({'id': int(product.product_id), 'name': product.product_Name,
+                              'price': product.rate, 'quantity': quantity, 'total': total, 'category': category_name})
+
+# as a oversight currently added item in product cart is removed cuz session mai next item bhi same id ki hai....toh duplicate items ko add krne ke baad directly weed out bhi kr diya
+        n = i+1
+        if products_cart:
+            for ic in session['cart'][n:]:
+                for it in products_cart:
+                    if it["id"] == ic["id"]:
+                        products_cart.remove(it)
+
+    print(products_cart)
+    return render_template('cart.html', cart=products_cart,)
+
+
+@login_required
+@Views.route('/store/<category>/products', methods=["GET", "POST"])
+def Store_product(category):
+    category_1 = Category.query.filter(
+        Category.category_Name == category).first()
+    products = category_1.catalog
+    produce = Product.query.filter(
+        Product.category_Id == category_1.category_Id).all()
+    m = 0
+    for pro in produce:
+        if pro.stock > 0:
+            m += 1
+
+    if request.method == 'POST':
+        category_3 = Category.query.filter(
+            Category.category_Name == category).first()
+        products_1 = category_3.catalog
+        product_id = request.form.getlist('product_id')
+        qty = request.form.getlist('qty')
+        print(qty)
+        print(product_id)
+        if 'cart' not in session:
+            session['cart'] = []
+
+        for index, id in enumerate(product_id):
+            if qty[index].isdigit():
+                quantity = int(qty[index])
+                if quantity > 0:
+                    # kyunki fixed value hai toh string type mai store hogi issi liye '' but variable is not string toh not ''
+                    session['cart'].append(
+                        {'id': int(id), 'quantity': quantity})
+        # cuz flask cant detect changes to session when u are using mutable object like list
+                    session.modified = True
+
+        # product = Product.query.filter(
+        #     Product.product_id == product_id).first()
+        category_2 = category_3.category_Id
+        produce_1 = Product.query.filter(
+            Product.category_Id == category_1.category_Id).all()
+
+        n = 0
+        for pro in produce_1:
+            if pro.stock > 0:
+                n += 1
+
+        print(session['cart'])
+        flash("Add3d to Cart.Press Cart icon to view Cart.")
+
+        return render_template('product_shop.html', category=category_2, name=category, products=products_1, product_instock=n)
+    return render_template('product_shop.html', name=category, products=products, product_instock=m)
 
 
 # login and Logout

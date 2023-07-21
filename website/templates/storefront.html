@@ -192,8 +192,8 @@
                  font-size: 1.5rem;
                  margin-right: 20px;
                "
-               href="/store_cart/{{id}}"
-               >Cart<i
+               href="/store/cart"
+               ><i
                  class="bi bi-cart4"
                  style="
                    font-size: 1.5rem;
@@ -203,9 +203,9 @@
                  "
                ></i
                ><span
-                 STYLE="font-family:'Verdana';margin-left :5px;"
+                 STYLE="font-family:'Verdana';margin-left :5px;color:whitesmoke"
                  class="badge badge-light"
-               ></span></a
+               >3</span></a
            ></span></span
             >
             <!-- <a class="nav-item nav-link" href="/login">Login</a>
@@ -239,7 +239,7 @@
     </div>
 
     {% endif %} {% endfor %} {% endif %} {% endwith %}
-    <!-- container class gives padding to div block -->
+    <!-- container class gives padding to div block --><section>
     <div class="container" id="content"><br />
         <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
           <div class="carousel-inner">
@@ -264,14 +264,18 @@
             <span class="carousel-control-next-icon" aria-hidden="true"></span><strong>
             <span class="sr-only visually-hidden" style="color:rgb(97, 97, 247);font-size:large">Next</span></strong>
           </a>
-        </div>
-        <!-- <div>
-          <!-- {% if categories|length == 0 %}
+        </div></section>
+        <section><div>
+          {% if categories|length == 0 %}
           <h1>No Offerings! Business is Shut Down for today.</h1>
-          {% else %} {% endif %}-->
+          {% else %} 
+
+          <br>
+          <div style="font-style: italic;color:rgba(68, 12, 114, 0.466);font-size: 3vw;" align="center"><strong>Available Sections in Store</strong></div>
+          <br>
           <div class="container">
             <div class="row align-items-start">
-              {% for variety in categories%}
+              {% for variety in categories %}
               <div class="col">
                 <table class="table"
     style="
@@ -296,14 +300,15 @@
       >
       <span style="font-style: italic;color:rgba(249, 4, 106, 0.531);font-size: 2vw;"><strong>{{ variety.category_Name }}</strong></span><br/><hr/>
         <span>Description</span><br/><br/>
-        <span><input class="btn btn-danger btn-lg" style="margin: auto;" type="submit" value="View Products" /></span>
+        <span><a href="/store/{{ variety.category_Name }}/products"><input type="button" class="btn btn-danger btn-lg" style="margin: auto;" type="submit" value="View Products" /></a></span>
       </td>
       </tr></table>
               </div>
             {% endfor %}
             </div>
             
-          </div>
+          </div></section>
+          {% endif %}
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
     <script

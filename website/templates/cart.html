@@ -1,157 +1,132 @@
-<section class="pt-5 pb-5">
+{% extends "store_base.html" %} {% block title %}Product Store{% endblock %}{%
+block logout %}
+<span id="logout" style="display: block inline-block; width: 600px">
+  <span style="margin: auto"
+    ><i
+      ><a
+        class="nav-item nav-link"
+        style="float: left; color: rgb(255, 215, 0)"
+        href="/logout"
+        style="display: block; width: 10%; margin-left: 0px"
+        ><svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="16"
+          height="16"
+          fill="currentColor"
+          class="bi bi-box-arrow-right"
+          viewBox="0 0 16 16"
+        >
+          <path
+            fill-rule="evenodd"
+            d="M10 12.5a.5.5 0 0 1-.5.5h-8a.5.5 0 0 1-.5-.5v-9a.5.5 0 0 1 .5-.5h8a.5.5 0 0 1 .5.5v2a.5.5 0 0 0 1 0v-2A1.5 1.5 0 0 0 9.5 2h-8A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h8a1.5 1.5 0 0 0 1.5-1.5v-2a.5.5 0 0 0-1 0v2z"
+          />
+          <path
+            fill-rule="evenodd"
+            d="M15.854 8.354a.5.5 0 0 0 0-.708l-3-3a.5.5 0 0 0-.708.708L14.293 7.5H5.5a.5.5 0 0 0 0 1h8.793l-2.147 2.146a.5.5 0 0 0 .708.708l3-3z"
+          /></svg
+        >Logout</a
+      ></i
+    ></span
+  ><span style="margin: auto"
+    ><a
+      class="nav-item nav-link"
+      style="
+        float: left;
+        color: rgb(160, 82, 45);
+        width: 60%;
+        margin-left: 20px;
+      "
+      href="/delete_account/{{id}}"
+      onclick="return confirm('Are you sure you want to delete the account?');"
+      >Delete MyAccount</a
+    ></span
+  ></span
+>
+{% endblock %} {% block cart %}<
+span style="margin: auto"
+ ><a
+   class="nav-item nav-link"
+   style="
+     float: right;
+     color: rgb(34, 2, 247);
+     width: 40%;
+     font-size: 1.5rem;
+     margin-right: 20px;
+   "
+   href="/store/cart"
+   ><svg xmlns="http://www.w3.org/2000/svg" width="31" height="27" fill="currentColor" class="bi bi-cup-hot-fill" style="color:aquamarine" viewBox="0 0 16 16">
+    <path fill-rule="evenodd" d="M.5 6a.5.5 0 0 0-.488.608l1.652 7.434A2.5 2.5 0 0 0 4.104 16h5.792a2.5 2.5 0 0 0 2.44-1.958l.131-.59a3 3 0 0 0 1.3-5.854l.221-.99A.5.5 0 0 0 13.5 6H.5ZM13 12.5a2.01 2.01 0 0 1-.316-.025l.867-3.898A2.001 2.001 0 0 1 13 12.5Z"/>
+    <path d="m4.4.8-.003.004-.014.019a4.167 4.167 0 0 0-.204.31 2.327 2.327 0 0 0-.141.267c-.026.06-.034.092-.037.103v.004a.593.593 0 0 0 .091.248c.075.133.178.272.308.445l.01.012c.118.158.26.347.37.543.112.2.22.455.22.745 0 .188-.065.368-.119.494a3.31 3.31 0 0 1-.202.388 5.444 5.444 0 0 1-.253.382l-.018.025-.005.008-.002.002A.5.5 0 0 1 3.6 4.2l.003-.004.014-.019a4.149 4.149 0 0 0 .204-.31 2.06 2.06 0 0 0 .141-.267c.026-.06.034-.092.037-.103a.593.593 0 0 0-.09-.252A4.334 4.334 0 0 0 3.6 2.8l-.01-.012a5.099 5.099 0 0 1-.37-.543A1.53 1.53 0 0 1 3 1.5c0-.188.065-.368.119-.494.059-.138.134-.274.202-.388a5.446 5.446 0 0 1 .253-.382l.025-.035A.5.5 0 0 1 4.4.8Zm3 0-.003.004-.014.019a4.167 4.167 0 0 0-.204.31 2.327 2.327 0 0 0-.141.267c-.026.06-.034.092-.037.103v.004a.593.593 0 0 0 .091.248c.075.133.178.272.308.445l.01.012c.118.158.26.347.37.543.112.2.22.455.22.745 0 .188-.065.368-.119.494a3.31 3.31 0 0 1-.202.388 5.444 5.444 0 0 1-.253.382l-.018.025-.005.008-.002.002A.5.5 0 0 1 6.6 4.2l.003-.004.014-.019a4.149 4.149 0 0 0 .204-.31 2.06 2.06 0 0 0 .141-.267c.026-.06.034-.092.037-.103a.593.593 0 0 0-.09-.252A4.334 4.334 0 0 0 6.6 2.8l-.01-.012a5.099 5.099 0 0 1-.37-.543A1.53 1.53 0 0 1 6 1.5c0-.188.065-.368.119-.494.059-.138.134-.274.202-.388a5.446 5.446 0 0 1 .253-.382l.025-.035A.5.5 0 0 1 7.4.8Zm3 0-.003.004-.014.019a4.077 4.077 0 0 0-.204.31 2.337 2.337 0 0 0-.141.267c-.026.06-.034.092-.037.103v.004a.593.593 0 0 0 .091.248c.075.133.178.272.308.445l.01.012c.118.158.26.347.37.543.112.2.22.455.22.745 0 .188-.065.368-.119.494a3.198 3.198 0 0 1-.202.388 5.385 5.385 0 0 1-.252.382l-.019.025-.005.008-.002.002A.5.5 0 0 1 9.6 4.2l.003-.004.014-.019a4.149 4.149 0 0 0 .204-.31 2.06 2.06 0 0 0 .141-.267c.026-.06.034-.092.037-.103a.593.593 0 0 0-.09-.252A4.334 4.334 0 0 0 9.6 2.8l-.01-.012a5.099 5.099 0 0 1-.37-.543A1.53 1.53 0 0 1 9 1.5c0-.188.065-.368.119-.494.059-.138.134-.274.202-.388a5.446 5.446 0 0 1 .253-.382l.025-.035A.5.5 0 0 1 10.4.8Z"/>
+  </svg>
+   </a
+></span> {% endblock %}
+{% block content %}
+<section >
   <div class="container">
     <div class="row w-100">
-      <div class="col-lg-12 col-md-12 col-12">
-        <h3 class="display-5 mb-2 text-center">Shopping Cart</h3>
-        <p class="mb-5 text-center">
-          <i class="text-info font-weight-bold">3</i> items in your cart
+      <div >
+        
+          <span class="spinner-grow spinner-grow-sm" role="status" aria-hidden="true"><h5 class="display-5  text-left" style="color:rgba(17, 0, 252, 0.972)">Shopping Cart</h5></span>
+          
+        
+        
+        <p class="mb-5 text-left">
+          <i class="text-danger font-weight-bold" style="font-size:3vw">{{ cart|length }}</i> items in your cart
         </p>
-        <table id="shoppingCart" class="table table-condensed table-responsive">
+        <table id="shoppingCart" class="table  table-responsive" style="width:70%">
           <thead>
             <tr>
-              <th style="width: 60%">Product</th>
+              <th style="width: 30%">Product</th>
               <th style="width: 12%">Price</th>
-              <th style="width: 10%">Quantity</th>
-              <th style="width: 16%"></th>
+              <th style="width: 10%">Qty</th>
+              <th style="width: 10%">Item Total</th>
+              <th style="width: 30%">Action</th>
             </tr>
           </thead>
+          {% for item in cart%}
           <tbody>
             <tr>
               <td data-th="Product">
                 <div class="row">
-                  <div class="col-md-3 text-left">
-                    <img
-                      src="https://via.placeholder.com/250x250/5fa9f8/ffffff"
-                      alt=""
-                      class="img-fluid d-none d-md-block rounded mb-2 shadow"
-                    />
-                  </div>
+              
                   <div class="col-md-9 text-left mt-sm-2">
-                    <h4>Product Name</h4>
-                    <p class="font-weight-light">Brand &amp; Name</p>
+                    <h6>{{ item['name'] }}</h6>
+                    <p class="font-weight-light">{{ item['category'] }}</p>
                   </div>
                 </div>
               </td>
-              <td data-th="Price">$49.00</td>
-              <td data-th="Quantity">
-                <input
-                  type="number"
-                  class="form-control form-control-lg text-center"
-                  value="1"
-                />
+              <td >{{ item['price'] }}</td>
+              <td >{{ item['quantity'] }} 
               </td>
-              <td class="actions" data-th="">
-                <div class="text-right">
-                  <button
-                    class="btn btn-white border-secondary bg-white btn-md mb-2"
+              <td style="margin-left: 0px">
+              {{ item['total'] }}
+              </td><td >
+                <a
+                    class="btn btn-warning btn-lg"
+                    href=""
                   >
-                    <i class="fas fa-sync"></i>
-                  </button>
-                  <button
-                    class="btn btn-white border-secondary bg-white btn-md mb-2"
-                  >
-                    <i class="fas fa-trash"></i>
-                  </button>
-                </div>
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
+                  <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5Zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5Zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6Z"/>
+                  <path d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1ZM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118ZM2.5 3h11V2h-11v1Z"/>
+                </svg></a>  
               </td>
             </tr>
-            <tr>
-              <td data-th="Product">
-                <div class="row">
-                  <div class="col-md-3 text-left">
-                    <img
-                      src="https://via.placeholder.com/250x250/5fa9f8/ffffff"
-                      alt=""
-                      class="img-fluid d-none d-md-block rounded mb-2 shadow"
-                    />
-                  </div>
-                  <div class="col-md-9 text-left mt-sm-2">
-                    <h4>Product Name</h4>
-                    <p class="font-weight-light">Brand &amp; Name</p>
-                  </div>
-                </div>
-              </td>
-              <td data-th="Price">$49.00</td>
-              <td data-th="Quantity">
-                <input
-                  type="number"
-                  class="form-control form-control-lg text-center"
-                  value="1"
-                />
-              </td>
-              <td class="actions" data-th="">
-                <div class="text-right">
-                  <button
-                    class="btn btn-white border-secondary bg-white btn-md mb-2"
-                  >
-                    <i class="fas fa-sync"></i>
-                  </button>
-                  <button
-                    class="btn btn-white border-secondary bg-white btn-md mb-2"
-                  >
-                    <i class="fas fa-trash"></i>
-                  </button>
-                </div>
-              </td>
-            </tr>
-            <tr>
-              <td data-th="Product">
-                <div class="row">
-                  <div class="col-md-3 text-left">
-                    <img
-                      src="https://via.placeholder.com/250x250/5fa9f8/ffffff"
-                      alt=""
-                      class="img-fluid d-none d-md-block rounded mb-2 shadow"
-                    />
-                  </div>
-                  <div class="col-md-9 text-left mt-sm-2">
-                    <h4>Product Name</h4>
-                    <p class="font-weight-light">Brand &amp; Name</p>
-                  </div>
-                </div>
-              </td>
-              <td data-th="Price">$49.00</td>
-              <td data-th="Quantity">
-                <input
-                  type="number"
-                  class="form-control form-control-lg text-center"
-                  value="1"
-                />
-              </td>
-              <td class="actions" data-th="">
-                <div class="text-right">
-                  <button
-                    class="btn btn-white border-secondary bg-white btn-md mb-2"
-                  >
-                    <i class="fas fa-sync"></i>
-                  </button>
-                  <button
-                    class="btn btn-white border-secondary bg-white btn-md mb-2"
-                  >
-                    <i class="fas fa-trash"></i>
-                  </button>
-                </div>
-              </td>
-            </tr>
-          </tbody>
+            
+          </tbody>{% endfor %}
         </table>
-        <div class="float-right text-right">
-          <h4>Subtotal:</h4>
-          <h1>$99.00</h1>
+        <div>
+          <h5>Subtotal:</h5>
+          <h4>$99.00</h4>
         </div>
       </div>
     </div>
-    <div class="row mt-4 d-flex align-items-center">
-      <div class="col-sm-6 order-md-2 text-right">
-        <a href="catalog.html" class="btn btn-primary mb-4 btn-lg pl-5 pr-5"
+    <div >
+      <a href="" class="btn btn-warning"
           >Checkout</a
-        >
-      </div>
-      <div class="col-sm-6 mb-3 mb-m-1 order-md-1 text-md-left">
-        <a href="catalog.html">
-          <i class="fas fa-arrow-left mr-2"></i> Continue Shopping</a
         >
       </div>
     </div>
   </div>
 </section>
+
+{% endblock %}

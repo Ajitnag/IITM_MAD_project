@@ -136,7 +136,9 @@ def unauthorized():
 @login_required
 @Auth.route('/logout')
 def logout():
+    session.pop("cart", None)
     logout_user()
+
     return redirect(url_for("views.Home"))
 # this is the home fn in views blueprint.also tells why every function name in views must be unique...this secures from any future changes to url itself...no need to change url everywhere it is used..this is dynamic embed url
 

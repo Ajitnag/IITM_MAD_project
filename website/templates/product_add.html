@@ -45,7 +45,7 @@ logout %}
                 ></span
               ></span
             >
-{% endblock %} {% block content %}
+{% endblock %} {% block content %}<section>
 <h5>
   <span style="float: left" style="font-size:2vw;">{{ name }}'s Category </span>
 </h5>
@@ -59,8 +59,8 @@ logout %}
 <!-- <span style="float: right"><a href="/logout">Logout</a></span> -->
 
 <br />
-<hr />
-<div><h4 style="font-size:2.5vw;">Add Product</h4></div>
+<hr /></section><section>
+<div><h4 style="font-size:2.5vw;">Add Product</h4></div></section><section>
 <form
   action="/manager_dash/category_create/{{ variable }}"
   method="POST"
@@ -120,5 +120,5 @@ logout %}
   <td><input class="btn btn-success btn-lg" style="margin-left: 100%;"type="submit" value="Save" />
   </div></td></tr>
 </form>
-</table>
+</table></section>
 {% endblock %}
