@@ -64,6 +64,7 @@ block logout %}
 <br />
 <hr />
 <div><h3>Add Category</h3></div>
+
 <br /><br />
 <form
   action="{{ url_for('views.Add_category') }}"
@@ -80,6 +81,29 @@ block logout %}
     accept="text/plain"
     required
   /><br />
+  <div class="comment-box ml-2">
+    <table>
+      <div class="comment-area">
+        <!-- <input
+    type="hidden"
+    id="c1name"
+    name="c1name1"
+    accept="text/plain"
+    required
+  >  -->
+        <textarea
+          class="form-control"
+          style="width: 20%; margin-left: 50%; margin-top: 10px; padding: 10px"
+          placeholder="Marketing about Category."
+          maxlength="42"
+          rows="2"
+          cols="10"
+          name="c1name1"
+        ></textarea>
+        <!-- </input> -->
+      </div>
+    </table>
+  </div>
   <div style="margin-top: 20px">
     <input class="btn btn-success btn-lg" type="submit" value="Save" />
   </div>

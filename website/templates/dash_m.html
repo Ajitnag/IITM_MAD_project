@@ -193,7 +193,7 @@ span style="margin: auto"
           border-right: 3px solid rgb(3, 33, 31);
         "
       >
-        Product_Id
+        Customer_Id
       </th>
       <th
         style="
@@ -206,18 +206,16 @@ span style="margin: auto"
         Product Name
     </th>
       <th style=" border-right: 3px solid rgb(3, 33, 31);padding: 10px 10px; width: 25%">
-        Order Receive
+        Order Received
       </th>
-      <th style=" padding: 10px 10px; width: 45%">
-        Order Completion
-      </th
+      
     </tr></thead>
     <tbody>
 
-    {% for variety in categories %}
+    {% for record in orders %}
     <tr align="center" style="width: 100%">
       <td style="padding: 10px; border-right: 3px solid rgb(3, 33, 31)">
-        {{ variety.category_Id }}
+        {{ record.customer_id }}
       </td>
       <td
         style="width: 50%; padding: 5px; border-right: 3px solid rgb(3, 33, 31)"
@@ -225,13 +223,13 @@ span style="margin: auto"
       >
         <a class="btn btn-success"
             style="color: rgb(16, 246, 227);text-decoration: none;font-size: 1.3em"
-            href="/manager_dash/category_catalog/{{ variety.category_Id }}"
-            >{{ variety.category_Name }}</a
+            href=""
+            >{{ record.product_name }}</a
           ></button>
       </td>
-      <td  style="width: 50%; padding: 5px; border-right: 3px solid rgb(3, 33, 31)">
+      <td  style="width: 50%; padding: 5px; border-right: 3px solid rgb(3, 33, 31)">{{ record.date_added }}
         
-      </td><td></td>
+      </td>
     
       </tr>
     </tr></tbody>

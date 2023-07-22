@@ -61,7 +61,14 @@ span style="margin: auto"
    </a
 ></span> {% endblock %}
 {% block content %}
+<section>
+<h6>
+  <span style="float: right"
+    ><a class="btn btn-dark" style="color: rgb(216, 249, 1); font-size: 1.5vw;text-decoration: none;" href="{{ url_for('views.Store_front') }}">Back to Store</a></span
+  >
+</h6></section>
 <section >
+  
   <div class="container">
     <div class="row w-100">
       <div >
@@ -73,56 +80,61 @@ span style="margin: auto"
         <p class="mb-5 text-left">
           <i class="text-danger font-weight-bold" style="font-size:3vw">{{ cart|length }}</i> items in your cart
         </p>
-        <table id="shoppingCart" class="table  table-responsive" style="width:70%">
+        <table id="shoppingCart" class="table  table-responsive" style="width:50%">
           <thead>
             <tr>
-              <th style="width: 30%">Product</th>
-              <th style="width: 12%">Price</th>
-              <th style="width: 10%">Qty</th>
-              <th style="width: 10%">Item Total</th>
-              <th style="width: 30%">Action</th>
+              <th  style="border-right: 1px solid rgb(3, 33, 31);padding: 10px 10px;width: 30%;text-align: center">Product</th>
+              <th  style="border-right: 1px solid rgb(3, 33, 31);padding: 10px 10px;width: 13%;text-align: center">Price</th>
+              <th   style="border-right: 1px solid rgb(3, 33, 31);padding: 10px 10px;width: 15%;text-align: center">Qty</th>
+              <th style="border-right: 1px solid rgb(3, 33, 31);padding: 10px 10px;width: 25%;text-align: center">Item Total</th>
+              <th style="width: 30%;text-align: center">Action</th>
             </tr>
           </thead>
           {% for item in cart%}
           <tbody>
             <tr>
-              <td data-th="Product">
+              <td data-th="Product" style="padding: 5px; border-right: 1px solid rgb(3, 33, 31);text-align: center">
                 <div class="row">
               
                   <div class="col-md-9 text-left mt-sm-2">
-                    <h6>{{ item['name'] }}</h6>
-                    <p class="font-weight-light">{{ item['category'] }}</p>
+                    <p style="font-size: 2vw;padding:2%;color:red"><em>{{ item['name'] }}</em></p>
+                    <small style="color:blue" class="text-muted"><p style="color:blue" class="font-weight-light" >{{ item['category'] }}</p></small>
                   </div>
                 </div>
               </td>
-              <td >{{ item['price'] }}</td>
-              <td >{{ item['quantity'] }} 
-              </td>
-              <td style="margin-left: 0px">
-              {{ item['total'] }}
-              </td><td >
-                <a
+              <td style="font-size: 1.3em;color :plum;padding: 5px; border-right: 1px solid rgb(3, 33, 31);text-align: center"><p style="padding-top:45%;">{{ item['price'] }}</p></td>
+              <td style="font-size: 1.3em;color :orange;padding: 5px; border-right: 1px solid rgb(3, 33, 31);text-align: center"><p style="padding-top:38%;">{{ item['quantity'] }}</p> 
+              </td >
+              <td style="font-size: 1.3em;color :green;padding: 5px; border-right: 1px solid rgb(3, 33, 31);text-align: center"><p style="padding-top:21%;">{{ item['total'] }}</p>
+              
+              </td><td style="text-align: center">
+                <p style="padding-top:23%;">
+                <a  
                     class="btn btn-warning btn-lg"
-                    href=""
+                    onclick="return confirm('Are you sure to delete?')" style="width:100%; color: red;text-decoration: none"
+                    href="{{ url_for('views.Remove_FromCart', id1 = item['id'])}}"
                   >
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
                   <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5Zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5Zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6Z"/>
                   <path d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1ZM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118ZM2.5 3h11V2h-11v1Z"/>
-                </svg></a>  
+                </svg></a>  </p>
               </td>
             </tr>
             
           </tbody>{% endfor %}
         </table>
-        <div>
-          <h5>Subtotal:</h5>
-          <h4>$99.00</h4>
+        <div class="container-md" style="padding: 2%">
+          <figure>
+          <blockquote class="blockquote" style="background: yellow;width:15%">
+          <h4 style="text-align:justify;">Total Amount</h4>
+          <h4 style="text-align:justify;">{{ grand_total}}</h4>
+          </blockquote></figure>
         </div>
       </div>
     </div>
     <div >
-      <a href="" class="btn btn-warning"
-          >Checkout</a
+      <a href="/store/cart/checkout/{{ customer_id }} " style="color: rgb(255, 2, 32)" class="btn btn-warning btn-lg"
+          ><strong>Checkout</strong></a
         >
       </div>
     </div>

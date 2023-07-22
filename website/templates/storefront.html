@@ -98,7 +98,7 @@
         </button>
         <div class="collapse navbar-collapse" id="navbar">
           <div class="navbar-nav">
-            <a href="/">
+            <a href="/store">
               <i
                 class="bi bi-bag-heart-fill"
                 style="
@@ -110,7 +110,7 @@
               ></i>
             </a>
             <a
-              href="/"
+              href="/store"
               class="nav-item nav-link"
               style="
                 color: rgb(241, 103, 241);
@@ -177,13 +177,30 @@
                   ></span
                 ></span
               ></span
-            ><span
-              id="logout"
-              style="display: block inline-block; width: 600px"
             >
-            <
-            span style="margin: auto"
-             ><a
+            {% if manager_1 %}
+            <span
+              id="logout"
+              style="display: block inline-block; width: 900px"
+            >
+            <a
+                class="nav-item nav-link"
+                style="
+                  float: right;
+                  color: rgb(34, 2, 247);
+                  width: 50%;
+                  font-size: 1.3rem;
+                  margin-right: 20px;
+                "
+                href="{{ url_for('views.Dash_manager') }}"
+                >Dashboard</span>
+               {% endif %}
+               
+            <span
+              id="logout"
+              style="display: block inline-block; width: 700px"
+            >
+            <a
                class="nav-item nav-link"
                style="
                  float: right;
@@ -205,7 +222,7 @@
                ><span
                  STYLE="font-family:'Verdana';margin-left :5px;color:whitesmoke"
                  class="badge badge-light"
-               >3</span></a
+               >{{ cart|length }}</span></a
            ></span></span
             >
             <!-- <a class="nav-item nav-link" href="/login">Login</a>
@@ -299,7 +316,7 @@
         "
       >
       <span style="font-style: italic;color:rgba(249, 4, 106, 0.531);font-size: 2vw;"><strong>{{ variety.category_Name }}</strong></span><br/><hr/>
-        <span>Description</span><br/><br/>
+        <span><em>{{ variety.description }}</em></span><br/><br/>
         <span><a href="/store/{{ variety.category_Name }}/products"><input type="button" class="btn btn-danger btn-lg" style="margin: auto;" type="submit" value="View Products" /></a></span>
       </td>
       </tr></table>

@@ -58,7 +58,7 @@
          margin-right: 20px;
        "
        href="/store/cart"
-       >Cart<i
+       ><i
          class="bi bi-cart4"
          style="
            font-size: 1.5rem;
@@ -70,7 +70,7 @@
        ><span
        STYLE="font-family:'Verdana';margin-left :5px;color:whitesmoke"
        class="badge badge-light"
-     >3</span></a
+     >{{ cart|length }}</span></a
    ></span> {% endblock %}{% block content %}<section>
     <h5>
       <span style="float: left">{{ name }}'s Catalogue </span>
@@ -216,7 +216,7 @@
           {% endif %}
           {% if variety.stock == 0 %}
           <td  style=" padding: 5px; border-right: 3px solid rgb(3, 33, 31)">
-            <input class='form-control' type="number" name="qty" min='0' max="{{ variety.stock }}" form="addtocart" formaction="/store/{{ name }}/products" size="30" disabled/><em>{{ variety.metric_Unit }}</em></td>
+            <input class='form-control' type="number" name="qty" min="0" max="0" form="addtocart" formaction="/store/{{ name }}/products" size="30" /><em>{{ variety.metric_Unit }}</em></td>
           <td ><a class="btn btn-dark btn-sm" style="width:51%;color:rgb(202, 246, 5);font-size: 0.9em" disabled href=""
               >Add To Cart</a
             ></td>

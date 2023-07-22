@@ -15,20 +15,95 @@ def Home():
 
 
 @login_required
+@Views.route('/store/cart')
+def Cart():
+    products_cart = []
+    grand_total = 0
+    if 'carte' not in session:
+        session['carte'] = []
+# mai baap block hai yeh.....issne jaan nikal di...
+    for i, item in enumerate(session['cart']):
+        product = Product.query.filter(
+            Product.product_id == int(item['id'])).first()
+        category = Category.query.filter(
+            Category.category_Id == product.category_Id).first()
+        category_name = category.category_Name
+        manager_id = category.managedBy_Id
+        quantity = int(item['quantity'])
+        total = product.rate * quantity
+        grand_total += total
+
+        products_cart.append({'id': int(product.product_id), 'name': product.product_Name,
+                              'price': product.rate, 'quantity': quantity, 'total': total, 'category': category_name, 'manager_id': manager_id})
+
+# as a oversight currently added item in product cart is removed cuz session mai next item bhi same id ki hai....toh duplicate items ko add krne ke baad directly weed out bhi kr diya
+        n = i+1
+        if products_cart:
+            for ic in session['cart'][n:]:
+                for it in products_cart:
+                    if it["id"] == ic["id"]:
+                        products_cart.remove(it)
+
+    session['carte'] = products_cart
+    if session['role'] == 'Customer':
+        customer_id = session['id']
+    else:
+        return "Not a customer.So,Cannot Add To Cart", 400
+    # print(session['carte'])
+    return render_template('cart.html', cart=products_cart, grand_total=grand_total, customer_id=customer_id)
+
+
+@login_required
+@Views.route('/store/cart/remove/<int:id1>')
+def Remove_FromCart(id1):
+    res = [sub['id'] for sub in session['carte']]
+    print(res)
+    for i in range(len(res)):
+        if session['carte'][i]['id'] == id1:
+            del session['carte'][i]
+            session.modified = True
+            break
+# yeh remove functionality ko cart page is integrate krna baki hai
+            print(session['carte'])
+
+    return redirect(url_for('views.Cart'))
+
+
+@login_required
+@Views.route('/store/cart/checkout/<int:id>')
+def Checkout(id):
+    session['carte']
+    for i in session['carte']:
+        order = Ecom(quantity_inCart=i['quantity'],
+                     product_id=i['id'], customer_id=id, manager_id=i['manager_id'], product_name=i['name'])
+        db.session.add(order)
+        db.session.commit()
+    flash("Your order is registerd with the store.We will deliver Shortly.Thanks for your purchase!")
+    return redirect(url_for('views.Store_front'))
+
+
+@login_required
 @Views.route('/customer_dash')
 @Views.route('/store')
 def Store_front():
     user_id = session['id']
     user_role = session['role']
+
+    products_cart = session['carte']
+    manager_1 = False
     if user_role == 'Customer':
         customer = Customer.query.get(user_id)
         categories = Category.query.all()
 
-        return render_template('storefront.html', categories=categories, name=customer.username, id=customer.id)
-    if user_role == 'Manager':
+        return render_template('storefront.html', categories=categories, name=customer.username, id=customer.id, cart=products_cart)
+    elif user_role == 'Manager':
         manager = Store.query.get(user_id)
-        categories = Category.query.all()
-        return render_template('storefront.html', categories=categories, name=manager.username, id=manager.id)
+        categories = Category.query.filter(
+            Category.managedBy_Id == user_id).all()
+        manager_1 = True
+        return render_template('storefront.html', categories=categories, name=manager.username, id=manager.id, cart=products_cart, manager_1=manager_1)
+    else:
+        return render_template("landing_page.html")
     # return render_template('storefront.html')
 
 
@@ -53,37 +128,6 @@ def Store_front():
 
         # return redirect(url_for('views.Store_product', category=category))
 
-
-@login_required
-@Views.route('/store/cart')
-def Cart():
-    products_cart = []
-
-# mai baap block hai yeh.....issne jaan nikal di...
-    for i, item in enumerate(session['cart']):
-        product = Product.query.filter(
-            Product.product_id == int(item['id'])).first()
-        category = Category.query.filter(
-            Category.category_Id == product.category_Id).first()
-        category_name = category.category_Name
-        quantity = int(item['quantity'])
-        total = product.rate * quantity
-
-        products_cart.append({'id': int(product.product_id), 'name': product.product_Name,
-                              'price': product.rate, 'quantity': quantity, 'total': total, 'category': category_name})
-
-# as a oversight currently added item in product cart is removed cuz session mai next item bhi same id ki hai....toh duplicate items ko add krne ke baad directly weed out bhi kr diya
-        n = i+1
-        if products_cart:
-            for ic in session['cart'][n:]:
-                for it in products_cart:
-                    if it["id"] == ic["id"]:
-                        products_cart.remove(it)
-
-    print(products_cart)
-    return render_template('cart.html', cart=products_cart,)
-
-
 @login_required
 @Views.route('/store/<category>/products', methods=["GET", "POST"])
 def Store_product(category):
@@ -96,7 +140,7 @@ def Store_product(category):
     for pro in produce:
         if pro.stock > 0:
             m += 1
-
+    products_cart = session['carte']
     if request.method == 'POST':
         category_3 = Category.query.filter(
             Category.category_Name == category).first()
@@ -128,12 +172,13 @@ def Store_product(category):
         for pro in produce_1:
             if pro.stock > 0:
                 n += 1
-
+        products_cart = session['carte']
         print(session['cart'])
+        # _cart = session['carte']
         flash("Add3d to Cart.Press Cart icon to view Cart.")
 
-        return render_template('product_shop.html', category=category_2, name=category, products=products_1, product_instock=n)
-    return render_template('product_shop.html', name=category, products=products, product_instock=m)
+        return render_template('product_shop.html', category=category_2, name=category, products=products_1, product_instock=n, cart=products_cart)
+    return render_template('product_shop.html', name=category, products=products, product_instock=m, cart=products_cart)
 
 
 # login and Logout
@@ -142,15 +187,18 @@ def Store_product(category):
 def Dash_manager():
     manager_id = session['id']
     manager = Store.query.get(manager_id)
-    categories = Category.query.all()
+    categories = Category.query.filter(
+        Category.managedBy_Id == manager_id).all()
+    orders_received = Ecom.query.filter(Ecom.manager_id == manager_id).all()
     if request.method == 'POST':
         c1 = request.form.get("cname")
         c = Category(category_Name=c1, managedBy_Id=manager_id)
         db.session.add(c)
         db.session.commit()
-        categories = Category.query.all()
-        return render_template('dash_m.html', categories=categories, name=manager.username, id=manager_id)
-    return render_template('dash_m.html', categories=categories, name=manager.username, id=manager_id)
+        categories = Category.query.filter(
+            Category.managedBy_Id == manager_id).all()
+        return render_template('dash_m.html', categories=categories, name=manager.username, id=manager_id, orders=orders_received)
+    return render_template('dash_m.html', categories=categories, name=manager.username, id=manager_id, orders=orders_received)
 
 
 @login_required
@@ -169,12 +217,14 @@ def Add_category():
     manager = Store.query.get(manager_id)
     if request.method == 'POST':
         cat_name = request.form.get("cname1")
+        description = request.form.get("c1name1")
         if len(Category.query.filter_by(category_Name=cat_name).all()) > 0:
             flash(
                 "Category name already exists.Use different name.", category='error')
             return render_template('category_form.html', name=manager.username)
         else:
-            c = Category(category_Name=cat_name, managedBy_Id=manager_id)
+            c = Category(category_Name=cat_name,
+                         managedBy_Id=manager_id, description=description)
             db.session.add(c)
             db.session.commit()
             categories = Category.query.all()

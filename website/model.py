@@ -1,7 +1,7 @@
 # from flask_sqlalchemy import SQLAlchemy
 
 from flask_login import UserMixin
-from datetime import datetime
+from datetime import date
 from flask_sqlalchemy import SQLAlchemy
 # from flask import current_app as app
 
@@ -19,7 +19,7 @@ class Store(db.Model, UserMixin):
     email = db.Column(db.String(50), nullable=False, unique=True)
     username = db.Column(db.String(20), nullable=False, unique=False)
     password = db.Column(db.String(200), nullable=False)
-    date_added = db.Column(db.DateTime, default=datetime.utcnow)
+    date_added = db.Column(db.Date, default=date.today())
     creates = db.relationship('Category', backref='managedBy')
     # one wali side pe relationship wali statement aur many wali side pe foreign key
     # creates = db.relationship('Category', secondary = 'enrollments', backref= 'managed_By')
@@ -31,13 +31,14 @@ class Customer(db.Model, UserMixin):
     email = db.Column(db.String(50), nullable=False, unique=True)
     username = db.Column(db.String(20), nullable=False, unique=False)
     password = db.Column(db.String(200), nullable=False)
-    date_added = db.Column(db.DateTime, default=datetime.utcnow)
+    date_added = db.Column(db.Date, default=date.today())
     buy = db.relationship('Product', backref='buyer', secondary='ecom')
 
 
 class Category(db.Model):
     category_Name = db.Column(db.String(), nullable=False, unique=True)
     category_Id = db.Column(db.Integer(), primary_key=True)
+    description = db.Column(db.String())
     managedBy_Id = db.Column(db.Integer(), db.ForeignKey('store.id'))
 # managedBy = db.relationship('Store', backref= 'creates')
     catalog = db.relationship('Product', backref='parent')
@@ -65,6 +66,9 @@ class Ecom(db.Model):
         'product.product_id'), primary_key=True)
     customer_id = db.Column(db.Integer(), db.ForeignKey(
         'customer.id'), primary_key=True)
+    manager_id = db.Column(db.Integer(), nullable=False)
+    product_name = db.Column(db.String(), nullable=False)
+    date_added = db.Column(db.Date, default=date.today())
 
 
 # pass around the users information across different views/pages we use sessions..sessions are temporary and created on web server for quick access of logged in user by diff pages
