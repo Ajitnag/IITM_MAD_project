@@ -1,7 +1,7 @@
 # from flask_sqlalchemy import SQLAlchemy
 
 from flask_login import UserMixin
-from datetime import date
+from datetime import date, datetime
 from flask_sqlalchemy import SQLAlchemy
 # from flask import current_app as app
 
@@ -61,11 +61,12 @@ class Product(db.Model):
 
 class Ecom(db.Model):
     # basket_id = db.Column(db.Integer(), primary_key = True)
+    id = db.Column(db.Integer(), primary_key=True)
     quantity_inCart = db.Column(db.Integer(), nullable=False)
     product_id = db.Column(db.Integer(), db.ForeignKey(
-        'product.product_id'), primary_key=True)
+        'product.product_id'))
     customer_id = db.Column(db.Integer(), db.ForeignKey(
-        'customer.id'), primary_key=True)
+        'customer.id'))
     manager_id = db.Column(db.Integer(), nullable=False)
     product_name = db.Column(db.String(), nullable=False)
     date_added = db.Column(db.Date, default=date.today())

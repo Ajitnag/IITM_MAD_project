@@ -17,32 +17,35 @@ def Home():
 @login_required
 @Views.route('/store/cart')
 def Cart():
+    print(session['carte'])
     products_cart = []
     grand_total = 0
     if 'carte' not in session:
         session['carte'] = []
-# mai baap block hai yeh.....issne jaan nikal di...
-    for i, item in enumerate(session['cart']):
-        product = Product.query.filter(
-            Product.product_id == int(item['id'])).first()
-        category = Category.query.filter(
-            Category.category_Id == product.category_Id).first()
-        category_name = category.category_Name
-        manager_id = category.managedBy_Id
-        quantity = int(item['quantity'])
-        total = product.rate * quantity
-        grand_total += total
+    if 'cart' in session:
 
-        products_cart.append({'id': int(product.product_id), 'name': product.product_Name,
-                              'price': product.rate, 'quantity': quantity, 'total': total, 'category': category_name, 'manager_id': manager_id})
+        # mai baap block hai yeh.....issne jaan nikal di...
+        for i, item in enumerate(session['cart']):
+            product = Product.query.filter(
+                Product.product_id == int(item['id'])).first()
+            category = Category.query.filter(
+                Category.category_Id == product.category_Id).first()
+            category_name = category.category_Name
+            manager_id = category.managedBy_Id
+            quantity = int(item['quantity'])
+            total = product.rate * quantity
+            grand_total += total
 
-# as a oversight currently added item in product cart is removed cuz session mai next item bhi same id ki hai....toh duplicate items ko add krne ke baad directly weed out bhi kr diya
-        n = i+1
-        if products_cart:
-            for ic in session['cart'][n:]:
-                for it in products_cart:
-                    if it["id"] == ic["id"]:
-                        products_cart.remove(it)
+            products_cart.append({'id': int(product.product_id), 'name': product.product_Name,
+                                  'price': product.rate, 'quantity': quantity, 'total': total, 'category': category_name, 'manager_id': manager_id})
+
+        # as a oversight currently added item in product cart is removed cuz session mai next item bhi same id ki hai....toh duplicate items ko add krne ke baad directly weed out bhi kr diya
+            n = i+1
+            if products_cart:
+                for ic in session['cart'][n:]:
+                    for it in products_cart:
+                        if it["id"] == ic["id"]:
+                            products_cart.remove(it)
 
     session['carte'] = products_cart
     if session['role'] == 'Customer':
@@ -56,28 +59,54 @@ def Cart():
 @login_required
 @Views.route('/store/cart/remove/<int:id1>')
 def Remove_FromCart(id1):
+    user_id = session['id']
+    grand_total = 0
     res = [sub['id'] for sub in session['carte']]
     print(res)
+    res_1 = [sub['id'] for sub in session['cart']]
+    print(res_1)
+    for i in range(len(res_1)):
+        if session['cart'][i]['id'] == id1:
+            del session['cart'][i]
+            session.modified = True
+            break
+    print(res_1)
     for i in range(len(res)):
         if session['carte'][i]['id'] == id1:
             del session['carte'][i]
             session.modified = True
             break
+    print(res)
 # yeh remove functionality ko cart page is integrate krna baki hai
-            print(session['carte'])
+    products_cart = session['carte']
+    for item in products_cart:
+        grand_total += item['total']
 
-    return redirect(url_for('views.Cart'))
+    return render_template('cart.html', cart=products_cart, grand_total=grand_total, customer_id=user_id)
 
 
 @login_required
 @Views.route('/store/cart/checkout/<int:id>')
 def Checkout(id):
-    session['carte']
-    for i in session['carte']:
-        order = Ecom(quantity_inCart=i['quantity'],
-                     product_id=i['id'], customer_id=id, manager_id=i['manager_id'], product_name=i['name'])
-        db.session.add(order)
+    # session['carte']
+    # print(session['carte'])
+    if session['role'] == 'Customer' or session['role'] == 'Manager':
+        for item in session['carte']:
+            print(item)
+            order = Ecom(quantity_inCart=item['quantity'],
+                         product_id=item['id'], customer_id=id, manager_id=item['manager_id'], product_name=item['name'])
+            db.session.add(order)
         db.session.commit()
+    else:
+        session.pop("id")
+        session.pop("role")
+        session.modified = True
+        return "Not a Valid Session.Must Login!", 400
+    session.pop("carte")
+    session.pop("cart")
+
+    session.modified = True
+
     flash("Your order is registerd with the store.We will deliver Shortly.Thanks for your purchase!")
     return redirect(url_for('views.Store_front'))
 
@@ -88,20 +117,24 @@ def Checkout(id):
 def Store_front():
     user_id = session['id']
     user_role = session['role']
-
-    products_cart = session['carte']
+    if 'carte' not in session:
+        session['carte'] = []
+    if not session['carte']:
+        products_cart_1 = []
+    if session['carte']:
+        products_cart_1 = session['carte']
     manager_1 = False
     if user_role == 'Customer':
         customer = Customer.query.get(user_id)
         categories = Category.query.all()
 
-        return render_template('storefront.html', categories=categories, name=customer.username, id=customer.id, cart=products_cart)
+        return render_template('storefront.html', categories=categories, name=customer.username, id=customer.id, cart=products_cart_1)
     elif user_role == 'Manager':
         manager = Store.query.get(user_id)
         categories = Category.query.filter(
             Category.managedBy_Id == user_id).all()
         manager_1 = True
-        return render_template('storefront.html', categories=categories, name=manager.username, id=manager.id, cart=products_cart, manager_1=manager_1)
+        return render_template('storefront.html', categories=categories, name=manager.username, id=manager.id, cart=products_cart_1, manager_1=manager_1)
     else:
         return render_template("landing_page.html")
     # return render_template('storefront.html')
@@ -287,13 +320,13 @@ def Category_catalog(id):
 # #         if inventory:
 
 @login_required
-@Views.route('/delete_account/<int:id>')
-def delete_account(id):
+@Views.route('/delete_account/')
+def delete_account():
     user_id = session['id']
     user_role = session['role']
     if user_role == 'Manager':
-        user = Store.query.get(id)
-        categories = Category.query.filter_by(managedBy_Id=id).all()
+        user = Store.query.get(user_id)
+        categories = Category.query.filter_by(managedBy_Id=user_id).all()
         for cat in categories:
             products = Product.query.filter_by(
                 category_Id=cat.category_Id).all()
@@ -302,10 +335,16 @@ def delete_account(id):
                 db.session.commit()
             db.session.delete(cat)
             db.session.commit()
+        session.pop("cart", None)
         db.session.delete(user)
         db.session.commit()
     if user_role == 'Customer':
         user = Customer.query.get(user_id)
+        orders = Ecom.query.filter_by(customer_id=user_id).all()
+        for order in orders:
+            db.session.delete(order)
+            db.session.commit()
+        session.pop("cart", None)
         db.session.delete(user)
         db.session.commit()
     flash("Account Deleted.", category='error')

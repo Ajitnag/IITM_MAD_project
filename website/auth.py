@@ -137,6 +137,9 @@ def unauthorized():
 @Auth.route('/logout')
 def logout():
     session.pop("cart", None)
+    session.pop("id")
+    session.pop("role")
+    session.modified = True
     logout_user()
 
     return redirect(url_for("views.Home"))
