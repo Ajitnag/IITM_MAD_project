@@ -155,8 +155,11 @@ span style="margin: auto"
         <a class="btn btn-success"
             style="color: rgb(16, 246, 227);text-decoration: none;font-size: 1.3em"
             href="/manager_dash/category_catalog/{{ variety.category_Id }}"
-            >{{ variety.category_Name }}</a
-          ></button>
+            >___{{ variety.category_Name }}___</a
+          ></button>{% if list[loop.index-1] > 0 %}
+          <span><button type="button" STYLE="font-family:'Verdana',margin-left = 5px;"class="btn btn-danger">
+            Out of stock: <span STYLE="font-family:'Verdana';margin-left : 5px" class="badge ">{{ list[loop.index-1] }}</span>  
+          </button></span>{% else %}<span></span>{% endif %}
       </td>
       <td >
         <a class="btn btn-info btn-sm" style="width:80%;color:rgb(246, 5, 218);font-size: 0.9em"  href="{{ url_for('views.Update_category', id = variety.category_Id)}}"
@@ -233,10 +236,20 @@ span style="margin: auto"
           border-right: 3px solid rgb(3, 33, 31);
 
           padding: 10px 10px;
-          width: 65%;
+          width: 45%;
         "
       >
         Product Name
+    </th>
+    <th
+        style="
+          border-right: 3px solid rgb(3, 33, 31);
+
+          padding: 10px 10px;
+          width: 15%;
+        "
+      >
+        Qty
     </th>
       <th style=" border-right: 3px solid rgb(3, 33, 31);padding: 10px 10px; width: 25%">
         Order Received
@@ -259,6 +272,9 @@ span style="margin: auto"
             href=""
             >{{ record.product_name }}</a
           ></button>
+      </td>
+      <td style="padding: 10px; border-right: 3px solid rgb(3, 33, 31)">
+        {{ record.quantity_inCart }}
       </td>
       <td  style="width: 50%; padding: 5px; border-right: 3px solid rgb(3, 33, 31)">{{ record.date_added }}
         

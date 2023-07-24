@@ -2,7 +2,6 @@
 from flask import Flask, Blueprint, render_template, request, flash, session, url_for, redirect
 from flask_login import login_required, current_user
 from .model import Store, Customer, Category, Product, Ecom, db
-# from flask_paginate import Pagination, get_page_parameter
 
 
 Views = Blueprint("views", __name__)
@@ -89,14 +88,25 @@ def Remove_FromCart(id1):
 @login_required
 @Views.route('/store/cart/checkout/<int:id>')
 def Checkout(id):
-    # session['carte']
-    # print(session['carte'])
-    if session['role'] == 'Customer' or session['role'] == 'Manager':
+
+    if session['role'] == 'Customer':
         for item in session['carte']:
             print(item)
             order = Ecom(quantity_inCart=item['quantity'],
                          product_id=item['id'], customer_id=id, manager_id=item['manager_id'], product_name=item['name'])
-            db.session.add(order)
+
+            product = Product.query.filter(
+                Product.product_id == item['id']).first()
+
+            new_stock = product.stock - int(item['quantity'])
+            if new_stock >= 0:
+                db.session.add(order)
+                product.stock = new_stock
+                db.session.commit()
+            else:
+                flash(
+                    f"Not enough stock present with us at the moment.Please select lesser quantity for the product/--{ product.product_Name }--\into cart to make order successful.", category='error')
+                return redirect(url_for('views.Cart'))
         db.session.commit()
     else:
         session.pop("id")
@@ -138,29 +148,7 @@ def Store_front():
         return render_template('storefront.html', categories=categories, name=manager.username, id=manager.id, cart=products_cart_1, manager_1=manager_1)
     else:
         return render_template("landing_page.html")
-    # return render_template('storefront.html')
 
-
-# @login_required
-# @Views.route('/store/add_to_cart', methods=['POST'])
-# def Add_to_cart():
-#     # instantiate to store cart items in browser/client cookie
-
-#     if request.method == 'POST':
-#         if 'cart' not in session:
-#             session['cart'] = []
-#         product_id = request.form.get('product_id')
-#         qty = request.form.get('qty')
-#         # kyunki fixed value hai toh string type mai store hogi issi liye '' but variable is not string toh not ''
-#         session['cart'].append({'id': product_id, 'quantity': qty})
-#         # cuz flask cant detect changes to session when u are using mutable object like list
-#         session.modified = True
-#         product = Product.query.filter_by(product_id=product_id)
-#         category = product.category_Id
-#         print(session['cart'])
-#         flash("Add3d to Cart.Press Cart icon to view Cart.")
-
-        # return redirect(url_for('views.Store_product', category=category))
 
 @login_required
 @Views.route('/store/<category>/products', methods=["GET", "POST"])
@@ -196,8 +184,6 @@ def Store_product(category):
         # cuz flask cant detect changes to session when u are using mutable object like list
                     session.modified = True
 
-        # product = Product.query.filter(
-        #     Product.product_id == product_id).first()
         category_2 = category_3.category_Id
         produce_1 = Product.query.filter(
             Product.category_Id == category_1.category_Id).all()
@@ -208,31 +194,48 @@ def Store_product(category):
                 n += 1
         products_cart = session['carte']
         print(session['cart'])
-        # _cart = session['carte']
+
         flash("Add3d to Cart.Press Cart icon to view Cart.")
 
         return render_template('product_shop.html', category=category_2, name=category, products=products_1, product_instock=n, cart=products_cart)
     return render_template('product_shop.html', name=category, products=products, product_instock=m, cart=products_cart)
 
 
+def Category_warning(id):
+    category = Category.query.get(id)
+    products = category.catalog
+    produce = Product.query.filter(Product.category_Id == id).all()
+    m = 0
+    for pro in produce:
+        if pro.stock > 0:
+            m += 1
+    n = len(produce) - m
+    return n
+
 # login and Logout
+
+
 @login_required
-# @Views.route('/manager_dash/<int:page>', methods=["GET", "POST"])
 @Views.route('/manager_dash', methods=["GET", "POST"])
 def Dash_manager():
-
     manager_id = session['id']
     manager = Store.query.get(manager_id)
+    list = []
+    # n = Category_warning(id)
     page_1 = request.args.get('page_1', 1, type=int)
     pagination_1 = Category.query.filter(
         Category.managedBy_Id == manager_id).order_by(
         Category.category_Id).paginate(page=page_1, per_page=4)
+    for items in pagination_1:
+        n = Category_warning(items.category_Id)
+        list.append(n)
+
     # Pagination of results
     page_2 = request.args.get('page_2', 1, type=int)
     pagination_2 = Ecom.query.filter(Ecom.manager_id == manager_id).order_by(
         Ecom.date_added).paginate(page=page_2, per_page=4)
 
-    # this statement is wrong cuz list will not be paginated...only applied to db
+    # this statement is wrong cuz list will not be paginated...only applied to db.model class and not relationships
     # orders_received = orders_received_1.query.paginate(per_page=5)
 
     if request.method == 'POST':
@@ -243,16 +246,7 @@ def Dash_manager():
         categories = Category.query.filter(
             Category.managedBy_Id == manager_id).all()
         return render_template('dash_m.html', categories=pagination_1, name=manager.username, id=manager_id, orders=pagination_2)
-    return render_template('dash_m.html', categories=pagination_1, name=manager.username, id=manager_id, orders=pagination_2)
-# , pagination=pagination)
-
-
-# @login_required
-# @Views.route('/customer_dash')
-# def Dash_customer():
-#     customer_id = session['id']
-#     customer = Customer.query.get(customer_id)
-#     return render_template('storefront.html', name=customer.username)
+    return render_template('dash_m.html', categories=pagination_1, name=manager.username, id=manager_id, orders=pagination_2, list=list)
 
 
 # Manager's DashBoard module
@@ -294,7 +288,6 @@ def Update_category(id):
     manager = Store.query.get(manager_id)
     category = Category.query.get(id)
 
-    # if user_role == 'Manager':
     if request.method == 'POST':
         m = 0
         name = request.form.get('cname1')
@@ -354,21 +347,6 @@ def Category_catalog(id):
     return render_template('category_catalog.html', name=category.category_Name, category_id=category.category_Id, products=products, product_instock=m)
 
 
-# @login_required
-# @Views.route('/manager_dash/update_itemvariables/<int:id>', methods=["GET", "POST"])
-# # def Product_item_variables():
-# #     manager_id = session['id']
-# #     manager = Store.query.get(manager_id)
-# #     product = Product.query.get(id)
-# #     if request.method == 'POST':
-# #         rate = request.form.get("r1name1")
-# #         rate_unit = request.form.get("pr1name1")
-# #         inventory = request.form.get("s1name1")
-# #         if rate:
-
-# #         if rate_unit:
-# #         if inventory:
-
 @login_required
 @Views.route('/delete_account/')
 def delete_account():
@@ -426,11 +404,6 @@ def delete_product(id):
 
     if user_role == 'Manager':
         product = Product.query.get(id)
-
-        # products = Product.query.filter_by(category_Id=id).all()
-        # for pro in products:
-        #     db.session.delete(pro)
-        #     db.session.commit()
         db.session.delete(product)
         db.session.commit()
         flash("Product Removed.")
@@ -456,8 +429,6 @@ def update_item(id):
             inventory = request.form.get('s1name1')
             expiry = request.form.get('d1name1')
 
-            # product_2 = Product.query.get(id)
-            # print(product_1)
             produce = Product.query.filter(
                 Product.category_Id == category_id).all()
 
@@ -491,27 +462,3 @@ def update_item(id):
                     m += 1
             return render_template('category_catalog.html', name=category.category_Name, category_id=category_id, products=products, product_instock=m)
     return render_template('update_item.html', name=category.category_Name, variable=category_id, product_id=id)
-    # p = Product(product_Name=name, metric_Unit=metric, rate=rate,
-    #             rate_perUnit=rate_unit, stock=inventory, category_Id=category_id)
-    # db.session.update(p)
-    # db.session.commit()
-    # if name is not None:
-    #     product = Product.query.get(id)
-    #     product.product_Name = name
-    #     db.session.commit()
-    # if metric is not None:
-    #     product = Product.query.get(id)
-    #     product.metric_Unit = metric
-    #     db.session.commit()
-    # if rate_unit is not None:
-    #     product = Product.query.get(id)
-    #     product.rate_perUnit = rate
-    #     db.session.commit()
-    # if rate is not None:
-    #     product = Product.query.get(id)
-    #     product.rate = rate_unit
-    #     db.session.commit()
-    # if stock is not None:
-    #     product = Product.query.get(id)
-    #     product.stock = stock
-    #     db.session.commit()
