@@ -1,7 +1,7 @@
 # from flask_sqlalchemy import SQLAlchemy
 
 from flask_login import UserMixin
-from datetime import date, datetime
+from datetime import date
 from flask_sqlalchemy import SQLAlchemy
 # from flask import current_app as app
 
@@ -51,6 +51,7 @@ class Product(db.Model):
     rate = db.Column(db.Integer(), nullable=False)
     rate_perUnit = db.Column(db.String(), nullable=False)
     stock = db.Column(db.Integer(), nullable=False)
+    expiredBy = db.Column(db.String(), nullable=False)
     category_Id = db.Column(db.String(), db.ForeignKey('category.category_Id'))
     # parent =  db.relationship('Category', backref= 'catalog')
     # buyer = db.relationship('Customer', backref= 'catalog')

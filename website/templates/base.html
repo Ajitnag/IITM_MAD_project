@@ -33,6 +33,24 @@
     <!-- Template inheritance - change content in child pages via blocks . These blocks can be overwritten or overide in another template and the change made there will go inside this block only...title is the name or identifier for this block just like selectors in CSS-->
     <title>{% block title %}{% endblock %}</title>
     <style>
+      .pagination {
+        margin: 0 auto;
+      }
+
+      .pagination span {
+        font-size: 2em;
+        margin-right: 10px;
+      }
+
+      .page-number {
+        color: #d64161;
+        padding: 5px;
+        text-decoration: none;
+      }
+
+      .current-page-number {
+        color: #666;
+      }
       input[type="number"] {
         width: 100px;
       }

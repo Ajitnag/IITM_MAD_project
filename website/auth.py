@@ -42,7 +42,7 @@ def login():
                     # , remember=True, duration='Any'
                     login_user(customer_exists)
                     session['id'] = customer_exists.get_id()
-                    return redirect(url_for('views.Dash_customer'))
+                    return redirect(url_for('views.Store_front'))
                 else:
                     flash("Password is incorrect!", category='error')
             else:

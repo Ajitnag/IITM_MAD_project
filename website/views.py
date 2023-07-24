@@ -2,6 +2,7 @@
 from flask import Flask, Blueprint, render_template, request, flash, session, url_for, redirect
 from flask_login import login_required, current_user
 from .model import Store, Customer, Category, Product, Ecom, db
+# from flask_paginate import Pagination, get_page_parameter
 
 
 Views = Blueprint("views", __name__)
@@ -216,13 +217,24 @@ def Store_product(category):
 
 # login and Logout
 @login_required
+# @Views.route('/manager_dash/<int:page>', methods=["GET", "POST"])
 @Views.route('/manager_dash', methods=["GET", "POST"])
 def Dash_manager():
+
     manager_id = session['id']
     manager = Store.query.get(manager_id)
-    categories = Category.query.filter(
-        Category.managedBy_Id == manager_id).all()
-    orders_received = Ecom.query.filter(Ecom.manager_id == manager_id).all()
+    page_1 = request.args.get('page_1', 1, type=int)
+    pagination_1 = Category.query.filter(
+        Category.managedBy_Id == manager_id).order_by(
+        Category.category_Id).paginate(page=page_1, per_page=4)
+    # Pagination of results
+    page_2 = request.args.get('page_2', 1, type=int)
+    pagination_2 = Ecom.query.filter(Ecom.manager_id == manager_id).order_by(
+        Ecom.date_added).paginate(page=page_2, per_page=4)
+
+    # this statement is wrong cuz list will not be paginated...only applied to db
+    # orders_received = orders_received_1.query.paginate(per_page=5)
+
     if request.method == 'POST':
         c1 = request.form.get("cname")
         c = Category(category_Name=c1, managedBy_Id=manager_id)
@@ -230,16 +242,17 @@ def Dash_manager():
         db.session.commit()
         categories = Category.query.filter(
             Category.managedBy_Id == manager_id).all()
-        return render_template('dash_m.html', categories=categories, name=manager.username, id=manager_id, orders=orders_received)
-    return render_template('dash_m.html', categories=categories, name=manager.username, id=manager_id, orders=orders_received)
+        return render_template('dash_m.html', categories=pagination_1, name=manager.username, id=manager_id, orders=pagination_2)
+    return render_template('dash_m.html', categories=pagination_1, name=manager.username, id=manager_id, orders=pagination_2)
+# , pagination=pagination)
 
 
-@login_required
-@Views.route('/customer_dash')
-def Dash_customer():
-    customer_id = session['id']
-    customer = Customer.query.get(customer_id)
-    return render_template('storefront.html', name=customer.username)
+# @login_required
+# @Views.route('/customer_dash')
+# def Dash_customer():
+#     customer_id = session['id']
+#     customer = Customer.query.get(customer_id)
+#     return render_template('storefront.html', name=customer.username)
 
 
 # Manager's DashBoard module
@@ -260,10 +273,44 @@ def Add_category():
                          managedBy_Id=manager_id, description=description)
             db.session.add(c)
             db.session.commit()
-            categories = Category.query.all()
+            page_1 = request.args.get('page_1', 1, type=int)
+            pagination_1 = Category.query.filter(
+                Category.managedBy_Id == manager_id).order_by(
+                Category.category_Id).paginate(page=page_1, per_page=4)
+    # Pagination of results
+            page_2 = request.args.get('page_2', 1, type=int)
+            pagination_2 = Ecom.query.filter(Ecom.manager_id == manager_id).order_by(
+                Ecom.date_added).paginate(page=page_2, per_page=4)
             flash("New Category added")
-            return render_template('dash_m.html',  categories=categories, name=manager.username)
+            return render_template('dash_m.html',  categories=pagination_1, name=manager.username, id=manager_id, orders=pagination_2)
     return render_template('category_form.html', name=manager.username)
+
+
+@login_required
+@Views.route('/manager_dash/category_update/<int:id>', methods=["GET", "POST"])
+def Update_category(id):
+    user_role = session['role']
+    manager_id = session['id']
+    manager = Store.query.get(manager_id)
+    category = Category.query.get(id)
+
+    # if user_role == 'Manager':
+    if request.method == 'POST':
+        m = 0
+        name = request.form.get('cname1')
+        description = request.form.get('c1name1')
+
+        if not name == "":
+            category = Category.query.get(id)
+            category.category_Name = name
+            db.session.commit()
+
+        if not description == "":
+            category = Category.query.get(id)
+            category.description = description
+            db.session.commit()
+        return redirect(url_for('views.Dash_manager'))
+    return render_template('category_updateform.html', name=manager.username, variable=id)
 
 
 @login_required
@@ -280,12 +327,14 @@ def Add_product(id):
         rate = request.form.get("rname1")
         rate_unit = request.form.get("prname1")
         inventory = request.form.get("sname1")
+        expiry = request.form.get("dname1")
         p = Product(product_Name=product_name, metric_Unit=metric, rate=rate,
-                    rate_perUnit=rate_unit, stock=inventory, category_Id=id)
+                    rate_perUnit=rate_unit, stock=inventory, category_Id=id, expiredBy=expiry)
         db.session.add(p)
         category.catalog.append(p)
         db.session.commit()
-        return render_template('dash_m.html',  categories=categories, name=manager.username)
+        return redirect(url_for('views.Dash_manager'))
+        # return render_template('dash_m.html',  categories=categories, name=manager.username)
     return render_template('product_add.html', name=category.category_Name, variable=id)
 
 
@@ -294,6 +343,7 @@ def Add_product(id):
 def Category_catalog(id):
     manager_id = session['id']
     manager = Store.query.get(manager_id)
+
     category = Category.query.get(id)
     products = category.catalog
     produce = Product.query.filter(Product.category_Id == id).all()
@@ -404,6 +454,8 @@ def update_item(id):
             rate = request.form.get('r1name1')
             rate_unit = request.form.get('pr1name1')
             inventory = request.form.get('s1name1')
+            expiry = request.form.get('d1name1')
+
             # product_2 = Product.query.get(id)
             # print(product_1)
             produce = Product.query.filter(
@@ -428,6 +480,10 @@ def update_item(id):
             if not inventory == "":
                 product = Product.query.get(id)
                 product.stock = inventory
+                db.session.commit()
+            if not expiry == "":
+                product = Product.query.get(id)
+                product.expiredBy = expiry
                 db.session.commit()
 
             for pro in produce:

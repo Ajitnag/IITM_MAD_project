@@ -112,7 +112,7 @@ logout %}
           border-right: 3px solid rgb(3, 33, 31);
 
           padding: 10px 10px;
-          width: 40%;
+          width: 35%;
         "
       >
         Product Name
@@ -122,7 +122,7 @@ logout %}
           border-right: 3px solid rgb(3, 33, 31);
 
           padding: 10px 10px;
-          width: 15%;
+          width: 11%;
         "
       >
         Price
@@ -132,10 +132,20 @@ logout %}
           border-right: 3px solid rgb(3, 33, 31);
 
           padding: 10px 10px;
-          width: 15%;
+          width: 14%;
         "
       >
         Inventory
+      </th>
+      <th
+        style="
+          border-right: 3px solid rgb(3, 33, 31);
+
+          padding: 10px 10px;
+          width: 16%;
+        "
+      >
+        Expiry
       </th>
 
       <th style=" padding: 10px 10px; width: 35%" colspan="2">
@@ -146,7 +156,7 @@ logout %}
     <tbody>
     <tr align="center" style="width: 100%">
       <td style="padding: 10px; border-right: 3px solid rgb(3, 33, 31)">
-        {{ variety.product_id }}
+        #{{ variety.product_id }}
       </td>
       <td
         style=" padding: 5px; border-right: 3px solid rgb(3, 33, 31)"
@@ -182,7 +192,16 @@ logout %}
           </strong
         >
       </td>
+
       {% endif %}
+      <td 
+      style=" padding: 5px; border-right: 3px solid rgb(3, 33, 31)"
+    >
+      <strong
+        >{{ variety.expiredBy }} 
+        </strong
+      >
+    </td>
       <td >
         <a class="btn btn-info btn-sm" style="width:41%;color:rgb(246, 5, 218);font-size: 0.9em"  href="/manager_dash/update_item/{{ variety.product_id }}"
           >Edit</a

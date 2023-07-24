@@ -76,7 +76,7 @@ span style="margin: auto"
 <div></div> -->
 <section>
 <div>
-  {% if categories|length == 0 %}
+  {% if categories.items|length == 0 %}
   <div class="alert alert-warning" role="alert">
     <p>None Categories, Added yet.</p>
     Press
@@ -107,6 +107,7 @@ span style="margin: auto"
 >
 <br>
 <br>
+<h6>(Page {{ categories.page }})</h6> 
   <table class="table table-hover"
     style="
       border: 5px solid rgb(0, 255, 242);
@@ -130,22 +131,22 @@ span style="margin: auto"
           border-right: 3px solid rgb(3, 33, 31);
 
           padding: 10px 10px;
-          width: 56%;
+          width: 35%;
         "
       >
         Category Name
       </th>
 
-      <th style=" padding: 10px 10px; width: 40%" colspan="2">
+      <th style=" padding: 10px 10px; width: 45%" colspan="3">
         Actions
       </th>
     </tr></thead>
     <tbody>
 
-    {% for variety in categories %}
+    {% for variety in categories.items %}
     <tr align="center" style="width: 100%">
       <td style="padding: 10px; border-right: 3px solid rgb(3, 33, 31)">
-        {{ variety.category_Id }}
+        #{{ variety.category_Id }}
       </td>
       <td
         style="width: 50%; padding: 5px; border-right: 3px solid rgb(3, 33, 31)"
@@ -157,9 +158,15 @@ span style="margin: auto"
             >{{ variety.category_Name }}</a
           ></button>
       </td>
+      <td >
+        <a class="btn btn-info btn-sm" style="width:80%;color:rgb(246, 5, 218);font-size: 0.9em"  href="{{ url_for('views.Update_category', id = variety.category_Id)}}"
+          >Edit</a
+        >
+
+      </td>
       <td  >
         
-        <strong><a class="btn btn-info btn-sm" style="width:47%;color:rgb(246, 5, 218);font-size: 1em;margin:1px" href="/manager_dash/category_create/{{ variety.category_Id }}" style="text-decoration: none;"
+        <strong><a class="btn btn-info btn-sm" style="width:60%;color:rgb(246, 5, 218);font-size: 1em;margin:1px" href="/manager_dash/category_create/{{ variety.category_Id }}" style="text-decoration: none;"
           >Add Product</a
         ></strong>
       </td>
@@ -173,10 +180,36 @@ span style="margin: auto"
     </tr></tbody>
     {% endfor %}
   </table>
+  <nav aria-label="...">
+    <ul class="pagination">
+      {% if categories.has_prev %}
+      <li class="page-item ">
+        <a class="page-link" href="{{ url_for('views.Dash_manager', page__1=categories.prev_num) }}" tabindex="-1">Previous</a>
+      </li>{% endif %}
+      {% for number in categories.iter_pages() %}
+          {% if categories.page != number %}
+             <li class="page-item "><a class="page-link" href="{{ url_for('views.Dash_manager', page_1=number) }}">{{ number }}</a></li>
+      {% else %}
+        <li class="page-item ">
+          <a class="page-link active" href="{{ url_for('views.Dash_manager', page_1=categories.page) }}">{{ categories.page }}<span class="sr-only"></span></a>
+      </li>
+  {% endif %}
+  {% endfor %}
+  {% if categories.has_next %}
+  
+  
+      <li class="page-item">
+        <a class="page-link" href="{{ url_for('views.Dash_manager', page_1=categories.next_num) }}">Next</a>
+      </li>
+      {% endif %}
+    </ul>
+  </nav>
   {% endif %}
 </div></section>
 <section>
   <strong><span class="text-center" style="font-size:2vw;margin-left:20%;color:rgba(10, 0, 3, 0.426)">Orders Received</span></strong>
+ 
+  <h6>(Page {{ orders.page }})</h6> 
   <table class="table table-hover"
     style="
       border: 5px solid rgba(0, 60, 255, 0.781);
@@ -212,10 +245,10 @@ span style="margin: auto"
     </tr></thead>
     <tbody>
 
-    {% for record in orders %}
+    {% for record in orders.items %}
     <tr align="center" style="width: 100%">
       <td style="padding: 10px; border-right: 3px solid rgb(3, 33, 31)">
-        {{ record.customer_id }}
+        #{{ record.customer_id }}
       </td>
       <td
         style="width: 50%; padding: 5px; border-right: 3px solid rgb(3, 33, 31)"
@@ -232,7 +265,33 @@ span style="margin: auto"
       </td>
     
       </tr>
-    </tr></tbody>
+    </tr>
+  </tbody>
     {% endfor %}
+    
   </table></section>
+<nav aria-label="...">
+  <ul class="pagination">
+    {% if orders.has_prev %}
+    <li class="page-item ">
+      <a class="page-link" href="{{ url_for('views.Dash_manager', page_2=orders.prev_num) }}" tabindex="-1">Previous</a>
+    </li>{% endif %}
+    {% for number in orders.iter_pages() %}
+        {% if orders.page != number %}
+           <li class="page-item "><a class="page-link" href="{{ url_for('views.Dash_manager', page_2=number) }}">{{ number }}</a></li>
+    {% else %}
+      <li class="page-item ">
+        <a class="page-link active" href="{{ url_for('views.Dash_manager', page_2=orders.page) }}">{{ orders.page }}<span class="sr-only"></span></a>
+    </li>
+{% endif %}
+{% endfor %}
+{% if orders.has_next %}
+
+
+    <li class="page-item">
+      <a class="page-link" href="{{ url_for('views.Dash_manager', page_2=orders.next_num) }}">Next</a>
+    </li>
+    {% endif %}
+  </ul>
+</nav>
 {% endblock %}
