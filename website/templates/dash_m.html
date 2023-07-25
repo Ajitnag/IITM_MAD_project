@@ -45,8 +45,8 @@ logout %}
                 ></span
               ></span
             >
-{% endblock %}{% block cart %}<
-span style="margin: auto"
+{% endblock %}{% block cart %}
+<span style="margin: auto"
  ><a
    class="nav-item nav-link"
    style="
@@ -63,14 +63,36 @@ span style="margin: auto"
   </svg>Store
    </a
 ></span> {% endblock %} {% block content %}<section>
+  <div class="container">
+    <div class="row">
+      <div class="col-8">
 <h5>
   <span style="float: left; font-size: 2vw">{{ name }}'s Dashboard</span>
-</h5>
+</h5></div>
+<br><br>
+<div class="col-6">
+  <div class="col-2" ><strong>Search For: </strong></div>
+  <form action="{{ url_for('views.Dash_manager') }}" method="POST" autocomplete="off">
+    <div class="row">
+      
+      <div class="col-6">
+        <input type="text" class="form-control" name="search" id="search" placeholder="Enter Keyword" />
+      </div>
+      <div class="col-2" align="left">
+        <input type="submit" class="form-control btn btn-primary" value="Search"  /> 
+      </div>
+      <div class="col-3" align="left"><a href="{{ url_for('views.Dash_manager') }}">
+        <input type="submit" class="form-control btn btn-dark" value="Go back"  /> </a>
+      </div>
+    </div>
+  </form>
+</div>
 
+</div>
 <!-- <span ><a href="">Summary</a></span> -->
 <!-- <span style="float: right"><a href="/logout">Logout</a></span> -->
+</div>
 
-<br />
 <hr /></section>
 <!-- <div><a href="/category_create">Add Category</a></div>
 <div></div> -->
@@ -78,7 +100,7 @@ span style="margin: auto"
 <div>
   {% if categories.items|length == 0 %}
   <div class="alert alert-warning" role="alert">
-    <p>None Categories, Added yet.</p>
+    <p>None Categories Found, Not Added yet.</p>
     Press
     <button type="button" class="btn btn-dark btn-sm">
       <a
@@ -211,8 +233,23 @@ span style="margin: auto"
 </div></section>
 <section>
   <strong><span class="text-center" style="font-size:2vw;margin-left:20%;color:rgba(10, 0, 3, 0.426)">Orders Received</span></strong>
- 
-  <h6>(Page {{ orders.page }})</h6> 
+  <div class="col-1" > <h6>(Page {{ orders.page }})</h6> </div>
+    <form action="{{ url_for('views.Dash_manager') }}" method="POST" autocomplete="off">
+      <div class="row" >
+        
+        <div class="col-3" style="margin-left:10%">
+          <input type="date" style="color:rgb(251, 169, 169);" value="None"class="form-control" name="date" id="date" placeholder="Enter Date" />
+        </div>
+        <div class="col-1" >
+          <input type="submit" class="form-control btn btn-primary" value="Search"  /> 
+        </div>
+        
+        <div class="col-1" style="margin-left:0%"align="left"><button type="submit" class="btn btn-dark" formaction="{{ url_for('views.Dash_manager')}}">
+          Back </button>
+        </div></form>
+      
+    
+  
   <table class="table table-hover"
     style="
       border: 5px solid rgba(0, 60, 255, 0.781);
@@ -237,9 +274,9 @@ span style="margin: auto"
 
           padding: 10px 10px;
           width: 45%;
-        "
+        " colspan="2"
       >
-        Product Name
+        Product & Category Name
     </th>
     <th
         style="
@@ -264,14 +301,15 @@ span style="margin: auto"
         #{{ record.customer_id }}
       </td>
       <td
-        style="width: 50%; padding: 5px; border-right: 3px solid rgb(3, 33, 31)"
         
-      >
-        <a class="btn btn-success"
-            style="color: rgb(16, 246, 227);text-decoration: none;font-size: 1.3em"
+        
+      ><span>
+        <td style="width: 50%; padding: 5px; border-right: 3px solid rgb(3, 33, 31)"><small style="color:#0000ff" class="text-muted"><h6 style="color:rgb(255, 0, 170)" class="font-weight-light" >{{ record.category_name}}</h6></small>
+          <a class="btn btn-light"
+            style="color: #0000ff;text-decoration: none;font-size: 1.3em"
             href=""
-            >{{ record.product_name }}</a
-          ></button>
+            >**{{ record.product_name }}**</a
+          ></span></button></td>
       </td>
       <td style="padding: 10px; border-right: 3px solid rgb(3, 33, 31)">
         {{ record.quantity_inCart }}
@@ -285,7 +323,7 @@ span style="margin: auto"
   </tbody>
     {% endfor %}
     
-  </table></section>
+  </table></div></section>
 <nav aria-label="...">
   <ul class="pagination">
     {% if orders.has_prev %}

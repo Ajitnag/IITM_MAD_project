@@ -68,6 +68,7 @@ class Ecom(db.Model):
         'product.product_id'))
     customer_id = db.Column(db.Integer(), db.ForeignKey(
         'customer.id'))
+    category_name = db.Column(db.String(), nullable=False)
     manager_id = db.Column(db.Integer(), nullable=False)
     product_name = db.Column(db.String(), nullable=False)
     date_added = db.Column(db.Date, default=date.today())

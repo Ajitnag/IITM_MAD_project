@@ -288,11 +288,31 @@
           {% else %} 
 
           <br>
-          <div style="font-style: italic;color:rgba(68, 12, 114, 0.466);font-size: 3vw;" align="center"><strong>Available Sections in Store</strong></div>
-          <br>
+          <div style="font-style: italic;color:rgba(68, 12, 114, 0.466);font-size: 3vw;" align="center"><strong>Available Sections in Store</strong></div><br>
+          <div class="col-5" style="margin-left: 30%">
+            
+            <form action="{{ url_for('views.Store_front') }}" method="POST" autocomplete="off">
+              <div class="row"  >
+                
+                <div class="col-6">
+                  <input type="text" class="form-control" name="search" id="search" placeholder="Section Name" />
+                </div>
+                <div class="col-2" align="left">
+                  <input type="submit" class="form-control btn btn-info" value="Search"  /> 
+                </div>
+                <div class="col-3" align="left"><a href="{{ url_for('views.Store_front') }}">
+                  <input type="submit" class="form-control btn btn-dark" value="Go back"  /> </a>
+                </div>
+              </div>
+            </form>
+          </div></div>
+            
+          <br><hr>
+          
           <div class="container">
             <div class="row align-items-start">
               {% for variety in categories %}
+              
               <div class="col">
                 <table class="table"
     style="

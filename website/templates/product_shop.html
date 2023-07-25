@@ -71,7 +71,9 @@
        STYLE="font-family:'Verdana';margin-left :5px;color:whitesmoke"
        class="badge badge-light"
      >{{ cart|length }}</span></a
-   ></span> {% endblock %}{% block content %}<section>
+   ></span> {% endblock %}
+   {% block content %}<section>
+    <div>
     <h5>
       <span style="float: left">{{ name }}'s Catalogue </span>
     </h5>
@@ -80,11 +82,37 @@
         ><a class="btn btn-dark" style="color: rgb(216, 249, 1); font-size: 1.5vw;text-decoration: none;" href="{{ url_for('views.Store_front') }}">Back to Store</a></span
       >
     
-    </h6>
+    </h6></div>
+    <br><br>
+    <div class="col-6">
+      
+      <form action="{{ url_for('views.Store_product', category=name)}}" method="POST" autocomplete="off">
+        <div class="row">
+          
+          <div class="col-4">
+            <input type="text" class="form-control" value="" name="search" id="search" placeholder="Product Name" />
+          </div>
+          <div class="col-3" style="margin-left:2%">
+            <input type="text" class="form-control" value="" name="search2" placeholder="Price" />
+          </div>
+          <div class="col-4" style="margin-left:2%">
+            <input type="date" style="color:rgb(251, 169, 169);" value=""class="form-control" name="date" id="date" placeholder="Expiry date" />
+          </div>
+          <div class="col-2" align="left">
+            <input type="submit" class="form-control btn btn-info" value="Search"  /> 
+          </div>
+          <div class="col-3" align="left"><button type="submit" class="btn btn-dark" formaction="{{ url_for('views.Store_product', category=name)}}">
+            Back </button>
+          </div>
+        </form>
+        </div>
+      
+      </div>
+    
     
     <!-- <span style="float: right"><a href="/logout">Logout</a></span> -->
     
-    <br />
+  
     <hr /></section>
     <section>
     {% if products|length == 0 %}

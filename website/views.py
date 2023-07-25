@@ -93,7 +93,7 @@ def Checkout(id):
         for item in session['carte']:
             print(item)
             order = Ecom(quantity_inCart=item['quantity'],
-                         product_id=item['id'], customer_id=id, manager_id=item['manager_id'], product_name=item['name'])
+                         product_id=item['id'], customer_id=id, manager_id=item['manager_id'], product_name=item['name'], category_name=item['category'])
 
             product = Product.query.filter(
                 Product.product_id == item['id']).first()
@@ -123,31 +123,67 @@ def Checkout(id):
 
 
 @login_required
-@Views.route('/customer_dash')
-@Views.route('/store')
+@Views.route('/store', methods=["GET", "POST"])
 def Store_front():
     user_id = session['id']
     user_role = session['role']
+
     if 'carte' not in session:
         session['carte'] = []
     if not session['carte']:
         products_cart_1 = []
     if session['carte']:
         products_cart_1 = session['carte']
+
     manager_1 = False
+
     if user_role == 'Customer':
         customer = Customer.query.get(user_id)
-        categories = Category.query.all()
+        categories_1 = Category.query.all()
+        list = []
+        if request.method == 'POST' and 'search' in request.form:
+            search_ = request.form.get("search")
+            if search_.isdigit():
+                flash("Incorrect Input. Only accept alphabets", category='error')
+                return redirect(url_for('views.Store_front'))
 
-        return render_template('storefront.html', categories=categories, name=customer.username, id=customer.id, cart=products_cart_1)
+            else:
+                # like accepts a regular expression  type formatted search string
+                search = '%{}%'.format(search_)
+                category_name = Category.query.filter(
+                    Category.category_Name.like(search))
+                for items in category_name:
+                    list.append(items)
+                print(list)
+                return render_template('storefront.html', categories=list, name=customer.username, id=customer.id, cart=products_cart_1)
+
+        return render_template('storefront.html', categories=categories_1, name=customer.username, id=customer.id, cart=products_cart_1)
+
     elif user_role == 'Manager':
         manager = Store.query.get(user_id)
         categories = Category.query.filter(
             Category.managedBy_Id == user_id).all()
         manager_1 = True
+        list = []
+        if request.method == 'POST' and 'search' in request.form:
+            search_ = request.form.get("search")
+            if search_.isdigit():
+                flash("Incorrect Input. Only accept alphabets", category='error')
+                return redirect(url_for('views.Store_front'))
+
+            else:
+                # like accepts a regular expression  type formatted search string
+                search = '%{}%'.format(search_)
+                category_name = Category.query.filter(
+                    Category.category_Name.like(search))
+                for items in category_name:
+                    list.append(items)
+                print(list)
+                return render_template('storefront.html', categories=list, name=manager.username, id=manager.id, cart=products_cart_1, manager_1=manager_1)
+
         return render_template('storefront.html', categories=categories, name=manager.username, id=manager.id, cart=products_cart_1, manager_1=manager_1)
     else:
-        return render_template("landing_page.html")
+        return redirect(url_for("views.landing_page.html"))
 
 
 @login_required
@@ -163,6 +199,62 @@ def Store_product(category):
         if pro.stock > 0:
             m += 1
     products_cart = session['carte']
+
+    if request.method == 'POST' and ('search' in request.form or 'search2' in request.form or 'date' in request.form):
+        if 'search' in request.form:
+            search_ = request.form.get("search")
+        print(search_)
+        if 'search2' in request.form:
+            search_2 = request.form.get("search2")
+        print(search_2)
+        if 'date' in request.form:
+            date = request.form.get("date")
+        print(date)
+        if search_:
+            list = []
+            if search_.isdigit():
+                flash("Digits not accepted in namespace", category='error')
+                return redirect(url_for('views.Category_catalog', id=category.category_Id))
+            elif search_:
+                # like accepts a regular expression  type formatted search string
+                search = '%{}%'.format(search_)
+                product_name = Product.query.filter(
+                    Product.product_Name.like(search)).all()
+                # print(product_name)
+                for pro in product_name:
+                    if int(pro.category_Id) == category_1.category_Id:
+                        list.append(pro)
+                print(list)
+                return render_template('product_shop.html', name=category, products=list, product_instock=m, cart=products_cart)
+        if search_2:
+            list = []
+            if search_2.isdigit():
+                search_1 = int(search_2)
+                print(search_1)
+
+                # this is a cool deep reveal about querying not from the table itself but object...proc becomes a list where all such objects satifying condition gets appended
+                for pro in products:
+                    if pro.rate == search_1:
+                        list.append(pro)
+
+            else:
+                flash("Price input must be strictly in digits only.",
+                      category='error')
+                return render_template('product_shop.html', name=category, products=products, product_instock=m, cart=products_cart)
+            return render_template('product_shop.html', name=category, products=list, product_instock=m, cart=products_cart)
+
+        if date:
+            list = []
+
+            for pro in products:
+                if pro.expiredBy == date:
+                    list.append(pro)
+
+            return render_template('product_shop.html', name=category, products=list, product_instock=m, cart=products_cart)
+
+        if search_ == "" or search_2 == "" or date == "":
+            return redirect(url_for('views.Store_product', category=category_1.category_Name))
+
     if request.method == 'POST':
         category_3 = Category.query.filter(
             Category.category_Name == category).first()
@@ -221,7 +313,7 @@ def Dash_manager():
     manager_id = session['id']
     manager = Store.query.get(manager_id)
     list = []
-    # n = Category_warning(id)
+
     page_1 = request.args.get('page_1', 1, type=int)
     pagination_1 = Category.query.filter(
         Category.managedBy_Id == manager_id).order_by(
@@ -238,14 +330,51 @@ def Dash_manager():
     # this statement is wrong cuz list will not be paginated...only applied to db.model class and not relationships
     # orders_received = orders_received_1.query.paginate(per_page=5)
 
-    if request.method == 'POST':
+    if request.method == 'POST' and 'cname' in request.form:
         c1 = request.form.get("cname")
         c = Category(category_Name=c1, managedBy_Id=manager_id)
         db.session.add(c)
         db.session.commit()
-        categories = Category.query.filter(
-            Category.managedBy_Id == manager_id).all()
+        # categories = Category.query.filter(
+        #     Category.managedBy_Id == manager_id).all()
         return render_template('dash_m.html', categories=pagination_1, name=manager.username, id=manager_id, orders=pagination_2)
+    if request.method == 'POST' and 'search' in request.form:
+        search_ = request.form.get("search")
+        if search_.isdigit():
+            search_1 = int(search_)
+            # print(search_1)
+            category_id = Category.query.filter(
+                Category.category_Id == search_1).paginate(page=page_1, per_page=4)
+
+            list = []
+            for items in category_id:
+                print(items)
+                n = Category_warning(items.category_Id)
+                list.append(n)
+
+            return render_template('dash_m.html', categories=category_id, name=manager.username, id=manager_id, orders=pagination_2, list=list)
+
+        else:
+            # like accepts a regular expression  type formatted search string
+            search = '%{}%'.format(search_)
+            category_name = Category.query.filter(
+                Category.category_Name.like(search)).paginate(page=page_1, per_page=4)
+            list = []
+
+            for items in category_name:
+                n = Category_warning(items.category_Id)
+                list.append(n)
+            # print(category)
+            return render_template('dash_m.html', categories=category_name, name=manager.username, id=manager_id, orders=pagination_2, list=list)
+    if request.method == 'POST' and 'date' in request.form:
+
+        date = request.form.get("date")
+        if date == "":
+            return redirect(url_for('views.Dash_manager'))
+        else:
+            order_1 = Ecom.query.filter(
+                Ecom.date_added == date).paginate(page=page_2, per_page=4)
+            return render_template('dash_m.html', categories=pagination_1, name=manager.username, id=manager_id, orders=order_1, list=list, original=pagination_2)
     return render_template('dash_m.html', categories=pagination_1, name=manager.username, id=manager_id, orders=pagination_2, list=list)
 
 
@@ -267,16 +396,10 @@ def Add_category():
                          managedBy_Id=manager_id, description=description)
             db.session.add(c)
             db.session.commit()
-            page_1 = request.args.get('page_1', 1, type=int)
-            pagination_1 = Category.query.filter(
-                Category.managedBy_Id == manager_id).order_by(
-                Category.category_Id).paginate(page=page_1, per_page=4)
-    # Pagination of results
-            page_2 = request.args.get('page_2', 1, type=int)
-            pagination_2 = Ecom.query.filter(Ecom.manager_id == manager_id).order_by(
-                Ecom.date_added).paginate(page=page_2, per_page=4)
+
             flash("New Category added")
-            return render_template('dash_m.html',  categories=pagination_1, name=manager.username, id=manager_id, orders=pagination_2)
+            return redirect(url_for('views.Dash_manager'))
+
     return render_template('category_form.html', name=manager.username)
 
 
@@ -327,12 +450,12 @@ def Add_product(id):
         category.catalog.append(p)
         db.session.commit()
         return redirect(url_for('views.Dash_manager'))
-        # return render_template('dash_m.html',  categories=categories, name=manager.username)
+
     return render_template('product_add.html', name=category.category_Name, variable=id)
 
 
 @login_required
-@Views.route('/manager_dash/category_catalog/<int:id>')
+@Views.route('/manager_dash/category_catalog/<int:id>', methods=["GET", "POST"])
 def Category_catalog(id):
     manager_id = session['id']
     manager = Store.query.get(manager_id)
@@ -344,6 +467,62 @@ def Category_catalog(id):
     for pro in produce:
         if pro.stock > 0:
             m += 1
+
+    if request.method == 'POST':
+        if 'search' in request.form:
+            search_ = request.form.get("search")
+        print(search_)
+        if 'search2' in request.form:
+            search_2 = request.form.get("search2")
+        print(search_2)
+        if 'date' in request.form:
+            date = request.form.get("date")
+        print(date)
+        if search_:
+            list = []
+            if search_.isdigit():
+                flash("Digits not accepted in namespace", category='error')
+                return redirect(url_for('views.Category_catalog', id=category.category_Id))
+            elif search_:
+                # like accepts a regular expression  type formatted search string
+                search = '%{}%'.format(search_)
+                product_name = Product.query.filter(
+                    Product.product_Name.like(search)).all()
+                # print(product_name)
+                for pro in product_name:
+                    if int(pro.category_Id) == id:
+                        list.append(pro)
+                print(list)
+                return render_template('category_catalog.html', name=category.category_Name, category_id=category.category_Id, products=list, product_instock=m)
+        if search_2:
+            list = []
+            if search_2.isdigit():
+                search_1 = int(search_2)
+                print(search_1)
+
+                # this is a cool deep reveal about querying not from the table itself but object...proc becomes a list where all such objects satifying condition gets appended
+                for pro in products:
+                    if pro.rate == search_1:
+                        list.append(pro)
+
+            else:
+                flash("Price input must be strictly in digits only.",
+                      category='error')
+                return render_template('category_catalog.html', name=category.category_Name, category_id=category.category_Id, products=products, product_instock=m)
+            return render_template('category_catalog.html', name=category.category_Name, category_id=category.category_Id, products=list, product_instock=m)
+
+        if date:
+            list = []
+
+            for pro in products:
+                if pro.expiredBy == date:
+                    list.append(pro)
+
+            return render_template('category_catalog.html', name=category.category_Name, category_id=category.category_Id, products=list, product_instock=m)
+
+        if search_ == "" or search_2 == "" or date == "":
+            return redirect(url_for('views.Category_catalog', id=category.category_Id))
+
     return render_template('category_catalog.html', name=category.category_Name, category_id=category.category_Id, products=products, product_instock=m)
 
 
@@ -382,11 +561,15 @@ def delete_account():
 @login_required
 @Views.route('/manager_dash/delete_category/<int:id>')
 def delete_category(id):
-    user_id = session['id']
     user_role = session['role']
     if user_role == 'Manager':
         category = Category.query.get(id)
         products = Product.query.filter_by(category_Id=id).all()
+        orders = Ecom.query.filter_by(
+            category_name=category.category_Name).all()
+        for order in orders:
+            db.session.delete(order)
+            db.session.commit()
         for pro in products:
             db.session.delete(pro)
             db.session.commit()
@@ -399,11 +582,14 @@ def delete_category(id):
 @login_required
 @Views.route('/manager_dash/delete_product/<int:id>')
 def delete_product(id):
-    user_id = session['id']
     user_role = session['role']
 
     if user_role == 'Manager':
         product = Product.query.get(id)
+        orders = Ecom.query.filter_by(product_id=id).all()
+        for order in orders:
+            db.session.delete(order)
+            db.session.commit()
         db.session.delete(product)
         db.session.commit()
         flash("Product Removed.")
