@@ -71,6 +71,7 @@ class Ecom(db.Model):
     category_name = db.Column(db.String(), nullable=False)
     manager_id = db.Column(db.Integer(), nullable=False)
     product_name = db.Column(db.String(), nullable=False)
+    price_perunit = db.Column(db.Integer(), nullable=False)
     date_added = db.Column(db.Date, default=date.today())
 
 

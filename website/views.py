@@ -2,13 +2,145 @@
 from flask import Flask, Blueprint, render_template, request, flash, session, url_for, redirect
 from flask_login import login_required, current_user
 from .model import Store, Customer, Category, Product, Ecom, db
+import csv
+from datetime import date
+from pathlib import Path
+import pandas as pd
+import matplotlib.pyplot as plt
+import os
+import matplotlib
+matplotlib.use('Agg')
+# Agg is matplotlib backend for creating png files
 
 
 Views = Blueprint("views", __name__)
 
+
+def Category_warning(id):
+    category = Category.query.get(id)
+    products = category.catalog
+    produce = Product.query.filter(Product.category_Id == id).all()
+    m = 0
+    for pro in produce:
+        if pro.stock > 0:
+            m += 1
+    n = len(produce) - m
+    return n
+
+
+def create_ordercsv():
+    with open(Path('website/static', 'orders.csv'), 'w', newline='') as orders:
+        fieldnames = ['customerid', 'product', 'category',
+                      'quantity', 'price', 'purchase date', 'manager_id']
+        writer = csv.DictWriter(
+            orders, fieldnames=fieldnames, lineterminator='\n')
+        writer.writeheader()
+        orders.close()
+
+   # monthly, weekly business data? Product wise......qty sold in a week or month.....gives estimate of demand for the product
+    # Category wise
+    # What product sold the most? Qty ---bar chart of all products in a category
+    # Highest revenue product? Sale price  ---bar chart of all products in a category
+
+
+def pd_1():
+    Orders_csv = pd.read_csv(Path('website/static', 'orders.csv'))
+    Orders_ = pd.DataFrame(Orders_csv)
+    Orders_['month'] = Orders_['purchase date'].str[5:7]
+    Orders_['month'] = Orders_['month'].astype('int32')
+    Orders_['quantity'] = Orders_['quantity'].astype('int32')
+    Orders_['price'] = pd.to_numeric(Orders_['price'])
+    Orders_['sales'] = Orders_['quantity'] * Orders_['price']
+
+    # Best category for sales
+    # Highest grossing Category? ---bar chart of all available categories in manager's portfolio
+    # if i didnot do index reset then i am getting no way to access sales amt from this groupby object
+    ola = Orders_.groupby('category').sum()['sales'].reset_index()
+    cat = ola.category.tolist()
+    sale = ola.sales.tolist()
+
+    # print(sale)
+    # for item in categorie:
+    #     list_.append(item)
+    plt.bar(cat, sale)
+    plt.xticks(cat)
+    plt.ylabel("Total Revenue (Rs)")
+    plt.xlabel("Category Name")
+    plt.savefig('website/static/BestCategory.png')
+    plt.clf()
+
+
+def pd_2():
+    Orders_csv = pd.read_csv(Path('website/static', 'orders.csv'))
+    Orders_ = pd.DataFrame(Orders_csv)
+    Orders_['month'] = Orders_['purchase date'].str[5:7]
+    Orders_['month'] = Orders_['month'].astype('int32')
+    Orders_['quantity'] = Orders_['quantity'].astype('int32')
+    Orders_['price'] = pd.to_numeric(Orders_['price'])
+    Orders_['sales'] = Orders_['quantity'] * Orders_['price']
+
+    # Most recurring Customer
+    ola2 = Orders_.groupby('customerid').sum()['sales'].reset_index()
+    cat2 = ola2.customerid.tolist()
+    sale2 = ola2.sales.tolist()
+
+    # print(ola2)
+    # for item in categorie:
+    #     list_.append(item)
+    plt.bar(cat2, sale2)
+    plt.xticks(cat2)
+    plt.ylabel("Total Purchases (Rs)")
+    plt.xlabel("Customer Id")
+    plt.savefig('website/static/BestCustomer.png')
+    plt.clf()
+    # plt.show()
+
+
+def pd_3(category):
+    product_list = []
+    sales_list = []
+    Orders_csv = pd.read_csv(Path('website/static', 'orders.csv'))
+    Orders_ = pd.DataFrame(Orders_csv)
+    Orders_['month'] = Orders_['purchase date'].str[5:7]
+    Orders_['month'] = Orders_['month'].astype('int32')
+    Orders_['quantity'] = Orders_['quantity'].astype('int32')
+    Orders_['price'] = pd.to_numeric(Orders_['price'])
+    Orders_['product'] = Orders_['product'].astype('str')
+    Orders_['category'] = Orders_['category'].astype('str')
+    Orders_['sales'] = Orders_['quantity'] * Orders_['price']
+
+    # Most recurring Customer
+    ola3 = Orders_.groupby(['category', 'product']).sum()[
+        'sales'].reset_index()
+    cat3 = ola3.category.tolist()
+    cat4 = ola3['product'].tolist()
+    sale3 = ola3.sales.tolist()
+    for index, categ in enumerate(cat3):
+        if categ == category:
+            product_list.append(cat4[index])
+            sales_list.append(sale3[index])
+
+    print(product_list)
+    print(sales_list)
+
+    plt.bar(product_list, sales_list)
+    plt.xticks(product_list)
+    plt.ylabel("Total Purchases (Rs)")
+    plt.xlabel("Product Name")
+    plt.savefig('website/static/BestProduct.png')
+    plt.clf()
+    # plt.show()
+
+
+# monthly, weekly business data? Product wise......qty sold in a week or month.....gives estimate of demand for the product
+
+# Category wise
+# What product sold the most? Qty ---bar chart of all products in a category
+# Highest revenue product? Sale price  ---bar chart of all products in a category
+# Highest grossing Category? ---bar chart of all available categories in manager's portfolio
+
+
 # Landing page
-
-
 @Views.route('/')
 def Home():
     return render_template('landing_page.html')
@@ -88,26 +220,30 @@ def Remove_FromCart(id1):
 @login_required
 @Views.route('/store/cart/checkout/<int:id>')
 def Checkout(id):
-
+    list = []
     if session['role'] == 'Customer':
         for item in session['carte']:
-            print(item)
+            # print(item)
             order = Ecom(quantity_inCart=item['quantity'],
-                         product_id=item['id'], customer_id=id, manager_id=item['manager_id'], product_name=item['name'], category_name=item['category'])
+                         product_id=item['id'], customer_id=id, manager_id=item['manager_id'], product_name=item['name'], category_name=item['category'], price_perunit=item['price'])
 
             product = Product.query.filter(
                 Product.product_id == item['id']).first()
 
             new_stock = product.stock - int(item['quantity'])
             if new_stock >= 0:
+
+                list.append(item)
                 db.session.add(order)
                 product.stock = new_stock
                 db.session.commit()
+                continue
             else:
                 flash(
                     f"Not enough stock present with us at the moment.Please select lesser quantity for the product/--{ product.product_Name }--\into cart to make order successful.", category='error')
                 return redirect(url_for('views.Cart'))
         db.session.commit()
+
     else:
         session.pop("id")
         session.pop("role")
@@ -117,6 +253,20 @@ def Checkout(id):
     session.pop("cart")
 
     session.modified = True
+    print(list)
+    date_ = date.today()
+
+    # to add rows to existing csv firl use append ir 'a' instead of writing 'w' ....if u open csv with write it will erase previous data and write only rows in this open window
+    with open(Path('website/static', 'orders.csv'), 'a', newline='') as orders:
+        fieldnames = ['customerid', 'product', 'category',
+                      'quantity', 'price', 'purchase date', 'manager_id']
+        writer = csv.DictWriter(
+            orders, fieldnames=fieldnames, lineterminator='\n')
+# dont use' xx'__'xx ' same quotes for lines with nested quotes...use different quote for inside and outside...so as not to confuse interpreter..used same quote '' for values and dict information wasnot read properly
+        for item in list:
+            writer.writerow({"customerid": id, "product": item['name'], "category": item['category'],
+                             "quantity": item['quantity'], "price": item['price'], "purchase date": str(date_), "manager_id": item['manager_id']})
+    orders.close()
 
     flash("Your order is registerd with the store.We will deliver Shortly.Thanks for your purchase!")
     return redirect(url_for('views.Store_front'))
@@ -293,17 +443,6 @@ def Store_product(category):
     return render_template('product_shop.html', name=category, products=products, product_instock=m, cart=products_cart)
 
 
-def Category_warning(id):
-    category = Category.query.get(id)
-    products = category.catalog
-    produce = Product.query.filter(Product.category_Id == id).all()
-    m = 0
-    for pro in produce:
-        if pro.stock > 0:
-            m += 1
-    n = len(produce) - m
-    return n
-
 # login and Logout
 
 
@@ -313,6 +452,13 @@ def Dash_manager():
     manager_id = session['id']
     manager = Store.query.get(manager_id)
     list = []
+    if os.path.isfile('website/static/BestCategory.png'):
+        os.remove('website/static/BestCategory.png')
+    pd_1()
+
+    if os.path.isfile('website/static/BestCustomer.png'):
+        os.remove('website/static/BestCustomer.png')
+    pd_2()
 
     page_1 = request.args.get('page_1', 1, type=int)
     pagination_1 = Category.query.filter(
@@ -326,6 +472,11 @@ def Dash_manager():
     page_2 = request.args.get('page_2', 1, type=int)
     pagination_2 = Ecom.query.filter(Ecom.manager_id == manager_id).order_by(
         Ecom.date_added).paginate(page=page_2, per_page=4)
+    categorie = []
+    ord = Category.query.all()
+    for item in ord:
+        nom = item.category_Name
+        categorie.append(nom)
 
     # this statement is wrong cuz list will not be paginated...only applied to db.model class and not relationships
     # orders_received = orders_received_1.query.paginate(per_page=5)
@@ -467,6 +618,9 @@ def Category_catalog(id):
     for pro in produce:
         if pro.stock > 0:
             m += 1
+    if os.path.isfile('website/static/BestProduct.png'):
+        os.remove('website/static/BestProduct.png')
+    pd_3(category.category_Name)
 
     if request.method == 'POST':
         if 'search' in request.form:

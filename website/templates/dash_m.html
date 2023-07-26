@@ -126,6 +126,34 @@ logout %}
       >Add Category</a
     >
   </span
+><button type="button" class="btn btn-info" style="margin-left: 20%;color: rgba(227, 21, 7, 0.809); font-size: 1.5vw;text-decoration: none;" data-toggle="modal" data-target="#exampleModalCenter">
+  <em>Best Selling Category</em>
+</button>
+
+<!-- Modal -->
+<div class="modal fade modal-lg" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true" style="width:1500px;">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLongTitle">Highest Selling Category</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <img src="{{ url_for('static',filename='BestCategory.png') }}">
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        
+      </div>
+    </div>
+  </div>
+</div>
+<span style="float: left"
+  >
+   
+  </span
 >
 <br>
 <br>
@@ -233,7 +261,7 @@ logout %}
 </div></section>
 <section>
   <strong><span class="text-center" style="font-size:2vw;margin-left:20%;color:rgba(10, 0, 3, 0.426)">Orders Received</span></strong>
-  <div class="col-1" > <h6>(Page {{ orders.page }})</h6> </div>
+  <div class="col-1" > <h6>(Page {{ orders.page }})</h6> </div><span>
     <form action="{{ url_for('views.Dash_manager') }}" method="POST" autocomplete="off">
       <div class="row" >
         
@@ -247,6 +275,31 @@ logout %}
         <div class="col-1" style="margin-left:0%"align="left"><button type="submit" class="btn btn-dark" formaction="{{ url_for('views.Dash_manager')}}">
           Back </button>
         </div></form>
+
+        <button type="button" class="btn btn-info" style="width: 21%;margin-left: 0%;color: rgba(227, 21, 7, 0.809); font-size: 1.5vw;text-decoration: none;" data-toggle="modal" data-target="#exampleModalCenter1">
+          <em>Customer Spending</em>
+        </button>
+        
+        <!-- Modal -->
+        <div class="modal fade modal-lg" id="exampleModalCenter1" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true" style="width:1500px;">
+          <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle1">Most Spending Customer</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                <img src="{{ url_for('static',filename='BestCustomer.png') }}">
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                
+              </div>
+            </div>
+          </div>
+        </div></span>
       
     
   

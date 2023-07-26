@@ -111,7 +111,31 @@ logout %}
   <span><button type="button" STYLE="font-family:'Verdana',margin-left = 5px;"class="btn btn-secondary">
     Out of stock <span STYLE="font-family:'Verdana';margin-left : 10px" class="badge badge-light">{{ products|length - product_instock }}</span>  
   </button></span>
-  </div>
+  <span></span>
+  <button type="button" class="btn btn-info" style="margin-left: 20%;color: rgba(227, 21, 7, 0.809); font-size: 1.5vw;text-decoration: none;" data-toggle="modal" data-target="#exampleModalCenter3">
+    Highest Revenue Product
+  </button>
+  
+  <!-- Modal -->
+  <div class="modal fade modal-lg" id="exampleModalCenter3" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true" style="width:1500px;">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLongTitle3">Highest Selling Product in {{ name }}</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <img src="{{ url_for('static',filename='BestProduct.png') }}">
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          
+        </div>
+      </div>
+    </div>
+  </div></span></div>
  
   <table
   class="table table-hover"
