@@ -53,7 +53,6 @@ def pd_1():
     Orders_['sales'] = Orders_['quantity'] * Orders_['price']
 
     # Best category for sales
-    # Highest grossing Category? ---bar chart of all available categories in manager's portfolio
     # if i didnot do index reset then i am getting no way to access sales amt from this groupby object
     ola = Orders_.groupby('category').sum()['sales'].reset_index()
     cat = ola.category.tolist()
@@ -140,11 +139,8 @@ def pd_4(product):
     Orders_['purchase date'] = pd.to_datetime(Orders_['purchase date'])
     Orders_['day'] = Orders_['purchase date'].dt.day_name()
     Orders_['day'] = Orders_['day'].astype('category')
-    # print(Orders_['day'])
 
-    # ola4 = Orders_.groupby(['day', 'product', 'quantity'])
-
-    # Most recurring Customer....statements must be separated by . or newline
+    # Most recurring Customer....statements must be separated by . or newline in python
     ola4 = Orders_[['day', 'product', 'quantity']]
     ola5 = ola4.groupby(['day', 'product', 'quantity'])
     # print(ola5.first())
@@ -159,8 +155,7 @@ def pd_4(product):
     f = 0
     g = 0
     for items in ola5:
-        # print(items[0])
-        # print(items[0][2])
+
         if items[0][0] == 'Sunday':
             if items[0][1] == product:
                 a += items[0][2]
@@ -180,13 +175,11 @@ def pd_4(product):
             if items[0][1] == product:
                 d += items[0][2]
             qty[3] = d
-            # print(d)
 
         elif items[0][0] == 'Thursday':
             if items[0][1] == product:
                 e += items[0][2]
                 qty[4] = e
-                # print(e)
 
         elif items[0][0] == 'Friday':
             if items[0][1] == product:
@@ -205,7 +198,7 @@ def pd_4(product):
     e = 0
     f = 0
     g = 0
-    # print(qty)
+
     plt.plot(days, qty, 'om', color='hotpink',
              marker='.', mfc='y', linestyle=':', markersize=20)
 
@@ -217,27 +210,23 @@ def pd_4(product):
     plt.savefig('website/static/Product_demand.png')
     plt.clf()
 
-
-# monthly, weekly business data? Product wise......qty sold in a week or month.....gives estimate of demand for the product
-
-# Category wise
-# What product sold the most? Qty ---bar chart of all products in a category
-# Highest revenue product? Sale price  ---bar chart of all products in a category
-# Highest grossing Category? ---bar chart of all available categories in manager's portfolio
-
-
 # Landing page
+
+
 @Views.route('/')
 def Home():
     return render_template('landing_page.html')
+
+# cart page
 
 
 @login_required
 @Views.route('/store/cart')
 def Cart():
-    print(session['carte'])
+
     products_cart = []
     grand_total = 0
+
     if 'carte' not in session:
         session['carte'] = []
     if 'cart' in session:
@@ -270,7 +259,7 @@ def Cart():
         customer_id = session['id']
     else:
         return "Not a customer.So,Cannot Add To Cart", 400
-    # print(session['carte'])
+
     return render_template('cart.html', cart=products_cart, grand_total=grand_total, customer_id=customer_id)
 
 
@@ -279,23 +268,23 @@ def Cart():
 def Remove_FromCart(id1):
     user_id = session['id']
     grand_total = 0
+
     res = [sub['id'] for sub in session['carte']]
-    print(res)
+
     res_1 = [sub['id'] for sub in session['cart']]
-    print(res_1)
+
     for i in range(len(res_1)):
         if session['cart'][i]['id'] == id1:
             del session['cart'][i]
             session.modified = True
             break
-    print(res_1)
+
     for i in range(len(res)):
         if session['carte'][i]['id'] == id1:
             del session['carte'][i]
             session.modified = True
             break
-    print(res)
-# yeh remove functionality ko cart page is integrate krna baki hai
+
     products_cart = session['carte']
     for item in products_cart:
         grand_total += item['total']
@@ -307,9 +296,10 @@ def Remove_FromCart(id1):
 @Views.route('/store/cart/checkout/<int:id>')
 def Checkout(id):
     list = []
+
     if session['role'] == 'Customer':
+
         for item in session['carte']:
-            # print(item)
             order = Ecom(quantity_inCart=item['quantity'],
                          product_id=item['id'], customer_id=id, manager_id=item['manager_id'], product_name=item['name'], category_name=item['category'], price_perunit=item['price'])
 
@@ -317,37 +307,46 @@ def Checkout(id):
                 Product.product_id == item['id']).first()
 
             new_stock = product.stock - int(item['quantity'])
+
             if new_stock >= 0:
 
                 list.append(item)
                 db.session.add(order)
                 product.stock = new_stock
+
                 db.session.commit()
+
                 continue
+
             else:
+
                 flash(
                     f"Not enough stock present with us at the moment.Please select lesser quantity for the product/--{ product.product_Name }--\into cart to make order successful.", category='error')
                 return redirect(url_for('views.Cart'))
         db.session.commit()
 
     else:
+
         session.pop("id")
         session.pop("role")
         session.modified = True
+
         return "Not a Valid Session.Must Login!", 400
+
     session.pop("carte")
     session.pop("cart")
 
     session.modified = True
-    print(list)
+
     date_ = date.today()
 
-    # to add rows to existing csv firl use append ir 'a' instead of writing 'w' ....if u open csv with write it will erase previous data and write only rows in this open window
+    # to add rows to existing csv file use append 'a' instead of writing 'w' ....if u open csv with write it will erase previous data and write only rows in this open window
     with open(Path('website/static', 'orders.csv'), 'a', newline='') as orders:
         fieldnames = ['customerid', 'product', 'category',
                       'quantity', 'price', 'purchase date', 'manager_id']
         writer = csv.DictWriter(
             orders, fieldnames=fieldnames, lineterminator='\n')
+
 # dont use' xx'__'xx ' same quotes for lines with nested quotes...use different quote for inside and outside...so as not to confuse interpreter..used same quote '' for values and dict information wasnot read properly
         for item in list:
             writer.writerow({"customerid": id, "product": item['name'], "category": item['category'],
@@ -377,8 +376,10 @@ def Store_front():
         customer = Customer.query.get(user_id)
         categories_1 = Category.query.all()
         list = []
+
         if request.method == 'POST' and 'search' in request.form:
             search_ = request.form.get("search")
+
             if search_.isdigit():
                 flash("Incorrect Input. Only accept alphabets", category='error')
                 return redirect(url_for('views.Store_front'))
@@ -388,9 +389,10 @@ def Store_front():
                 search = '%{}%'.format(search_)
                 category_name = Category.query.filter(
                     Category.category_Name.like(search))
+
                 for items in category_name:
                     list.append(items)
-                print(list)
+
                 return render_template('storefront.html', categories=list, name=customer.username, id=customer.id, cart=products_cart_1)
 
         return render_template('storefront.html', categories=categories_1, name=customer.username, id=customer.id, cart=products_cart_1)
@@ -401,8 +403,10 @@ def Store_front():
             Category.managedBy_Id == user_id).all()
         manager_1 = True
         list = []
+
         if request.method == 'POST' and 'search' in request.form:
             search_ = request.form.get("search")
+
             if search_.isdigit():
                 flash("Incorrect Input. Only accept alphabets", category='error')
                 return redirect(url_for('views.Store_front'))
@@ -412,9 +416,10 @@ def Store_front():
                 search = '%{}%'.format(search_)
                 category_name = Category.query.filter(
                     Category.category_Name.like(search))
+
                 for items in category_name:
                     list.append(items)
-                print(list)
+
                 return render_template('storefront.html', categories=list, name=manager.username, id=manager.id, cart=products_cart_1, manager_1=manager_1)
 
         return render_template('storefront.html', categories=categories, name=manager.username, id=manager.id, cart=products_cart_1, manager_1=manager_1)
