@@ -111,7 +111,7 @@ logout %}
   <span><button type="button" STYLE="font-family:'Verdana',margin-left = 5px;"class="btn btn-secondary">
     Out of stock <span STYLE="font-family:'Verdana';margin-left : 10px" class="badge badge-light">{{ products|length - product_instock }}</span>  
   </button></span>
-  <span></span>
+  <span>
   <button type="button" class="btn btn-info" style="margin-left: 20%;color: rgba(227, 21, 7, 0.809); font-size: 1.5vw;text-decoration: none;" data-toggle="modal" data-target="#exampleModalCenter3">
     Highest Revenue Product
   </button>
@@ -141,7 +141,7 @@ logout %}
   class="table table-hover"
     style="
       border: 5px solid rgb(255, 225, 0);
-      width: 80%;
+      width: 90%;
     "
   ><thead class="thead-dark">
     <tr align="center" style="border-bottom: 2px solid black">
@@ -169,7 +169,7 @@ logout %}
           border-right: 3px solid rgb(3, 33, 31);
 
           padding: 10px 10px;
-          width: 11%;
+          width: 13%;
         "
       >
         Price
@@ -195,7 +195,7 @@ logout %}
         Expiry
       </th>
 
-      <th style=" padding: 10px 10px; width: 35%" colspan="2">
+      <th style=" padding: 10px 10px; width: 50%" colspan="3">
         Actions
       </th>
     </tr></thead>
@@ -249,17 +249,43 @@ logout %}
         </strong
       >
     </td>
-      <td >
-        <a class="btn btn-info btn-sm" style="width:41%;color:rgb(246, 5, 218);font-size: 0.9em"  href="/manager_dash/update_item/{{ variety.product_id }}"
+    <span>
+      <td style="width: 25%">
+        <a class="btn btn-info btn-sm" style="width:60%;color:rgb(246, 5, 218);font-size: 0.9em;border:3px;"  href="/manager_dash/update_item/{{ variety.product_id }}"
           >Edit</a
         >
-      </td>
+      </td></span><span><span><td style="width: 80%">
+      <a class="btn btn-success btn-sm" style="margin: 0px;color: rgba(157, 227, 7, 0.809); font-size: 0.9em;text-decoration: none;border:0px" href="/manager_dash/demand_item/{{ variety.product_Name }}">
+        Demand
+      </a>
+      
+      <!-- Modal -->
+      <!-- <div class="modal fade modal-sm" id="exampleModalCenter4" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true" style="width:1500px;">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLongTitle4">Day wise Purchases for product {{ name }}</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <img src="{{ url_for('static',filename='Product_demand.png') }}">
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+              
+            </div>
+          </div>
+        </div>
+      </div> -->
+    </td></span>
       <td >
         <a class="btn btn-warning btn-sm"  onclick="return confirm('Are you sure to delete?')" style="width:100%; color: red;text-decoration: none;font-size: 0.9em"  href="/manager_dash/delete_product/{{ variety.product_id }}"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
           <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5Zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5Zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6Z"/>
           <path d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1ZM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118ZM2.5 3h11V2h-11v1Z"/>
         </svg></a>
-      </td>
+      </td></span>
     </tr></tbody>
     {% endfor %}
   </table>

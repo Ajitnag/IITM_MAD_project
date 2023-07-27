@@ -59,10 +59,7 @@ def pd_1():
     cat = ola.category.tolist()
     sale = ola.sales.tolist()
 
-    # print(sale)
-    # for item in categorie:
-    #     list_.append(item)
-    plt.bar(cat, sale)
+    plt.bar(cat, sale, color='orange')
     plt.xticks(cat)
     plt.ylabel("Total Revenue (Rs)")
     plt.xlabel("Category Name")
@@ -84,16 +81,12 @@ def pd_2():
     cat2 = ola2.customerid.tolist()
     sale2 = ola2.sales.tolist()
 
-    # print(ola2)
-    # for item in categorie:
-    #     list_.append(item)
-    plt.bar(cat2, sale2)
+    plt.bar(cat2, sale2, color='orange')
     plt.xticks(cat2)
     plt.ylabel("Total Purchases (Rs)")
     plt.xlabel("Customer Id")
     plt.savefig('website/static/BestCustomer.png')
     plt.clf()
-    # plt.show()
 
 
 def pd_3(category):
@@ -109,7 +102,7 @@ def pd_3(category):
     Orders_['category'] = Orders_['category'].astype('str')
     Orders_['sales'] = Orders_['quantity'] * Orders_['price']
 
-    # Most recurring Customer
+    # Most spending Customer
     ola3 = Orders_.groupby(['category', 'product']).sum()[
         'sales'].reset_index()
     cat3 = ola3.category.tolist()
@@ -123,13 +116,105 @@ def pd_3(category):
     print(product_list)
     print(sales_list)
 
-    plt.bar(product_list, sales_list)
+    plt.bar(product_list, sales_list, color='orange'
+            )
     plt.xticks(product_list)
     plt.ylabel("Total Purchases (Rs)")
     plt.xlabel("Product Name")
     plt.savefig('website/static/BestProduct.png')
     plt.clf()
-    # plt.show()
+
+
+def pd_4(product):
+    product_list = []
+    sales_list = []
+    Orders_csv = pd.read_csv(Path('website/static', 'orders.csv'))
+    Orders_ = pd.DataFrame(Orders_csv)
+    Orders_['month'] = Orders_['purchase date'].str[5:7]
+    Orders_['month'] = Orders_['month'].astype('int32')
+    Orders_['quantity'] = Orders_['quantity'].astype('int32')
+    Orders_['price'] = pd.to_numeric(Orders_['price'])
+    Orders_['product'] = Orders_['product'].astype('str')
+    Orders_['category'] = Orders_['category'].astype('str')
+    Orders_['sales'] = Orders_['quantity'] * Orders_['price']
+    Orders_['purchase date'] = pd.to_datetime(Orders_['purchase date'])
+    Orders_['day'] = Orders_['purchase date'].dt.day_name()
+    Orders_['day'] = Orders_['day'].astype('category')
+    # print(Orders_['day'])
+
+    # ola4 = Orders_.groupby(['day', 'product', 'quantity'])
+
+    # Most recurring Customer....statements must be separated by . or newline
+    ola4 = Orders_[['day', 'product', 'quantity']]
+    ola5 = ola4.groupby(['day', 'product', 'quantity'])
+    # print(ola5.first())
+    days = ['Sunday', 'Monday', 'Tuesday',
+            'Wednesday', 'Thursday', 'Friday', 'Saturday']
+    qty = [0, 0, 0, 0, 0, 0, 0]
+    a = 0
+    b = 0
+    c = 0
+    d = 0
+    e = 0
+    f = 0
+    g = 0
+    for items in ola5:
+        # print(items[0])
+        # print(items[0][2])
+        if items[0][0] == 'Sunday':
+            if items[0][1] == product:
+                a += items[0][2]
+            qty[0] = a
+
+        elif items[0][0] == 'Monday':
+            if items[0][1] == product:
+                b += items[0][2]
+            qty[1] = b
+
+        elif items[0][0] == 'Tuesday':
+            if items[0][1] == product:
+                c += items[0][2]
+            qty[2] = c
+
+        elif items[0][0] == 'Wednesday':
+            if items[0][1] == product:
+                d += items[0][2]
+            qty[3] = d
+            # print(d)
+
+        elif items[0][0] == 'Thursday':
+            if items[0][1] == product:
+                e += items[0][2]
+                qty[4] = e
+                # print(e)
+
+        elif items[0][0] == 'Friday':
+            if items[0][1] == product:
+                f += items[0][2]
+                qty[5] = f
+
+        elif items[0][0] == 'Saturday':
+            if items[0][1] == product:
+                g += items[0][2]
+                qty[6] = g
+    print(qty[4])
+    a = 0
+    b = 0
+    c = 0
+    d = 0
+    e = 0
+    f = 0
+    g = 0
+    # print(qty)
+    plt.plot(days, qty, 'om', color='hotpink',
+             marker='.', mfc='y', linestyle=':', markersize=20)
+
+    plt.xticks(days)
+    plt.yticks(qty)
+    plt.ylabel("Weekly Purchase(Qty)")
+    plt.xlabel("Days")
+    plt.savefig('website/static/Product_demand.png')
+    plt.clf()
 
 
 # monthly, weekly business data? Product wise......qty sold in a week or month.....gives estimate of demand for the product
@@ -603,6 +688,15 @@ def Add_product(id):
         return redirect(url_for('views.Dash_manager'))
 
     return render_template('product_add.html', name=category.category_Name, variable=id)
+
+
+@login_required
+@Views.route('/manager_dash/demand_item/<name>', methods=["GET", "POST"])
+def Demand(name):
+    if os.path.isfile('website/static/Prodcut_demand.png'):
+        os.remove('website/static/Prodcut_demand.png')
+    pd_4(name)
+    return render_template('img.html')
 
 
 @login_required
