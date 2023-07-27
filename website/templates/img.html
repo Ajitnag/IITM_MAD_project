@@ -1,4 +1,4 @@
-{% extends "base.html" %} {% block title %}Added Products{% endblock %}{% block
+{% extends "base.html" %} {% block title %}Demand Trend{% endblock %}{% block
     logout %}
     <span
                   id="logout"
@@ -46,6 +46,6 @@
                   ></span
                 >
     {% endblock %} {% block content %}
-    <h4 style="color:blueviolet ;margin-left:15%"><em>Weekly Demand for <u><i style="color:orangered">{{ name }}</em></i></u> </h4>
+    <h4 style="color:blueviolet ;margin-left:15%"><em>Weekly Demand Trend for <u><i style="color:orangered">{{ name }}</em></i></u> </h4>
     <img src = "{{ url_for('static',filename='Product_demand.png') }}"
     {% endblock %}

@@ -241,14 +241,27 @@ logout %}
       </td>
 
       {% endif %}
+
+      
+      {% if variety.expiredBy in expired_dates  %}
+      <td class="table-danger"
+      style=" padding: 5px; border-right: 3px solid rgb(3, 33, 31)"
+    > 
+      <strong
+        >{{ variety.expiredBy }} 
+        </strong
+      >
+    </td>{% else %}
       <td 
       style=" padding: 5px; border-right: 3px solid rgb(3, 33, 31)"
-    >
+    > 
       <strong
         >{{ variety.expiredBy }} 
         </strong
       >
     </td>
+    {% endif %}
+    
     <span>
       <td style="width: 25%">
         <a class="btn btn-info btn-sm" style="width:60%;color:rgb(246, 5, 218);font-size: 0.9em;border:3px;"  href="/manager_dash/update_item/{{ variety.product_id }}"

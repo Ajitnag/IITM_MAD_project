@@ -232,14 +232,25 @@
               </strong
             >
           </td>
-          <td
-            style=" padding: 5px; border-right: 3px solid rgb(3, 33, 31)"
+          {% if variety.expiredBy in expired_dates  %}
+          <td class="table-danger"
+          style=" padding: 5px; border-right: 3px solid rgb(3, 33, 31)"
+        > 
+          <strong
+            >{{ variety.expiredBy }} 
+            </strong
           >
-            <strong
-              >{{ variety.expiredBy}} 
-              </strong
-            >
-          </td>
+        </td>{% else %}
+          <td 
+          style=" padding: 5px; border-right: 3px solid rgb(3, 33, 31)"
+        > 
+          <strong
+            >{{ variety.expiredBy }} 
+            </strong
+          >
+        </td>
+        {% endif %}
+          
           {% if variety.stock == 0 %}
           <td class="table-danger"
             style=" padding: 5px; border-right: 3px solid rgb(3, 33, 31)"
@@ -260,7 +271,7 @@
             >
           </td>
           {% endif %}
-          {% if variety.stock == 0 %}
+          {% if (( variety.stock == 0) or (variety.expiredBy in expired_dates))  %}
           <td  style=" padding: 5px; border-right: 3px solid rgb(3, 33, 31)">
             <input class='form-control' type="number" name="qty" min="0" max="0" form="addtocart" formaction="/store/{{ name }}/products" size="30" /><em>{{ variety.metric_Unit }}</em></td>
           <td ><a class="btn btn-dark btn-sm" style="width:51%;color:rgb(202, 246, 5);font-size: 0.9em" disabled href=""

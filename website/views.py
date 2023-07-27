@@ -425,80 +425,100 @@ def Store_front():
 @login_required
 @Views.route('/store/<category>/products', methods=["GET", "POST"])
 def Store_product(category):
+
     category_1 = Category.query.filter(
         Category.category_Name == category).first()
-    products = category_1.catalog
+    products = Product.query.filter(Product.category_Id == category_1.category_Id).order_by(
+        Product.expiredBy.desc()).all()
     produce = Product.query.filter(
         Product.category_Id == category_1.category_Id).all()
+
     m = 0
+    date1 = str(date.today())
+    print(date1)
+    expired_dates = set()
+    # Count In Stock items
     for pro in produce:
         if pro.stock > 0:
             m += 1
+    # Expired products
+        if pro.expiredBy <= date1:
+            expired_dates.add(pro.expiredBy)
+
     products_cart = session['carte']
 
     if request.method == 'POST' and ('search' in request.form or 'search2' in request.form or 'date' in request.form):
+
         if 'search' in request.form:
             search_ = request.form.get("search")
-        print(search_)
+
         if 'search2' in request.form:
             search_2 = request.form.get("search2")
-        print(search_2)
+
         if 'date' in request.form:
-            date = request.form.get("date")
-        print(date)
+            date2 = request.form.get("date")
+
         if search_:
+
             list = []
+
             if search_.isdigit():
                 flash("Digits not accepted in namespace", category='error')
-                return redirect(url_for('views.Category_catalog', id=category.category_Id))
+                return redirect(url_for('views.Store_product', category=category_1.category_Name))
+
             elif search_:
+
                 # like accepts a regular expression  type formatted search string
                 search = '%{}%'.format(search_)
                 product_name = Product.query.filter(
                     Product.product_Name.like(search)).all()
-                # print(product_name)
+
                 for pro in product_name:
                     if int(pro.category_Id) == category_1.category_Id:
                         list.append(pro)
-                print(list)
-                return render_template('product_shop.html', name=category, products=list, product_instock=m, cart=products_cart)
+                return render_template('product_shop.html', name=category, products=list, product_instock=m, cart=products_cart, expired_dates=expired_dates)
+
         if search_2:
+
             list = []
+
             if search_2.isdigit():
+
                 search_1 = int(search_2)
-                print(search_1)
 
                 # this is a cool deep reveal about querying not from the table itself but object...proc becomes a list where all such objects satifying condition gets appended
                 for pro in products:
-                    if pro.rate == search_1:
+                    if pro.rate <= search_1:
                         list.append(pro)
 
             else:
+
                 flash("Price input must be strictly in digits only.",
                       category='error')
-                return render_template('product_shop.html', name=category, products=products, product_instock=m, cart=products_cart)
-            return render_template('product_shop.html', name=category, products=list, product_instock=m, cart=products_cart)
+                return redirect(url_for('views.Store_product', category=category_1.category_Name))
 
-        if date:
+            return render_template('product_shop.html', name=category, products=list, product_instock=m, cart=products_cart, expired_dates=expired_dates)
+
+        if date2:
+
             list = []
 
             for pro in products:
-                if pro.expiredBy == date:
+                if pro.expiredBy >= date2:
                     list.append(pro)
+            return render_template('product_shop.html', name=category, products=list, product_instock=m, cart=products_cart, expired_dates=expired_dates)
 
-            return render_template('product_shop.html', name=category, products=list, product_instock=m, cart=products_cart)
-
-        if search_ == "" or search_2 == "" or date == "":
+        if search_ == "" or search_2 == "" or date2 == "":
             return redirect(url_for('views.Store_product', category=category_1.category_Name))
 
     if request.method == 'POST':
+
         category_3 = Category.query.filter(
             Category.category_Name == category).first()
         products_1 = category_3.catalog
         product_id = request.form.getlist('product_id')
         qty = request.form.getlist('qty')
-        print(qty)
-        print(product_id)
+
         if 'cart' not in session:
             session['cart'] = []
 
@@ -509,7 +529,7 @@ def Store_product(category):
                     # kyunki fixed value hai toh string type mai store hogi issi liye '' but variable is not string toh not ''
                     session['cart'].append(
                         {'id': int(id), 'quantity': quantity})
-        # cuz flask cant detect changes to session when u are using mutable object like list
+        # cuz flask can't detect changes to session when u are using mutable object like list
                     session.modified = True
 
         category_2 = category_3.category_Id
@@ -525,8 +545,9 @@ def Store_product(category):
 
         flash("Add3d to Cart.Press Cart icon to view Cart.")
 
-        return render_template('product_shop.html', category=category_2, name=category, products=products_1, product_instock=n, cart=products_cart)
-    return render_template('product_shop.html', name=category, products=products, product_instock=m, cart=products_cart)
+        return render_template('product_shop.html', category=category_2, name=category, products=products_1, product_instock=n, cart=products_cart, expired_dates=expired_dates)
+
+    return render_template('product_shop.html', name=category, products=products, product_instock=m, cart=products_cart, expired_dates=expired_dates)
 
 
 # login and Logout
@@ -538,6 +559,7 @@ def Dash_manager():
     manager_id = session['id']
     manager = Store.query.get(manager_id)
     list = []
+
     if os.path.isfile('website/static/BestCategory.png'):
         os.remove('website/static/BestCategory.png')
     pd_1()
@@ -546,6 +568,7 @@ def Dash_manager():
         os.remove('website/static/BestCustomer.png')
     pd_2()
 
+    # Pagination of results
     page_1 = request.args.get('page_1', 1, type=int)
     pagination_1 = Category.query.filter(
         Category.managedBy_Id == manager_id).order_by(
@@ -554,12 +577,12 @@ def Dash_manager():
         n = Category_warning(items.category_Id)
         list.append(n)
 
-    # Pagination of results
     page_2 = request.args.get('page_2', 1, type=int)
     pagination_2 = Ecom.query.filter(Ecom.manager_id == manager_id).order_by(
-        Ecom.date_added).paginate(page=page_2, per_page=4)
+        Ecom.date_added.desc()).paginate(page=page_2, per_page=4)
     categorie = []
     ord = Category.query.all()
+
     for item in ord:
         nom = item.category_Name
         categorie.append(nom)
@@ -572,9 +595,8 @@ def Dash_manager():
         c = Category(category_Name=c1, managedBy_Id=manager_id)
         db.session.add(c)
         db.session.commit()
-        # categories = Category.query.filter(
-        #     Category.managedBy_Id == manager_id).all()
         return render_template('dash_m.html', categories=pagination_1, name=manager.username, id=manager_id, orders=pagination_2)
+
     if request.method == 'POST' and 'search' in request.form:
         search_ = request.form.get("search")
         if search_.isdigit():
@@ -584,11 +606,11 @@ def Dash_manager():
                 Category.category_Id == search_1).paginate(page=page_1, per_page=4)
 
             list = []
+
             for items in category_id:
                 print(items)
                 n = Category_warning(items.category_Id)
                 list.append(n)
-
             return render_template('dash_m.html', categories=category_id, name=manager.username, id=manager_id, orders=pagination_2, list=list)
 
         else:
@@ -601,17 +623,17 @@ def Dash_manager():
             for items in category_name:
                 n = Category_warning(items.category_Id)
                 list.append(n)
-            # print(category)
             return render_template('dash_m.html', categories=category_name, name=manager.username, id=manager_id, orders=pagination_2, list=list)
-    if request.method == 'POST' and 'date' in request.form:
 
-        date = request.form.get("date")
-        if date == "":
+    if request.method == 'POST' and 'date' in request.form:
+        date1 = request.form.get("date")
+        if date1 == "":
             return redirect(url_for('views.Dash_manager'))
         else:
             order_1 = Ecom.query.filter(
-                Ecom.date_added == date).paginate(page=page_2, per_page=4)
+                Ecom.date_added == date1).paginate(page=page_2, per_page=4)
             return render_template('dash_m.html', categories=pagination_1, name=manager.username, id=manager_id, orders=order_1, list=list, original=pagination_2)
+
     return render_template('dash_m.html', categories=pagination_1, name=manager.username, id=manager_id, orders=pagination_2, list=list)
 
 
@@ -621,20 +643,26 @@ def Dash_manager():
 def Add_category():
     manager_id = session['id']
     manager = Store.query.get(manager_id)
+
     if request.method == 'POST':
         cat_name = request.form.get("cname1")
         description = request.form.get("c1name1")
+
         if len(Category.query.filter_by(category_Name=cat_name).all()) > 0:
+
             flash(
                 "Category name already exists.Use different name.", category='error')
             return render_template('category_form.html', name=manager.username)
+
         else:
             c = Category(category_Name=cat_name,
                          managedBy_Id=manager_id, description=description)
             db.session.add(c)
+
             db.session.commit()
 
             flash("New Category added")
+
             return redirect(url_for('views.Dash_manager'))
 
     return render_template('category_form.html', name=manager.username)
@@ -643,12 +671,13 @@ def Add_category():
 @login_required
 @Views.route('/manager_dash/category_update/<int:id>', methods=["GET", "POST"])
 def Update_category(id):
-    user_role = session['role']
+
     manager_id = session['id']
     manager = Store.query.get(manager_id)
     category = Category.query.get(id)
 
     if request.method == 'POST':
+
         m = 0
         name = request.form.get('cname1')
         description = request.form.get('c1name1')
@@ -663,6 +692,7 @@ def Update_category(id):
             category.description = description
             db.session.commit()
         return redirect(url_for('views.Dash_manager'))
+
     return render_template('category_updateform.html', name=manager.username, variable=id)
 
 
@@ -670,21 +700,23 @@ def Update_category(id):
 @Views.route('/manager_dash/category_create/<int:id>', methods=["GET", "POST"])
 def Add_product(id):
     manager_id = session['id']
-    manager = Store.query.get(manager_id)
     category = Category.query.get(id)
-    categories = Category.query.all()
 
     if request.method == 'POST':
+
         product_name = request.form.get("pname1")
         metric = request.form.get("mname1")
         rate = request.form.get("rname1")
         rate_unit = request.form.get("prname1")
         inventory = request.form.get("sname1")
         expiry = request.form.get("dname1")
+
         p = Product(product_Name=product_name, metric_Unit=metric, rate=rate,
                     rate_perUnit=rate_unit, stock=inventory, category_Id=id, expiredBy=expiry)
+
         db.session.add(p)
         category.catalog.append(p)
+
         db.session.commit()
         return redirect(url_for('views.Dash_manager'))
 
@@ -696,23 +728,35 @@ def Add_product(id):
 def Demand(name):
     if os.path.isfile('website/static/Prodcut_demand.png'):
         os.remove('website/static/Prodcut_demand.png')
+
     pd_4(name)
+
     return render_template('img.html', name=name)
 
 
 @login_required
 @Views.route('/manager_dash/category_catalog/<int:id>', methods=["GET", "POST"])
 def Category_catalog(id):
-    manager_id = session['id']
-    manager = Store.query.get(manager_id)
 
     category = Category.query.get(id)
-    products = category.catalog
+
+    products = Product.query.filter(Product.category_Id == id).order_by(
+        Product.expiredBy.asc()).all()
+
     produce = Product.query.filter(Product.category_Id == id).all()
+
     m = 0
+    date1 = str(date.today())
+    print(date1)
+    expired_dates = set()
+    # Count In Stock items
     for pro in produce:
         if pro.stock > 0:
             m += 1
+    # Expired products
+        if pro.expiredBy <= date1:
+            expired_dates.add(pro.expiredBy)
+
     if os.path.isfile('website/static/BestProduct.png'):
         os.remove('website/static/BestProduct.png')
     pd_3(category.category_Name)
@@ -720,18 +764,21 @@ def Category_catalog(id):
     if request.method == 'POST':
         if 'search' in request.form:
             search_ = request.form.get("search")
-        print(search_)
+
         if 'search2' in request.form:
             search_2 = request.form.get("search2")
-        print(search_2)
+
         if 'date' in request.form:
-            date = request.form.get("date")
-        print(date)
+            date2 = request.form.get("date")
+
         if search_:
+
             list = []
+
             if search_.isdigit():
                 flash("Digits not accepted in namespace", category='error')
                 return redirect(url_for('views.Category_catalog', id=category.category_Id))
+
             elif search_:
                 # like accepts a regular expression  type formatted search string
                 search = '%{}%'.format(search_)
@@ -741,38 +788,43 @@ def Category_catalog(id):
                 for pro in product_name:
                     if int(pro.category_Id) == id:
                         list.append(pro)
-                print(list)
-                return render_template('category_catalog.html', name=category.category_Name, category_id=category.category_Id, products=list, product_instock=m)
+
+                return render_template('category_catalog.html', name=category.category_Name, category_id=category.category_Id, products=list, product_instock=m, expired_dates=expired_dates)
+
         if search_2:
+
             list = []
+
             if search_2.isdigit():
                 search_1 = int(search_2)
                 print(search_1)
 
                 # this is a cool deep reveal about querying not from the table itself but object...proc becomes a list where all such objects satifying condition gets appended
                 for pro in products:
-                    if pro.rate == search_1:
+                    if pro.rate <= search_1:
                         list.append(pro)
 
             else:
                 flash("Price input must be strictly in digits only.",
                       category='error')
-                return render_template('category_catalog.html', name=category.category_Name, category_id=category.category_Id, products=products, product_instock=m)
-            return render_template('category_catalog.html', name=category.category_Name, category_id=category.category_Id, products=list, product_instock=m)
+                return redirect(url_for('views.Category_catalog', id=category.category_Id))
 
-        if date:
+            return render_template('category_catalog.html', name=category.category_Name, category_id=category.category_Id, products=list, product_instock=m, expired_dates=expired_dates)
+
+        if date2:
+
             list = []
 
             for pro in products:
-                if pro.expiredBy == date:
+                if pro.expiredBy >= date2:
                     list.append(pro)
 
-            return render_template('category_catalog.html', name=category.category_Name, category_id=category.category_Id, products=list, product_instock=m)
+            return render_template('category_catalog.html', name=category.category_Name, category_id=category.category_Id, products=list, product_instock=m, expired_dates=expired_dates)
 
-        if search_ == "" or search_2 == "" or date == "":
+        if search_ == "" or search_2 == "" or date2 == "":
             return redirect(url_for('views.Category_catalog', id=category.category_Id))
 
-    return render_template('category_catalog.html', name=category.category_Name, category_id=category.category_Id, products=products, product_instock=m)
+    return render_template('category_catalog.html', name=category.category_Name, category_id=category.category_Id, products=products, product_instock=m, expired_dates=expired_dates)
 
 
 @login_required
@@ -780,28 +832,38 @@ def Category_catalog(id):
 def delete_account():
     user_id = session['id']
     user_role = session['role']
+
     if user_role == 'Manager':
         user = Store.query.get(user_id)
         categories = Category.query.filter_by(managedBy_Id=user_id).all()
+
         for cat in categories:
             products = Product.query.filter_by(
                 category_Id=cat.category_Id).all()
+
             for pro in products:
                 db.session.delete(pro)
                 db.session.commit()
+
             db.session.delete(cat)
             db.session.commit()
+
         session.pop("cart", None)
         db.session.delete(user)
+
         db.session.commit()
+
     if user_role == 'Customer':
         user = Customer.query.get(user_id)
         orders = Ecom.query.filter_by(customer_id=user_id).all()
+
         for order in orders:
             db.session.delete(order)
             db.session.commit()
+
         session.pop("cart", None)
         db.session.delete(user)
+
         db.session.commit()
     flash("Account Deleted.", category='error')
     return redirect(url_for('views.Home'))
@@ -811,17 +873,21 @@ def delete_account():
 @Views.route('/manager_dash/delete_category/<int:id>')
 def delete_category(id):
     user_role = session['role']
+
     if user_role == 'Manager':
         category = Category.query.get(id)
         products = Product.query.filter_by(category_Id=id).all()
         orders = Ecom.query.filter_by(
             category_name=category.category_Name).all()
+
         for order in orders:
             db.session.delete(order)
             db.session.commit()
+
         for pro in products:
             db.session.delete(pro)
             db.session.commit()
+
         db.session.delete(category)
         db.session.commit()
         flash("Category Deleted.")
@@ -836,9 +902,11 @@ def delete_product(id):
     if user_role == 'Manager':
         product = Product.query.get(id)
         orders = Ecom.query.filter_by(product_id=id).all()
+
         for order in orders:
             db.session.delete(order)
             db.session.commit()
+
         db.session.delete(product)
         db.session.commit()
         flash("Product Removed.")
@@ -849,10 +917,11 @@ def delete_product(id):
 @Views.route('/manager_dash/update_item/<int:id>', methods=["GET", "POST"])
 def update_item(id):
     user_role = session['role']
-    product_1 = Product.query.get(id)
-    category_id = product_1.category_Id
+    product = Product.query.get(id)
+    category_id = product.category_Id
     category = Category.query.get(category_id)
-    products = category.catalog
+    products = Product.query.filter(Product.category_Id == category_id).order_by(
+        Product.expiredBy.asc()).all()
 
     if user_role == 'Manager':
         if request.method == 'POST':
@@ -868,32 +937,39 @@ def update_item(id):
                 Product.category_Id == category_id).all()
 
             if not name == "":
-                product = Product.query.get(id)
                 product.product_Name = name
                 db.session.commit()
+
             if metric:
-                product = Product.query.get(id)
                 product.metric_Unit = metric
                 db.session.commit()
+
             if rate_unit:
-                product = Product.query.get(id)
                 product.rate_perUnit = rate_unit
                 db.session.commit()
+
             if not rate == "":
-                product = Product.query.get(id)
                 product.rate = rate
                 db.session.commit()
+
             if not inventory == "":
-                product = Product.query.get(id)
                 product.stock = inventory
                 db.session.commit()
+
             if not expiry == "":
-                product = Product.query.get(id)
                 product.expiredBy = expiry
                 db.session.commit()
+
+            date1 = str(date.today())
+            expired_dates2 = set()
 
             for pro in produce:
                 if pro.stock > 0:
                     m += 1
-            return render_template('category_catalog.html', name=category.category_Name, category_id=category_id, products=products, product_instock=m)
+
+                if pro.expiredBy <= date1:
+                    expired_dates2.add(pro.expiredBy)
+
+            return render_template('category_catalog.html', name=category.category_Name, category_id=category_id, products=products, product_instock=m, expired_dates=expired_dates2)
+
     return render_template('update_item.html', name=category.category_Name, variable=category_id, product_id=id)

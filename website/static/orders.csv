@@ -11,3 +11,5 @@ customerid,product,category,quantity,price,purchase date,manager_id
 1,salmon,Fish and Meat,1,334,2023-07-27,1
 1,Spinach,Green Leaf,2,35,2023-07-27,1
 1,Cheese,Dairy,3,34,2023-07-27,1
+1,Kurta Piece,Khadi,2,23,2023-07-27,1
+1,Yogurt,Dairy,2,23,2023-07-28,1
