@@ -697,7 +697,7 @@ def Demand(name):
     if os.path.isfile('website/static/Prodcut_demand.png'):
         os.remove('website/static/Prodcut_demand.png')
     pd_4(name)
-    return render_template('img.html')
+    return render_template('img.html', name=name)
 
 
 @login_required
