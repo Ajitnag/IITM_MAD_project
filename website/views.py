@@ -213,6 +213,7 @@ def pd_4(product):
     plt.yticks(qty)
     plt.ylabel("Weekly Purchase(Qty)")
     plt.xlabel("Days")
+    plt.title('Day wise Purchases')
     plt.savefig('website/static/Product_demand.png')
     plt.clf()
 
