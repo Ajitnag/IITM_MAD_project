@@ -18,7 +18,7 @@ def create_app():
     # The SECRET_KEY is needed to keep the client-side sessions/cookies secure. Choose that key wisely and as hard to guess and complex as possible.
 
     # # Socket/connector ie intialize plugins with the flask application
-    from .model import db
+    from website.model import db
     db.init_app(app)
 
     login_manager.init_app(app)
