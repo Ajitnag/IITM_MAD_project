@@ -1,8 +1,7 @@
 
 from flask import Blueprint, render_template, redirect, url_for, request, flash, session, current_app as App
-from website.model import Store, Customer, Category, Product, Ecom, db
-from . import login_manager
-from .views import Views
+from website.model import Store, Customer, db
+from website import login_manager
 from flask_login import login_user, logout_user, login_required, current_user
 from werkzeug.security import generate_password_hash, check_password_hash
 
@@ -39,7 +38,7 @@ def login():
             if customer_exists:
                 if check_password_hash(customer_exists.password, password1):
                     flash("Logged in!!")
-                    # , remember=True, duration='Any'
+
                     login_user(customer_exists)
                     session['id'] = customer_exists.get_id()
                     return redirect(url_for('views.Store_front'))
@@ -81,7 +80,7 @@ def signup():
                 db.session.commit()
                 flash("New Manager created.")
                 return render_template('signup.html')
-                # return redirect(url_for('views.Home'))
+
         if identity == 'Customer':
             email_exists = Customer.query.filter_by(email=email).first()
             username_exists = Customer.query.filter_by(
@@ -103,7 +102,6 @@ def signup():
                 db.session.commit()
                 flash("New Customer added.")
                 return render_template('signup.html')
-                # return redirect(url_for('views.Home'))
 
     return render_template('signup.html')
 
@@ -144,28 +142,3 @@ def logout():
 
     return redirect(url_for("views.Home"))
 # this is the home fn in views blueprint.also tells why every function name in views must be unique...this secures from any future changes to url itself...no need to change url everywhere it is used..this is dynamic embed url
-
-
-# @login_required
-# @Auth.route('/delete')
-# def delete_account():
-#     user_id = session['id']
-#     user_role = session['role']
-#     if user_role == 'Manager':
-#         user = Store.query.get(user_id)
-#         categories = Category.query.filter_by(managedBy_Id=user_id).all()
-#         for cat in categories:
-#             products = Product.query.filter_by(
-#                 category_Id=cat.category_Id).all()
-#             for pro in products:
-#                 db.session.delete(pro)
-#                 db.session.commit()
-#             db.session.delete(cat)
-#             db.session.commit()
-#         db.session.delete(user)
-#         db.session.commit()
-#     if user_role == 'Customer':
-#         user = Customer.query.get(user_id)
-#         db.session.delete(user)
-#         db.session.commit()
-#     return redirect(url_for("views.Home"))

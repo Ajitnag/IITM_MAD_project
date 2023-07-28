@@ -3,11 +3,11 @@
 from flask_login import UserMixin
 from datetime import date
 from flask_sqlalchemy import SQLAlchemy
-# from flask import current_app as app
 
-db = SQLAlchemy()  # this is a class object
 
-# . stands for current package that we are in ie from __init__.py file import db variable
+db = SQLAlchemy()
+
+# . stands for current working directory
 
 
 # --------------Data Model------------------
@@ -22,6 +22,7 @@ class Store(db.Model, UserMixin):
     date_added = db.Column(db.Date, default=date.today())
     creates = db.relationship('Category', backref='managedBy')
     # one wali side pe relationship wali statement aur many wali side pe foreign key
+    # flask automatically creates two side relation and remove redndc of writing this info at the category side saying managedBy points to creates relationship here...flask removes redndc, reduces effort
     # creates = db.relationship('Category', secondary = 'enrollments', backref= 'managed_By')
 
 
