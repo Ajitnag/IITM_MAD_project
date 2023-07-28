@@ -18,8 +18,8 @@ Views = Blueprint("views", __name__)
 
 def Category_warning(id):
     category = Category.query.get(id)
-    products = category.catalog
     produce = Product.query.filter(Product.category_Id == id).all()
+
     m = 0
     for pro in produce:
         if pro.stock > 0:
@@ -37,10 +37,7 @@ def create_ordercsv():
         writer.writeheader()
         orders.close()
 
-   # monthly, weekly business data? Product wise......qty sold in a week or month.....gives estimate of demand for the product
-    # Category wise
-    # What product sold the most? Qty ---bar chart of all products in a category
-    # Highest revenue product? Sale price  ---bar chart of all products in a category
+# Data Analysis and Visualizations
 
 
 def pd_1():
@@ -82,7 +79,7 @@ def pd_2():
 
     plt.bar(cat2, sale2, color='orange')
     plt.xticks(cat2)
-    plt.ylabel("Total Purchases (Rs)")
+    plt.ylabel("Total Spending (Rs)")
     plt.xlabel("Customer Id")
     plt.savefig('website/static/BestCustomer.png')
     plt.clf()
@@ -118,19 +115,25 @@ def pd_3(category):
     plt.bar(product_list, sales_list, color='orange'
             )
     plt.xticks(product_list)
-    plt.ylabel("Total Purchases (Rs)")
+    plt.ylabel("Total Revenue (Rs)")
     plt.xlabel("Product Name")
     plt.savefig('website/static/BestProduct.png')
     plt.clf()
 
 
+def safe_div(x, y):
+    if y == 0:
+        return 0
+    return x/y
+
+
 def pd_4(product):
-    product_list = []
-    sales_list = []
+
     Orders_csv = pd.read_csv(Path('website/static', 'orders.csv'))
     Orders_ = pd.DataFrame(Orders_csv)
     Orders_['month'] = Orders_['purchase date'].str[5:7]
     Orders_['month'] = Orders_['month'].astype('int32')
+    Orders_['customerid'] = Orders_['customerid'].astype('int32')
     Orders_['quantity'] = Orders_['quantity'].astype('int32')
     Orders_['price'] = pd.to_numeric(Orders_['price'])
     Orders_['product'] = Orders_['product'].astype('str')
@@ -141,12 +144,14 @@ def pd_4(product):
     Orders_['day'] = Orders_['day'].astype('category')
 
     # Most recurring Customer....statements must be separated by . or newline in python
-    ola4 = Orders_[['day', 'product', 'quantity']]
-    ola5 = ola4.groupby(['day', 'product', 'quantity'])
-    # print(ola5.first())
+    ola4 = Orders_[['customerid', 'day', 'product', 'quantity']]
+    ola5 = ola4.groupby(['day', 'product', 'quantity', 'customerid',])
+
     days = ['Sunday', 'Monday', 'Tuesday',
             'Wednesday', 'Thursday', 'Friday', 'Saturday']
+
     qty = [0, 0, 0, 0, 0, 0, 0]
+    count_customers = [0, 0, 0, 0, 0, 0, 0]
     a = 0
     b = 0
     c = 0
@@ -154,43 +159,70 @@ def pd_4(product):
     e = 0
     f = 0
     g = 0
+    count_1 = 0
+    count_2 = 0
+    count_3 = 0
+    count_4 = 0
+    count_5 = 0
+    count_6 = 0
+    count_7 = 0
+
     for items in ola5:
 
         if items[0][0] == 'Sunday':
             if items[0][1] == product:
                 a += items[0][2]
+                count_1 += 1
             qty[0] = a
+            count_customers[0] = count_1
 
         elif items[0][0] == 'Monday':
             if items[0][1] == product:
                 b += items[0][2]
+                count_2 += 1
             qty[1] = b
+            count_customers[1] = count_2
 
         elif items[0][0] == 'Tuesday':
             if items[0][1] == product:
                 c += items[0][2]
+                count_3 += 1
             qty[2] = c
+            count_customers[2] = count_3
 
         elif items[0][0] == 'Wednesday':
             if items[0][1] == product:
                 d += items[0][2]
+                count_4 += 1
             qty[3] = d
+            count_customers[3] = count_4
 
         elif items[0][0] == 'Thursday':
             if items[0][1] == product:
                 e += items[0][2]
-                qty[4] = e
+                count_5 += 1
+            qty[4] = e
+            count_customers[4] = count_5
 
         elif items[0][0] == 'Friday':
             if items[0][1] == product:
                 f += items[0][2]
-                qty[5] = f
+                count_6 += 1
+            qty[5] = f
+            count_customers[5] = count_6
 
         elif items[0][0] == 'Saturday':
             if items[0][1] == product:
                 g += items[0][2]
-                qty[6] = g
-    print(qty[4])
+                count_7 += 1
+            qty[6] = g
+            count_customers[6] = count_7
+    # Avg Daywise purchases per customer on that day
+    qtty = [0, 0, 0, 0, 0, 0, 0]
+    for index, item in enumerate(qty):
+        qtty_ = safe_div(qty[index], count_customers[index])
+        qtty[index] = qtty_
+
     a = 0
     b = 0
     c = 0
@@ -198,17 +230,25 @@ def pd_4(product):
     e = 0
     f = 0
     g = 0
+    count_1 = 0
+    count_2 = 0
+    count_3 = 0
+    count_4 = 0
+    count_5 = 0
+    count_6 = 0
+    count_7 = 0
 
-    plt.plot(days, qty, 'om', color='hotpink',
+    plt.plot(days, qtty, 'om', color='hotpink',
              marker='.', mfc='y', linestyle=':', markersize=20)
 
     plt.xticks(days)
-    plt.yticks(qty)
-    plt.ylabel("Weekly Purchase(Qty)")
+    plt.yticks(qtty)
+    plt.ylabel("Day Average Demand(Qty)")
     plt.xlabel("Days")
     plt.title('Day wise Purchases')
     plt.savefig('website/static/Product_demand.png')
     plt.clf()
+
 
 # Landing page
 
