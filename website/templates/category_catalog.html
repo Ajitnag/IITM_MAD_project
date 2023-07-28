@@ -80,7 +80,6 @@ logout %}
   </div>
 
 
-<!-- <span style="float: right"><a href="/logout">Logout</a></span> -->
 
 <hr /></section>
 <section>
@@ -100,7 +99,7 @@ logout %}
     >
     to add a new product in this catefory
   </div>
-  <!-- <h5>No categories Defined. Press 'Add Category' to add a new category</h5> -->
+  
   {% else %}
   <div><span>
   <button type="button" STYLE="font-family:'Verdana',margin-left = 5px;"class="btn btn-secondary">
@@ -272,26 +271,7 @@ logout %}
         Demand
       </a>
       
-      <!-- Modal -->
-      <!-- <div class="modal fade modal-sm" id="exampleModalCenter4" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true" style="width:1500px;">
-        <div class="modal-dialog modal-dialog-centered" role="document">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title" id="exampleModalLongTitle4">Day wise Purchases for product {{ name }}</h5>
-              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-              </button>
-            </div>
-            <div class="modal-body">
-              <img src="{{ url_for('static',filename='Product_demand.png') }}">
-            </div>
-            <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-              
-            </div>
-          </div>
-        </div>
-      </div> -->
+      
     </td></span>
       <td >
         <a class="btn btn-warning btn-sm"  onclick="return confirm('Are you sure to delete?')" style="width:100%; color: red;text-decoration: none;font-size: 0.9em"  href="/manager_dash/delete_product/{{ variety.product_id }}"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">

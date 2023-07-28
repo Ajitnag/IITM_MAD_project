@@ -110,7 +110,6 @@
       </div>
     
     
-    <!-- <span style="float: right"><a href="/logout">Logout</a></span> -->
     
   
     <hr /></section>
@@ -125,9 +124,7 @@
       <button type="button" STYLE="font-family:'Verdana',margin-left = 5px;"class="btn btn-secondary">
         Total Products <span STYLE="font-family:'Verdana';margin-left :5px;" class="badge badge-light">{{ products|length }}</span>  
       </button>
-    <!-- </span><span STYLE="margin-left: 5px;"><button type="button" STYLE="font-family:'Verdana',margin-left = 5px;"class="btn btn-secondary">
-        Products In stock <span STYLE="font-family:'Verdana';margin-left : 5px;" class="badge badge-light">{{ product_instock }}</span>  
-      </button></span> -->
+   
       <span><button type="button" STYLE="font-family:'Verdana',margin-left = 5px;"class="btn btn-secondary">
         Out of stock <span STYLE="font-family:'Verdana';margin-left : 10px" class="badge badge-light">{{ products|length - product_instock }}</span>  
       </button></span>
