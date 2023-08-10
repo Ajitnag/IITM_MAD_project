@@ -61,13 +61,13 @@ def signup():
         # we want to check if data entered matches in our database
         if identity == 'Manager':
             email_exists = Store.query.filter_by(email=email).first()
-            username_exists = Store.query.filter_by(username=username).first()
+            # username_exists = Store.query.filter_by(username=username).first()
             if email_exists:
                 flash("Email already exists.Please use another email.",
                       category='error')
-            elif username_exists:
-                flash(
-                    "Username already exists.Please use another Username.", category='error')
+            # elif username_exists:
+            #     flash(
+            #         "Username already exists.Please use another Username.", category='error')
             elif password1 != password_again:
                 flash("Passwords donot match!!", category='error')
             elif len(email) < 10:
@@ -83,14 +83,14 @@ def signup():
 
         if identity == 'Customer':
             email_exists = Customer.query.filter_by(email=email).first()
-            username_exists = Customer.query.filter_by(
-                username=username).first()
+            # username_exists = Customer.query.filter_by(
+            #     username=username).first()
             if email_exists:
                 flash("Email already exists.Please use another email.",
                       category='error')
-            elif username_exists:
-                flash(
-                    "Username already exists.Please use another Username.", category='error')
+            # elif username_exists:
+            #     flash(
+            #         "Username already exists.Please use another Username.", category='error')
             elif password1 != password_again:
                 flash("Passwords donot match!!", category='error')
             elif len(email) < 10:

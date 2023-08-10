@@ -6,9 +6,9 @@ customerid,product,category,quantity,price,purchase date,manager_id
 3,Spinach,Green Leaf,4,35,2023-07-26,1
 3,Cinnamon,Spices,2,300,2023-07-26,1
 4,Cinnamon,Spices,3,300,2023-07-26,1
-1,salmon,Fish and Meat,2,334,2023-07-26,1
+1,salmon,Fish,2,334,2023-07-26,1
 1,Yogurt,Dairy,3,23,2023-07-26,1
-1,salmon,Fish and Meat,1,334,2023-07-27,1
+1,salmon,Fish,1,334,2023-07-27,1
 1,Spinach,Green Leaf,2,35,2023-07-27,1
 1,Cheese,Dairy,3,34,2023-07-27,1
 1,Kurta Piece,Khadi,2,23,2023-07-27,1
@@ -17,7 +17,57 @@ customerid,product,category,quantity,price,purchase date,manager_id
 1,Yogurt,Dairy,3,23,2023-07-28,1
 1,Carrot,Green Leaf,2,23,2023-07-28,1
 3,Cinnamon,Spices,4,300,2023-07-28,1
-3,salmon,Fish and Meat,2,334,2023-07-28,1
+3,salmon,Fish,2,334,2023-07-28,1
 2,Carrot,Green Leaf,4,23,2023-07-28,1
 2,Kurta Piece,Khadi,2,23,2023-07-28,1
-2,salmon,Fish and Meat,1,334,2023-07-28,1
+2,salmon,Fish,1,334,2023-07-28,1
+1,Spinach,Green Leaf,2,35,2023-07-29,1
+1,Carrot,Green Leaf,2,23,2023-07-29,1
+1,Cheese,Dairy,3,34,2023-07-29,1
+1,Kurta Piece,Khadi,2,23,2023-07-29,1
+3,salmon,Fish,3,334,2023-07-29,1
+3,Cheese,Dairy,2,34,2023-07-29,1
+3,Yogurt,Dairy,4,23,2023-07-29,1
+2,Carrot,Green Leaf,1,23,2023-07-29,1
+2,Cheese,Dairy,1,34,2023-07-29,1
+2,salmon,Fish,1,334,2023-07-29,1
+2,Kurta Piece,Khadi,1,23,2023-07-29,1
+4,Spinach,Green Leaf,3,35,2023-07-29,1
+4,Yogurt,Dairy,2,23,2023-07-29,1
+4,Kurta Piece,Khadi,2,23,2023-07-29,1
+4,Carrot,Green Leaf,1,23,2023-07-29,1
+1,Cheese,Dairy,2,34,2023-07-31,1
+1,Spinach,Green Leaf,3,35,2023-07-31,1
+3,Yogurt,Dairy,3,23,2023-07-31,1
+3,Kurta Piece,Khadi,1,23,2023-07-31,1
+2,Spinach,Green Leaf,3,35,2023-07-31,1
+2,Cheese,Dairy,2,34,2023-07-31,1
+4,salmon,Fish,1,334,2023-07-31,1
+3,Kurta Piece,Khadi,2,23,2023-08-01,1
+3,Veg Grilled Potato Sandwhich,Sandwhich,2,75,2023-08-01,1
+3,Celery and Spinach Smoothie,Juice,2,70,2023-08-01,1
+1,Spinach,Green Leaf,2,35,2023-08-01,1
+1,Spinach,Green Leaf,1,35,2023-08-01,1
+1,Spinach,Green Leaf,1,35,2023-08-01,1
+1,Spinach,Green Leaf,3,35,2023-08-01,1
+1,Carrot,Green Leaf,2,23,2023-08-01,1
+1,Spinach,Green Leaf,2,35,2023-08-02,1
+1,Carrot,Green Leaf,2,23,2023-08-02,1
+1,Tomato,Green Leaf,3,12,2023-08-02,1
+1,Cheese,Dairy,2,34,2023-08-02,1
+1,Turnip,Green Leaf,2,12,2023-08-02,1
+1,Cheese,Dairy,3,34,2023-08-02,1
+1,Cabbage,Green Leaf,2,12,2023-08-02,1
+1,Potato,Green Leaf,2,12,2023-08-02,1
+1,Yogurt,Dairy,2,23,2023-08-02,1
+1,Potato,Green Leaf,2,12,2023-08-03,1
+1,Cheese,Dairy,2,34,2023-08-03,1
+1,Potato,Green Leaf,2,12,2023-08-03,1
+1,Yogurt,Dairy,3,23,2023-08-03,1
+1,Kurta Piece,Khadi,2,23,2023-08-03,1
+1,Tomato,Green Leaf,2,12,2023-08-03,1
+1,Cheese,Dairy,3,34,2023-08-03,1
+1,Cream,Dairy,2,23,2023-08-03,1
+1,Carrot,Green Leaf,2,23,2023-08-03,1
+1,Cheese,Dairy,2,34,2023-08-03,1
+1,Cream,Dairy,1,23,2023-08-03,1

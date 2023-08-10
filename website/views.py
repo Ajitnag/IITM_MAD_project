@@ -15,6 +15,8 @@ matplotlib.use('Agg')
 
 Views = Blueprint("views", __name__)
 
+# ---------------------Some useful functions used within the project-------------------
+
 
 def Category_warning(id):
     category = Category.query.get(id)
@@ -250,13 +252,13 @@ def pd_4(product):
     plt.clf()
 
 
-# Landing page
-
-
+# First page
 @Views.route('/')
 def Home():
     return render_template('landing_page.html')
 
+
+# -----------------------------Store Website & customer side ---------------------------------
 # cart page
 
 
@@ -285,8 +287,9 @@ def Cart():
 
             products_cart.append({'id': int(product.product_id), 'name': product.product_Name,
                                   'price': product.rate, 'quantity': quantity, 'total': total, 'category': category_name, 'manager_id': manager_id})
+            print(session['cart'])
 
-        # as a oversight currently added item in product cart is removed cuz session mai next item bhi same id ki hai....toh duplicate items ko add krne ke baad directly weed out bhi kr diya
+        # as a oversight currently added item in product cart is removed cuz session mai next item bhi same id ki hai toh we only keep most current cart addition of the same product....toh duplicate items ko add krne ke baad directly weed out bhi kr diya
             n = i+1
             if products_cart:
                 for ic in session['cart'][n:]:
@@ -295,6 +298,7 @@ def Cart():
                             products_cart.remove(it)
 
     session['carte'] = products_cart
+    print(session['carte'])
     if session['role'] == 'Customer':
         customer_id = session['id']
     else:
@@ -403,10 +407,13 @@ def Store_front():
     user_id = session['id']
     user_role = session['role']
 
+    # if not intialized
     if 'carte' not in session:
         session['carte'] = []
+    # if empty
     if not session['carte']:
         products_cart_1 = []
+    # if not empty
     if session['carte']:
         products_cart_1 = session['carte']
 
@@ -486,7 +493,7 @@ def Store_product(category):
     for pro in produce:
         if pro.stock > 0:
             m += 1
-    # Expired products
+    # set of products with Expired products
         if pro.expiredBy <= date1:
             expired_dates.add(pro.expiredBy)
 
@@ -595,9 +602,9 @@ def Store_product(category):
     return render_template('product_shop.html', name=category, products=products, product_instock=m, cart=products_cart, expired_dates=expired_dates)
 
 
-# login and Logout
+# ---------------------------------Store Front ends -------------------------------------
 
-
+# Manager's DashBoard module
 @login_required
 @Views.route('/manager_dash', methods=["GET", "POST"])
 def Dash_manager():
@@ -658,7 +665,7 @@ def Dash_manager():
                 list.append(n)
             return render_template('dash_m.html', categories=category_id, name=manager.username, id=manager_id, orders=pagination_2, list=list)
 
-        else:
+        elif search_.isalpha():
             # like accepts a regular expression  type formatted search string
             search = '%{}%'.format(search_)
             category_name = Category.query.filter(
@@ -669,6 +676,10 @@ def Dash_manager():
                 n = Category_warning(items.category_Id)
                 list.append(n)
             return render_template('dash_m.html', categories=category_name, name=manager.username, id=manager_id, orders=pagination_2, list=list)
+        else:
+            flash(
+                "Not correct query. Enter only Id or Only Category name. Donot write both.", category='error')
+            return render_template('dash_m.html', categories=pagination_1, name=manager.username, id=manager_id, orders=pagination_2, list=list)
 
     if request.method == 'POST' and 'date' in request.form:
         date1 = request.form.get("date")
@@ -682,7 +693,6 @@ def Dash_manager():
     return render_template('dash_m.html', categories=pagination_1, name=manager.username, id=manager_id, orders=pagination_2, list=list)
 
 
-# Manager's DashBoard module
 @login_required
 @Views.route('/manager_dash/category_create', methods=["GET", "POST"])
 def Add_category():
@@ -744,7 +754,7 @@ def Update_category(id):
 @login_required
 @Views.route('/manager_dash/category_create/<int:id>', methods=["GET", "POST"])
 def Add_product(id):
-    manager_id = session['id']
+
     category = Category.query.get(id)
 
     if request.method == 'POST':
@@ -1018,3 +1028,5 @@ def update_item(id):
             return render_template('category_catalog.html', name=category.category_Name, category_id=category_id, products=products, product_instock=m, expired_dates=expired_dates2)
 
     return render_template('update_item.html', name=category.category_Name, variable=category_id, product_id=id)
+
+# -----------------------------------Store Mamager Dash Board Module ends ----------------------
